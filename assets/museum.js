@@ -76,6 +76,17 @@ const L = {
     saal: "Saal", youAreHere: "Du bist hier", walkRunning: "Rundgang läuft",
     steps: (n) => n + (n === 1 ? " Schritt" : " Schritte"), vitrine: (n) => "Vitrine " + n,
     toEntrance: "Eingang", finishShort: "Besuch beenden", goTo: "Weiter zum Saal",
+    speechErr: {
+      nosupport: "Dieser Browser kann keine Spracherkennung. Schreib es einfach auf.",
+      "not-allowed": "Das Mikrofon ist gesperrt. Erlaube es für diese Seite in den Browser-Einstellungen.",
+      "service-not-allowed": "Auf dem iPhone braucht Safari dafür das Diktat: Einstellungen → Allgemein → Tastatur → Diktat einschalten.",
+      "audio-capture": "Ich finde kein Mikrofon.",
+      network: "Die Erkennung braucht Netz und bekommt gerade keins.",
+      "no-speech": "Ich habe nichts gehört. Näher ans Mikrofon — oder schreib es auf.",
+      nostart: "Die Erkennung ist nicht angesprungen. In einem In-App-Browser geht sie nicht — öffne die Seite in Safari oder schreib es auf.",
+      unknown: "Die Spracherkennung hat abgebrochen.",
+    },
+    tryAgain: "Nochmal versuchen",
     keep: "Behalten", keepTitle: "Deinen Besuch behalten",
     keepNote: "Nichts davon liegt auf einem Server — der Text geht mit, nicht ein Link darauf.",
     keepShare: "Teilen", keepMail: "Per E-Mail schicken", keepCopy: "Text kopieren",
@@ -140,6 +151,17 @@ const L = {
     saal: "Room", youAreHere: "You are here", walkRunning: "Walk running",
     steps: (n) => n + (n === 1 ? " step" : " steps"), vitrine: (n) => "Case " + n,
     toEntrance: "Entrance", finishShort: "Finish visit", goTo: "Go to room",
+    speechErr: {
+      nosupport: "This browser cannot do speech recognition. Just write it down.",
+      "not-allowed": "The microphone is blocked. Allow it for this page in your browser settings.",
+      "service-not-allowed": "On iPhone, Safari needs dictation for this: Settings → General → Keyboard → Enable Dictation.",
+      "audio-capture": "I cannot find a microphone.",
+      network: "Recognition needs a connection and there is none right now.",
+      "no-speech": "I did not hear anything. Move closer — or write it down.",
+      nostart: "Recognition did not start. It does not work inside in-app browsers — open the page in Safari, or write it down.",
+      unknown: "Speech recognition stopped.",
+    },
+    tryAgain: "Try again",
     keep: "Keep", keepTitle: "Keep your visit",
     keepNote: "None of this sits on a server — the text travels with you, not a link to it.",
     keepShare: "Share", keepMail: "Send by e-mail", keepCopy: "Copy the text",
@@ -321,14 +343,25 @@ const SVG = {
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 let activeRec = null;
 
+/* Auf dem iPhone scheitert die Spracherkennung still: ohne eingeschaltetes
+   Diktat, ohne Mikrofonrecht oder in einem In-App-Browser kommt nur ein
+   Fehlercode. Der muss sichtbar werden, sonst wirkt die App kaputt. */
+const IS_IOS = /iPad|iPhone|iPod/.test(navigator.userAgent)
+  || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+
 function makeRecorder({ onInterim, onFinal, onState }) {
   return {
     toggle(objId) {
       if (activeRec) { try { activeRec.stop(); } catch (e) {} activeRec = null; onState("idle"); return; }
-      if (!SR) { onState("nospeech"); return; }
+      if (!SR) { onState("failed", "nosupport"); return; }
+
       const rec = new SR();
-      rec.lang = t().speech; rec.interimResults = true; rec.continuous = false;
-      let finalText = "";
+      rec.lang = t().speech;
+      rec.interimResults = !IS_IOS;   // auf iOS kommen Zwischenergebnisse nicht zuverlaessig
+      rec.continuous = false;
+      let finalText = "", started = false, failed = null;
+
+      rec.onstart = () => { started = true; };
       rec.onresult = (e) => {
         let interim = "";
         for (let i = e.resultIndex; i < e.results.length; i++) {
@@ -337,15 +370,29 @@ function makeRecorder({ onInterim, onFinal, onState }) {
         }
         onInterim((finalText + " " + interim).trim());
       };
-      rec.onerror = () => { activeRec = null; onState("idle"); };
+      rec.onerror = (e) => { failed = (e && e.error) || "unknown"; };
       rec.onend = () => {
-        activeRec = null; onState("idle");
-        if (finalText.trim()) onFinal(objId, finalText.trim());
+        activeRec = null;
+        if (finalText.trim()) { onState("idle"); onFinal(objId, finalText.trim()); return; }
+        if (failed) { onState("failed", failed); return; }
+        onState("failed", started ? "no-speech" : "nostart");
       };
+
       activeRec = rec; onState("rec"); onInterim("");
-      try { rec.start(); } catch (e) { activeRec = null; onState("idle"); }
+      try { rec.start(); } catch (e) { activeRec = null; onState("failed", "nostart"); return; }
+      // Meldet sich die Erkennung gar nicht, haengt der Schirm sonst auf „hoere zu"
+      setTimeout(() => {
+        if (activeRec === rec && !started) { try { rec.stop(); } catch (e) {} }
+      }, 2500);
     }
   };
+}
+
+/* Klartext statt Fehlercode — mit dem Hinweis, der auf dem iPhone hilft */
+function speechProblem(code) {
+  const T = t();
+  const m = T.speechErr[code] || T.speechErr.unknown;
+  return { text: m, code: code };
 }
 
 const el = (html) => { const tpl = document.createElement("template"); tpl.innerHTML = html.trim(); return tpl.content.firstElementChild; };
@@ -726,11 +773,11 @@ function finishBar(host, answers, startedAt, pad, onRestart, rerender) {
 
 /* ======================= A · VITRINE ======================= */
 function Vitrine(root) {
-  let idx = 0, answers = {}, mode = "idle", live = "", startedAt = Date.now();
+  let idx = 0, answers = {}, mode = "idle", live = "", speechCode = null, startedAt = Date.now();
   const rec = makeRecorder({
     onInterim: s => { live = s; render(); },
     onFinal: (id, s) => { answers[id] = s; live = ""; render(); },
-    onState: s => { mode = s; render(); },
+    onState: (s, code) => { mode = s; speechCode = code || null; render(); },
   });
 
   function render() {
@@ -754,7 +801,7 @@ function Vitrine(root) {
       <div class="vfoot"></div><div class="dots"></div></div>`);
 
     const foot = body.querySelector(".vfoot");
-    if (mode === "nospeech") {
+    if (mode === "nospeech" || mode === "failed") {
       const ta = el(`<textarea class="typed" rows="3" placeholder="${esc(T.placeholder)}"></textarea>`);
       const ok = el(`<button class="linkish">${esc(T.save)}</button>`);
       ok.onclick = () => { if (ta.value.trim()) answers[o.id] = ta.value.trim(); mode = "idle"; render(); };
@@ -787,11 +834,11 @@ function Vitrine(root) {
 
 /* ======================= B · KARTEI ======================= */
 function Kartei(root) {
-  let open = null, answers = {}, mode = "idle", live = "", startedAt = Date.now();
+  let open = null, answers = {}, mode = "idle", live = "", speechCode = null, startedAt = Date.now();
   const rec = makeRecorder({
     onInterim: s => { live = s; render(); },
     onFinal: (id, s) => { answers[id] = s; live = ""; render(); },
-    onState: s => { mode = s; render(); },
+    onState: (s, code) => { mode = s; speechCode = code || null; render(); },
   });
 
   function render() {
@@ -838,7 +885,7 @@ function Kartei(root) {
         <div class="vtitle" style="margin:4px 0 0;font-size:17px">${esc(d.title)}</div></div></div>`));
       sb.append(el(saved ? `<div class="saved">${SVG.check}<p>„${esc(saved)}“</p></div>`
                         : `<div class="frage sfrage">${esc(frageOf(o.id))}</div>`));
-      if (mode === "nospeech") {
+      if (mode === "nospeech" || mode === "failed") {
         const ta = el(`<textarea class="typed" rows="3" placeholder="${esc(T.placeholder)}"></textarea>`);
         const ok = el(`<button class="linkish">${esc(T.save)}</button>`);
         ok.onclick = () => { if (ta.value.trim()) answers[o.id] = ta.value.trim(); mode = "idle"; render(); };
@@ -868,11 +915,11 @@ function Kartei(root) {
 
 /* ======================= C · SAAL ======================= */
 function Saal(root) {
-  let sel = 0, answers = {}, mode = "idle", live = "", startedAt = Date.now();
+  let sel = 0, answers = {}, mode = "idle", live = "", speechCode = null, startedAt = Date.now();
   const rec = makeRecorder({
     onInterim: s => { live = s; render(); },
     onFinal: (id, s) => { answers[id] = s; live = ""; render(); },
-    onState: s => { mode = s; render(); },
+    onState: (s, code) => { mode = s; speechCode = code || null; render(); },
   });
 
   function render() {
@@ -906,7 +953,7 @@ function Saal(root) {
       <div class="vtitle" style="margin:4px 0 0;font-size:16px">${esc(d.title)}</div></div></div>`));
     det.append(el(saved ? `<div class="saved">${SVG.check}<p>„${esc(saved)}“</p></div>`
                         : `<div class="frage dfrage">${esc(frageOf(o.id))}</div>`));
-    if (mode === "nospeech") {
+    if (mode === "nospeech" || mode === "failed") {
       const ta = el(`<textarea class="typed" rows="2" placeholder="${esc(T.placeholder)}"></textarea>`);
       const ok = el(`<button class="linkish">${esc(T.save)}</button>`);
       ok.onclick = () => { if (ta.value.trim()) answers[o.id] = ta.value.trim(); mode = "idle"; render(); };
@@ -943,13 +990,13 @@ function Fuehrung(root) {
   let roomIdx = 0;
   let me = { x: 50, y: 94 }, heading = -90, wp = 0, seg = 0, walking = false;
   let answers = {}, selId = ROUTE_ROOMS[0].spots[0].id, arrived = false;
-  let mode = "idle", live = "", sheetId = null, shot = 0, startedAt = Date.now();
+  let mode = "idle", live = "", speechCode = null, sheetId = null, shot = 0, startedAt = Date.now();
   let elMe, elRange, elLabel, elRail, pinEls = [], inWrapped = false, lastRoom = -1;
 
   const rec = makeRecorder({
     onInterim: s => { live = s; render(); },
     onFinal: (id, s) => { answers[id] = s; live = ""; render(); },
-    onState: s => { mode = s; render(); },
+    onState: (s, code) => { mode = s; speechCode = code || null; render(); },
   });
 
   const room = () => ROUTE_ROOMS[roomIdx];
@@ -1106,11 +1153,20 @@ function Fuehrung(root) {
     det.append(el(saved ? `<div class="saved">${SVG.check}<p>„${esc(saved)}“</p></div>`
                         : `<div class="frage dfrage">${esc(frageOf(selId))}</div>`));
 
-    if (mode === "nospeech") {
+    if (mode === "nospeech" || mode === "failed") {
+      if (mode === "failed") {
+        const p = speechProblem(speechCode);
+        det.append(el(`<div class="speecherr">${esc(p.text)}<span>${esc(p.code)}</span></div>`));
+      }
       const ta = el(`<textarea class="typed" rows="2" placeholder="${esc(T.placeholder)}"></textarea>`);
       det.append(ta);
       setTimeout(() => ta.focus(), 30);
       const acts = el(`<div class="actions"></div>`);
+      if (mode === "failed" && ["no-speech", "nostart", "network", "unknown"].indexOf(speechCode) > -1) {
+        const again = el(`<button class="btn">${esc(T.tryAgain)}</button>`);
+        again.onclick = () => { mode = "idle"; speechCode = null; render(); rec.toggle(selId); };
+        acts.append(again);
+      }
       const ok = el(`<button class="btn">${esc(T.save)}</button>`);
       ok.onclick = () => { if (ta.value.trim()) answers[selId] = ta.value.trim(); mode = "idle"; render(); };
       acts.append(ok, finishButton());
