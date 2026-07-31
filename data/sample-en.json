@@ -1,0 +1,65 @@
+{
+ "greeting": "Your visit had a thread running through it - and it was yours.",
+ "archetype": {
+  "name": "The Thoughtful Traveler",
+  "subtitle": "Reflecting on Eternity"
+ },
+ "stats": {
+  "objects_saved": 5,
+  "reflections": 5,
+  "duration_min": 38,
+  "top_emoji": ""
+ },
+ "themes": [
+  {
+   "theme": "Death & Afterlife",
+   "count": 5,
+   "blurb": "Reflections on the journey beyond life."
+  },
+  {
+   "theme": "Beauty & Body",
+   "count": 2,
+   "blurb": "Seeing beauty even in the unsettling."
+  }
+ ],
+ "your_words": [
+  {
+   "object_id": "OBJ-07",
+   "object_title": "Sitzgruppe des Sabu, seiner Frau Meretites und des Sohnes Isebwer",
+   "quote": "A whole family, together for eternity. That moves me.",
+   "echo": "The bond among family transcends time, beautifully captured in this eternal moment."
+  },
+  {
+   "object_id": "OBJ-15",
+   "object_title": "Totenbuch des Pajuheru",
+   "quote": "The heart weighed against a feather. What would be heavier in my case?",
+   "echo": "This poignant question echoes the ancient beliefs about judgment and the soul's journey."
+  },
+  {
+   "object_id": "OBJ-14",
+   "object_title": "Oberteil des Sarges der Königstochter Satdjehuti",
+   "quote": "The golden face looks back at you. Beautiful and a little unsettling.",
+   "echo": "The artwork’s mesmerizing gaze invites introspection about beauty and life’s mysteries."
+  },
+  {
+   "object_id": "OBJ-01",
+   "object_title": "Fayencefigur eines liegenden Nilpferds",
+   "quote": "Strange that such a small animal was meant to escort someone into the afterlife. Strange and beautiful.",
+   "echo": "Your thoughts on this figure remind us of the unique symbols that guide us beyond."
+  },
+  {
+   "object_id": "OBJ-06",
+   "object_title": "Würfelstatue des Bakenchons, Hohepriester des Amun",
+   "quote": "So much writing on a single stone. A whole life in signs.",
+   "echo": "Every inscription here tells a profound story, much like the one you reflect on."
+  }
+ ],
+ "reflective_question": "How do your beliefs shape your understanding of life and what comes after it?",
+ "go_deeper": {
+  "object_id": "OBJ-13",
+  "title": "Scheintür der Chnumit, Gottesdienerin der Hathor",
+  "room": "Raum \"Jenseits\"",
+  "reason": "You kept circling what comes after this life – this piece carries it further."
+ },
+ "closing": "That was your visit, in your own words. Your voice recording was turned into text and then deleted – only what you see here was kept."
+}

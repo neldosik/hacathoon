@@ -273,6 +273,78 @@
   @keyframes spin{to{transform:rotate(360deg)}}
   .wloadtext{font-family:var(--display);font-size:21px;font-weight:300;line-height:1.3;min-height:56px}
   .wnote{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:oklch(0.70 0.04 70/.6)}
+
+  /* ---------- W2 · Blatt (gedruckt) ---------- */
+  .blatt{flex:1;min-height:0;overflow-y:auto;padding:26px 26px 34px;display:flex;flex-direction:column;gap:15px}
+  .blatt::-webkit-scrollbar{width:0}
+  .brule{height:1px;background:var(--line);margin:5px 0}
+  .brule.gold{background:linear-gradient(90deg,var(--gold),transparent)}
+  .blabel{font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--gold)}
+  .bhead{font-family:var(--display);font-weight:300;font-size:31px;line-height:1.12;letter-spacing:-0.01em}
+  .barch{font-family:var(--display);font-size:23px;color:var(--gold);line-height:1.15}
+  .bsub{font-size:12.5px;line-height:1.6;color:var(--muted)}
+  .bnums{display:flex;gap:0}
+  .bnums div{flex:1;padding-right:10px}
+  .bnums b{display:block;font-family:var(--display);font-weight:400;font-size:30px;color:var(--gold);line-height:1}
+  .bnums span{font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);display:block;margin-top:4px}
+  .bq{font-family:var(--display);font-style:italic;font-size:19px;line-height:1.35;color:oklch(0.94 0.03 75);
+    text-indent:-0.42em}
+  .bq.big{font-size:24px;font-style:normal;text-indent:0}
+  .becho{font-size:12px;line-height:1.6;color:var(--muted);margin-top:6px}
+  .bmeta{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:oklch(0.72 0.05 70/.7);margin-top:7px}
+  .bitem{padding:3px 0 2px}
+  .bfoot{font-size:10.5px;line-height:1.6;color:oklch(0.70 0.04 70/.75);padding-top:4px}
+
+  /* ---------- W3 · Karte (Andenken) ---------- */
+  .karte{flex:1;display:flex;flex-direction:column;padding:22px;min-height:0}
+  .kcard2{flex:1;min-height:0;border:1px solid oklch(0.82 0.15 82/.35);border-radius:20px;padding:24px 22px;
+    display:flex;flex-direction:column;gap:14px;position:relative;overflow:hidden;
+    background:linear-gradient(168deg,oklch(0.21 0.045 58),oklch(0.12 0.022 55))}
+  .kcard2::before{content:"";position:absolute;left:0;right:0;top:38%;height:1px;
+    background:repeating-linear-gradient(90deg,oklch(0.82 0.15 82/.4) 0 5px,transparent 5px 11px)}
+  .kglow{position:absolute;right:-70px;top:-70px;width:220px;height:220px;border-radius:50%;
+    background:radial-gradient(circle,oklch(0.82 0.15 82/.16),transparent 68%);pointer-events:none}
+  .ktop{font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--muted);
+    display:flex;justify-content:space-between}
+  .karch{font-family:var(--display);font-weight:300;font-size:36px;line-height:1.06;color:var(--gold)}
+  .ksub2{font-size:12.5px;line-height:1.55;color:var(--muted)}
+  .knums{display:flex;gap:14px;margin-top:auto}
+  .knums div{flex:1}
+  .knums b{display:block;font-family:var(--display);font-size:27px;color:var(--fg);line-height:1}
+  .knums span{font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);display:block;margin-top:4px}
+  .khero{font-family:var(--display);font-style:italic;font-size:20px;line-height:1.32;color:oklch(0.94 0.03 75)}
+  .kq2{font-family:var(--display);font-size:17px;line-height:1.3;border-top:1px solid oklch(0.82 0.15 82/.25);padding-top:13px}
+  .kfoot2{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:oklch(0.70 0.04 70/.6);text-align:center}
+
+  /* ---------- W4 · Faden (Zeitstrahl) ---------- */
+  .faden{flex:1;min-height:0;overflow-y:auto;padding:20px 22px 30px}
+  .faden::-webkit-scrollbar{width:0}
+  .fhead{margin-bottom:18px}
+  .fhead .h{font-family:var(--display);font-weight:300;font-size:25px;line-height:1.15}
+  .fhead .a{font-family:var(--display);font-size:18px;color:var(--gold);margin-top:8px}
+  .thread{position:relative;padding-left:30px}
+  .thread::before{content:"";position:absolute;left:7px;top:6px;bottom:6px;width:1px;
+    background:linear-gradient(180deg,transparent,var(--gold) 8%,var(--gold) 92%,transparent)}
+  .node{position:relative;padding:0 0 22px}
+  .node::before{content:"";position:absolute;left:-27px;top:5px;width:9px;height:9px;border-radius:50%;
+    background:var(--gold);box-shadow:0 0 0 4px oklch(0.82 0.15 82/.14)}
+  .node .nt{display:flex;gap:11px;align-items:center;margin-bottom:9px}
+  .node .nt .kthumb{width:46px;height:46px;border-radius:9px}
+  .node .nm{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:oklch(0.74 0.05 70/.8);line-height:1.4}
+  .node .nq{font-family:var(--display);font-style:italic;font-size:17px;line-height:1.34;color:oklch(0.94 0.03 75)}
+  .node .ne{font-size:11.5px;line-height:1.6;color:var(--muted);margin-top:7px}
+  .fend{border-top:1px solid var(--line);margin-top:6px;padding-top:18px;display:flex;flex-direction:column;gap:13px}
+  .fend .fq{font-family:var(--display);font-size:21px;line-height:1.25}
+
+  /* ---------- Galerie der Wrapped-Entwürfe ---------- */
+  .wrapsec{margin-top:56px;border-top:1px solid var(--line);padding-top:30px}
+  .srcsw{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:14px 0 4px}
+  .srcsw .chip{background:transparent}
+  .srcsw .chip.on{background:var(--gold);border-color:var(--gold);color:oklch(0.16 0.03 55)}
+  .srcnote{font-size:11.5px;color:var(--muted);line-height:1.55;max-width:64ch}
+  .wdev{position:relative;width:100%;height:100%;border-radius:30px;overflow:hidden;background:var(--night);
+    display:flex;flex-direction:column}
+  .wdev > .wrap{min-height:0}
 </style>
 </head>
 <body>
@@ -286,6 +358,18 @@
   </div>
   <div class="tabs" id="tabs"></div>
   <div class="rack" id="rack"></div>
+
+  <section class="wrapsec">
+    <h1 id="wsecTitle"></h1>
+    <p id="wsecIntro"></p>
+    <div class="srcsw" id="srcsw">
+      <button class="chip on" data-src="sample"></button>
+      <button class="chip" data-src="live"></button>
+      <span class="srcnote" id="srcNote"></span>
+    </div>
+    <div class="tabs" id="wtabs"></div>
+    <div class="rack" id="wrack"></div>
+  </section>
 </div>
 
 <script>
@@ -335,6 +419,19 @@ const L = {
     wQuestion: "Eine Frage zum Mitnehmen",
     wDeeper: "Komm wieder für",
     restart: "Neuer Besuch", offline: "Der Server hat nicht geantwortet — dies ist ein Beispiel.",
+    keepsake: "Zum Behalten",
+    demoNote: "Beispieltext — der Server wird nicht gefragt",
+    /* Galerie der Wrapped-Entwürfe */
+    wsecTitle: "Wrapped — vier Entwürfe",
+    wsecIntro: "Derselbe echte Text der KI, vier Mal anders gesetzt. Zum Vergleichen, nicht zum Bedienen — der Weg dorthin liegt oben im Capture.",
+    srcSample: "Beispieltext", srcLive: "Live vom Server",
+    srcNote: "Der Beispieltext ist eine echte, einmal geholte Antwort des Servers. „Live“ fragt bei jedem „Besuch beenden“ neu an und verbraucht Credits.",
+    wsAll: "Alle vier", wsStory: "Nur Story", wsBlatt: "Nur Blatt", wsKarte: "Nur Karte", wsFaden: "Nur Faden",
+    nStory: "W1 · Story", nBlatt: "W2 · Blatt", nKarte: "W3 · Karte", nFaden: "W4 · Faden",
+    wStory: "Ein Kader nach dem anderen, Tippen blättert — rechts weiter, links zurück. Baut Spannung auf und liest sich noch aus der letzten Reihe.",
+    wBlatt: "Alles auf einer gedruckten Seite zum Scrollen. Am ruhigsten und am ehesten Museum; man überblickt den ganzen Besuch auf einmal.",
+    wKarte: "Ein einziger Bildschirm ohne Scrollen, wie ein Andenken zum Abfotografieren. Verdichtet stark — die übrigen Zitate fallen weg.",
+    wFaden: "Der Besuch als Zeitstrahl an einem goldenen Faden. Betont die Reihenfolge: wo du warst und in welcher Reihenfolge es dich berührt hat.",
     toWrapped: "Wrapped",
   },
   en: {
@@ -372,6 +469,18 @@ const L = {
     wQuestion: "One question to take with you",
     wDeeper: "Come back for",
     restart: "New visit", offline: "The server did not answer — this is an example.",
+    keepsake: "Yours to keep",
+    demoNote: "Sample text — the server is not called",
+    wsecTitle: "Wrapped — four drafts",
+    wsecIntro: "The same real AI text, set four different ways. For comparing, not for using — the way there is in the capture section above.",
+    srcSample: "Sample text", srcLive: "Live from server",
+    srcNote: "The sample is a real answer from the server, fetched once. “Live” calls it again on every “Finish visit” and spends credits.",
+    wsAll: "All four", wsStory: "Story only", wsBlatt: "Page only", wsKarte: "Card only", wsFaden: "Thread only",
+    nStory: "W1 · Story", nBlatt: "W2 · Page", nKarte: "W3 · Card", nFaden: "W4 · Thread",
+    wStory: "One frame at a time, tap to move on — right for forward, left for back. Builds up, and still reads from the back row.",
+    wBlatt: "Everything on one printed page you scroll. The calmest and the most museum-like; the whole visit at a glance.",
+    wKarte: "A single screen with no scrolling, a keepsake made to be photographed. Condenses hard — the other quotes fall away.",
+    wFaden: "The visit as a timeline on a golden thread. Puts the order first: where you were, and in which order it reached you.",
     toWrapped: "Wrapped",
   },
 };
@@ -502,108 +611,213 @@ const FALLBACK = () => ({
     : "That was your visit, in your own words. Your voice recording was turned into text and then deleted.",
 });
 
+/* Beispieltexte: echte Antworten des Servers, einmal geholt und mitgeliefert.
+   Damit kostet das Durchsehen der Entwürfe keine Credits. */
+const SAMPLE = { de: null, en: null };
+let liveMode = false;            // Standard: Beispieltext, kein Netzaufruf
+let wrappedStyle = "story";
+
+["de", "en"].forEach(k => {
+  fetch(`data/sample-${k}.json`).then(r => r.json()).then(j => {
+    SAMPLE[k] = j;
+    if (window.__wrapReady) window.__wrapReady();
+  }).catch(() => {});
+});
+const sample = () => SAMPLE[LANG] || FALLBACK();
+
+const restartBtn = (onRestart, layer) => {
+  if (!onRestart) return null;
+  const b = el(`<button class="linkish">${SVG.redo} ${esc(t().restart)}</button>`);
+  b.onclick = () => { layer.remove(); onRestart(); };
+  return b;
+};
+const statsOf = (w) => {
+  const st = w.stats || {};
+  const T = t();
+  return [[st.reflections, T.statReflections], [st.objects_saved, T.statObjects], [st.duration_min, T.statMinutes]];
+};
+
+/* ---------- W1 · Story: ein Kader nach dem anderen, Tippen blättert ---------- */
+function renderStory(layer, w, onRestart) {
+  const T = t(), words = (Array.isArray(w.your_words) ? w.your_words : []).slice(0, 3);
+  const st = w.stats || {}, frames = [];
+
+  frames.push(() => `<div class="eyebrow">${esc(T.wIntro)}</div>
+    <div class="wbig">${esc(w.greeting)}</div>`);
+  if (w.archetype && w.archetype.name) frames.push(() => `<div class="eyebrow">${esc(T.wIntro)}</div>
+    <div class="wbig wgold">${esc(w.archetype.name)}</div>
+    <div class="wsub">${esc(w.archetype.subtitle)}</div>`);
+  frames.push(() => `<div class="eyebrow">${esc(T.wStatsHead)}</div>
+    <div class="wstats">${statsOf(w).map(([v, l]) =>
+      `<div class="wstat"><b>${esc(v ?? "—")}</b><span class="wsub">${esc(l)}</span></div>`).join("")}</div>`);
+  words.forEach(m => {
+    const o = obj(m.object_id);
+    frames.push(() => `
+      ${o ? `<div class="wshot"><img src="${IMG}${o.img}" alt="" /></div>` : ""}
+      <div class="eyebrow">${esc(T.wWordsHead)}</div>
+      <div class="wquote">„${esc(m.quote)}“</div>
+      ${m.echo ? `<div class="wecho">${esc(m.echo)}</div>` : ""}
+      <div class="wsub" style="font-size:11.5px">${esc(o ? loc(o).title : m.object_title)}</div>`);
+  });
+  if (w.reflective_question) frames.push(() => `<div class="eyebrow">${esc(T.wQuestion)}</div>
+    <div class="wmid"><span class="wgold">„</span>${esc(w.reflective_question)}<span class="wgold">“</span></div>`);
+  if (w.go_deeper && w.go_deeper.title) frames.push(() => `<div class="eyebrow">${esc(T.wDeeper)}</div>
+    <div class="wmid">${esc(w.go_deeper.title)}</div>
+    <div class="wsub">${esc(w.go_deeper.reason)}</div>`);
+  frames.push(() => `<div class="wmid">${esc(w.closing)}</div>
+    <div class="wnote">SMÄK · Museum Wrapped</div>`);
+
+  let i = 0;
+  (function paint() {
+    layer.innerHTML = "";
+    layer.append(el(`<div class="wbars">${frames.map((_, k) => `<i class="${k <= i ? "on" : ""}"></i>`).join("")}</div>`));
+    layer.append(el(`<div class="wframe">${frames[i]()}</div>`));
+    const foot = el(`<div class="wfoot"></div>`);
+    if (i === frames.length - 1) { const r = restartBtn(onRestart, layer); if (r) foot.append(r); }
+    layer.append(foot);
+    const back = el(`<button class="wtap l"></button>`), fwd = el(`<button class="wtap r"></button>`);
+    back.onclick = () => { if (i > 0) { i--; paint(); } };
+    fwd.onclick = () => { if (i < frames.length - 1) { i++; paint(); } };
+    layer.append(back, fwd);
+  })();
+}
+
+/* ---------- W2 · Blatt: alles auf einer gedruckten Seite ---------- */
+function renderBlatt(layer, w, onRestart) {
+  const T = t(), words = (Array.isArray(w.your_words) ? w.your_words : []).slice(0, 4);
+  const b = el(`<div class="blatt"></div>`);
+  b.append(el(`<div class="blabel">SMÄK · Museum Wrapped</div>`));
+  b.append(el(`<h1 class="bhead">${esc(w.greeting)}</h1>`));
+  b.append(el(`<div class="brule gold"></div>`));
+  if (w.archetype && w.archetype.name) b.append(el(`<div>
+    <div class="barch">${esc(w.archetype.name)}</div>
+    <div class="bsub" style="margin-top:6px">${esc(w.archetype.subtitle)}</div></div>`));
+  b.append(el(`<div class="bnums">${statsOf(w).map(([v, l]) =>
+    `<div><b>${esc(v ?? "—")}</b><span>${esc(l)}</span></div>`).join("")}</div>`));
+  b.append(el(`<div class="brule"></div>`));
+  b.append(el(`<div class="blabel">${esc(T.wWordsHead)}</div>`));
+  words.forEach(m => {
+    const o = obj(m.object_id);
+    b.append(el(`<div class="bitem">
+      <div class="bq">„${esc(m.quote)}“</div>
+      ${m.echo ? `<div class="becho">${esc(m.echo)}</div>` : ""}
+      <div class="bmeta">${esc(o ? loc(o).title : m.object_title)}</div></div>`));
+  });
+  b.append(el(`<div class="brule"></div>`));
+  b.append(el(`<div class="blabel">${esc(T.wQuestion)}</div>`));
+  b.append(el(`<div class="bq big">${esc(w.reflective_question)}</div>`));
+  if (w.go_deeper && w.go_deeper.title) {
+    b.append(el(`<div class="brule"></div>`));
+    b.append(el(`<div class="blabel">${esc(T.wDeeper)}</div>`));
+    b.append(el(`<div><div class="barch" style="font-size:19px">${esc(w.go_deeper.title)}</div>
+      <div class="bsub" style="margin-top:6px">${esc(w.go_deeper.reason)}</div></div>`));
+  }
+  b.append(el(`<div class="brule"></div>`));
+  b.append(el(`<div class="bfoot">${esc(w.closing)}</div>`));
+  const r = restartBtn(onRestart, layer); if (r) b.append(r);
+  layer.append(b);
+}
+
+/* ---------- W3 · Karte: ein Bildschirm zum Behalten, ohne Scrollen ---------- */
+function renderKarte(layer, w, onRestart) {
+  const T = t(), first = (Array.isArray(w.your_words) ? w.your_words : [])[0];
+  const k = el(`<div class="karte"><div class="kcard2"><div class="kglow"></div></div></div>`);
+  const c = k.querySelector(".kcard2");
+  c.append(el(`<div class="ktop"><span>SMÄK · München</span><span>Museum Wrapped</span></div>`));
+  if (w.archetype && w.archetype.name) {
+    c.append(el(`<div class="karch">${esc(w.archetype.name)}</div>`));
+    c.append(el(`<div class="ksub2">${esc(w.archetype.subtitle)}</div>`));
+  }
+  if (first) c.append(el(`<div class="khero">„${esc(String(first.quote).slice(0, 130))}“</div>`));
+  c.append(el(`<div class="knums">${statsOf(w).map(([v, l]) =>
+    `<div><b>${esc(v ?? "—")}</b><span>${esc(l)}</span></div>`).join("")}</div>`));
+  c.append(el(`<div class="kq2">${esc(w.reflective_question)}</div>`));
+  c.append(el(`<div class="kfoot2">${esc(T.keepsake)}</div>`));
+  const r = restartBtn(onRestart, layer);
+  if (r) { const wrap = el(`<div style="padding-top:10px;text-align:center"></div>`); wrap.append(r); k.append(wrap); }
+  layer.append(k);
+}
+
+/* ---------- W4 · Faden: der Besuch als Zeitstrahl ---------- */
+function renderFaden(layer, w, onRestart) {
+  const T = t(), words = Array.isArray(w.your_words) ? w.your_words : [];
+  const f = el(`<div class="faden"></div>`);
+  f.append(el(`<div class="fhead"><div class="h">${esc(w.greeting)}</div>
+    ${w.archetype && w.archetype.name ? `<div class="a">${esc(w.archetype.name)}</div>` : ""}</div>`));
+  const th = el(`<div class="thread"></div>`);
+  words.forEach(m => {
+    const o = obj(m.object_id), d = o ? loc(o) : null;
+    th.append(el(`<div class="node">
+      <div class="nt">${o ? `<div class="kthumb"><img src="${IMG}${o.img}" alt="" /></div>` : ""}
+        <div class="nm">${esc(d ? d.room : "")}<br/>${esc(d ? d.title : m.object_title)}</div></div>
+      <div class="nq">„${esc(m.quote)}“</div>
+      ${m.echo ? `<div class="ne">${esc(m.echo)}</div>` : ""}</div>`));
+  });
+  f.append(th);
+  const end = el(`<div class="fend"></div>`);
+  end.append(el(`<div><div class="blabel">${esc(T.wQuestion)}</div>
+    <div class="fq" style="margin-top:7px">${esc(w.reflective_question)}</div></div>`));
+  if (w.go_deeper && w.go_deeper.title) end.append(el(`<div>
+    <div class="blabel">${esc(T.wDeeper)}</div>
+    <div class="fq" style="font-size:17px;margin-top:6px">${esc(w.go_deeper.title)}</div>
+    <div class="bsub" style="margin-top:5px">${esc(w.go_deeper.reason)}</div></div>`));
+  end.append(el(`<div class="bfoot">${esc(w.closing)}</div>`));
+  const r = restartBtn(onRestart, layer); if (r) end.append(r);
+  f.append(end);
+  layer.append(f);
+}
+
+const WSTYLES = [
+  { key:"story", fn:renderStory }, { key:"blatt", fn:renderBlatt },
+  { key:"karte", fn:renderKarte }, { key:"faden", fn:renderFaden },
+];
+function showWrapped(layer, w, onRestart, style) {
+  layer.innerHTML = "";
+  (WSTYLES.find(s => s.key === (style || wrappedStyle)) || WSTYLES[0]).fn(layer, w, onRestart);
+}
+
+function showLoading(layer, autoMs, then) {
+  const T = t();
+  layer.innerHTML = "";
+  let li = 0;
+  const load = el(`<div class="wload"><div class="wloadring"></div>
+    <div class="wloadtext">${esc(T.loading[0])}</div>
+    <div class="wnote">${esc(liveMode ? T.loadNote : T.demoNote)}</div></div>`);
+  layer.append(load);
+  const cycle = setInterval(() => {
+    li = (li + 1) % T.loading.length;
+    const n = load.querySelector(".wloadtext");
+    if (n) { n.style.animation = "none"; n.textContent = T.loading[li]; void n.offsetHeight; n.style.animation = "fadein .5s ease"; }
+  }, 3400);
+  let done = false;
+  const stop = () => { if (!done) { done = true; clearInterval(cycle); } };
+  if (autoMs) setTimeout(() => { stop(); if (then) then(); }, autoMs);
+  return stop;
+}
+
 function startWrapped(host, answers, startedAt, onRestart) {
-  const T0 = t();
-  const reactions = Object.keys(answers).map(id => ({
-    object_id: id, input_type: "text", transcript_text: answers[id],
-    reaction_emoji: null, timestamp: new Date().toISOString(),
-  }));
+  const layer = el(`<div class="wrap"></div>`);
+  host.append(layer);
+
+  if (!liveMode) {                        // Beispieltext: kein Netz, keine Credits
+    showLoading(layer, 1500, () => showWrapped(layer, sample(), onRestart));
+    return;
+  }
   const payload = {
     session: "S-" + Date.now(),
     duration_min: Math.max(1, Math.round((Date.now() - startedAt) / 60000)),
     mode: "solo",
-    reactions,
+    lang: LANG,
+    reactions: Object.keys(answers).map(id => ({
+      object_id: id, input_type: "text", transcript_text: answers[id],
+      reaction_emoji: null, timestamp: new Date().toISOString(),
+    })),
   };
-
-  const layer = el(`<div class="wrap"></div>`);
-  host.append(layer);
-
-  /* Ladezustand: der Aufruf dauert um die 15 Sekunden, das muss die Skizze tragen */
-  let li = 0;
-  layer.innerHTML = "";
-  const load = el(`<div class="wload">
-      <div class="wloadring"></div>
-      <div class="wloadtext">${esc(T0.loading[0])}</div>
-      <div class="wnote">${esc(T0.loadNote)}</div>
-    </div>`);
-  layer.append(load);
-  const cycle = setInterval(() => {
-    li = (li + 1) % T0.loading.length;
-    const n = load.querySelector(".wloadtext");
-    if (n) { n.style.animation = "none"; n.textContent = T0.loading[li]; n.offsetHeight; n.style.animation = "fadein .5s ease"; }
-  }, 3600);
-
-  fetch(WEBHOOK_URL, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-  })
+  const stop = showLoading(layer, 0);
+  fetch(WEBHOOK_URL, { method:"POST", headers:{ "Content-Type":"application/json" }, body:JSON.stringify(payload) })
     .then(r => r.json())
-    .then(j => show(j && j.greeting ? j : FALLBACK()))
-    .catch(() => show(FALLBACK()));
-
-  function show(w) {
-    clearInterval(cycle);
-    const T = t();
-    const words = (Array.isArray(w.your_words) ? w.your_words : []).slice(0, 3);
-    const st = w.stats || {};
-    const frames = [];
-
-    frames.push(() => `<div class="eyebrow">${esc(T.wIntro)}</div>
-      <div class="wbig">${esc(w.greeting)}</div>`);
-
-    if (w.archetype && w.archetype.name) frames.push(() => `<div class="eyebrow">${esc(T.wIntro)}</div>
-      <div class="wbig wgold">${esc(w.archetype.name)}</div>
-      <div class="wsub">${esc(w.archetype.subtitle)}</div>`);
-
-    frames.push(() => `<div class="eyebrow">${esc(T.wStatsHead)}</div>
-      <div class="wstats">
-        <div class="wstat"><b>${esc(st.reflections ?? Object.keys(answers).length)}</b><span class="wsub">${esc(T.statReflections)}</span></div>
-        <div class="wstat"><b>${esc(st.objects_saved ?? Object.keys(answers).length)}</b><span class="wsub">${esc(T.statObjects)}</span></div>
-        <div class="wstat"><b>${esc(st.duration_min ?? payload.duration_min)}</b><span class="wsub">${esc(T.statMinutes)}</span></div>
-      </div>`);
-
-    words.forEach(m => {
-      const o = obj(m.object_id);
-      frames.push(() => `
-        ${o ? `<div class="wshot"><img src="${IMG}${o.img}" alt="" /></div>` : ""}
-        <div class="eyebrow">${esc(T.wWordsHead)}</div>
-        <div class="wquote">„${esc(m.quote)}“</div>
-        ${m.echo ? `<div class="wecho">${esc(m.echo)}</div>` : ""}
-        <div class="wsub" style="font-size:11.5px">${esc(o ? loc(o).title : m.object_title)}</div>`);
-    });
-
-    if (w.reflective_question) frames.push(() => `<div class="eyebrow">${esc(T.wQuestion)}</div>
-      <div class="wmid"><span class="wgold">„</span>${esc(w.reflective_question)}<span class="wgold">“</span></div>`);
-
-    if (w.go_deeper && w.go_deeper.title) frames.push(() => `<div class="eyebrow">${esc(T.wDeeper)}</div>
-      <div class="wmid">${esc(w.go_deeper.title)}</div>
-      <div class="wsub">${esc(w.go_deeper.reason)}</div>
-      <div class="eyebrow" style="color:var(--muted)">${esc(String(w.go_deeper.room || "").replace(/^Raum\s*"|"$/g, ""))}</div>`);
-
-    frames.push(() => `<div class="wmid">${esc(w.closing)}</div>
-      <div class="wnote">SMÄK · Museum Wrapped</div>`);
-
-    let i = 0;
-    function paint() {
-      layer.innerHTML = "";
-      layer.append(el(`<div class="wbars">${frames.map((_, k) => `<i class="${k <= i ? "on" : ""}"></i>`).join("")}</div>`));
-      layer.append(el(`<div class="wframe">${frames[i]()}</div>`));
-      const foot = el(`<div class="wfoot"></div>`);
-      if (i === frames.length - 1) {
-        const again = el(`<button class="linkish">${SVG.redo} ${esc(T.restart)}</button>`);
-        again.onclick = () => { layer.remove(); onRestart(); };
-        foot.append(again);
-      }
-      layer.append(foot);
-      const back = el(`<button class="wtap l" aria-label="back"></button>`);
-      const fwd = el(`<button class="wtap r" aria-label="next"></button>`);
-      back.onclick = () => { if (i > 0) { i--; paint(); } };
-      fwd.onclick = () => { if (i < frames.length - 1) { i++; paint(); } };
-      layer.append(back, fwd);
-    }
-    paint();
-  }
+    .then(j => { stop(); showWrapped(layer, j && j.greeting ? j : FALLBACK(), onRestart); },
+          () => { stop(); showWrapped(layer, FALLBACK(), onRestart); });
 }
 
 /* Gemeinsame Fusszeile mit dem Knopf, der zum Wrapped führt */
@@ -1079,15 +1293,76 @@ function paintChrome() {
   });
 }
 
+/* ---------- Galerie der Wrapped-Entwürfe: derselbe Text, vier Sätze ---------- */
+let wVisible = "all";
+
+function buildWrack() {
+  const wrack = document.getElementById("wrack");
+  wrack.innerHTML = "";
+  WSTYLES.forEach(s => {
+    wrack.append(el(`<figure class="slot" data-wslot="${s.key}">
+      <figcaption><div class="name"></div><div class="why"></div></figcaption>
+      <div class="device"><div class="wdev" id="wscr-${s.key}"></div></div></figure>`));
+  });
+  paintWrack();
+}
+
+function paintWrack() {
+  const T = t(), data = sample();
+  document.getElementById("wsecTitle").textContent = T.wsecTitle;
+  document.getElementById("wsecIntro").textContent = T.wsecIntro;
+  document.getElementById("srcNote").textContent = T.srcNote;
+  const src = document.getElementById("srcsw");
+  src.querySelector('[data-src="sample"]').textContent = T.srcSample;
+  src.querySelector('[data-src="live"]').textContent = T.srcLive;
+  src.querySelectorAll(".chip").forEach(c =>
+    c.classList.toggle("on", (c.dataset.src === "live") === liveMode));
+
+  const wtabs = document.getElementById("wtabs");
+  wtabs.innerHTML = "";
+  [{ k:"all", l:T.wsAll }].concat(WSTYLES.map(s => ({ k:s.key, l:T["ws" + s.key[0].toUpperCase() + s.key.slice(1)] })))
+    .forEach(dd => {
+      const b = el(`<button data-wslot="${dd.k}" aria-pressed="${wVisible === dd.k}">${esc(dd.l)}</button>`);
+      b.onclick = () => {
+        wVisible = dd.k;
+        if (dd.k !== "all") wrappedStyle = dd.k;   // die Auswahl gilt auch im Capture-Weg
+        paintWrack();
+      };
+      wtabs.append(b);
+    });
+
+  WSTYLES.forEach(s => {
+    const cap = s.key[0].toUpperCase() + s.key.slice(1);
+    const fig = document.querySelector(`.slot[data-wslot="${s.key}"]`);
+    fig.querySelector(".name").textContent = T["n" + cap];
+    fig.querySelector(".why").textContent = T["w" + cap];
+    fig.classList.toggle("hidden", wVisible !== "all" && wVisible !== s.key);
+    const scr = document.getElementById("wscr-" + s.key);
+    scr.innerHTML = "";
+    const layer = el(`<div class="wrap" style="position:relative;flex:1"></div>`);
+    scr.append(layer);
+    showWrapped(layer, data, null, s.key);   // in der Galerie ohne „Neuer Besuch“
+  });
+}
+window.__wrapReady = paintWrack;
+
+document.getElementById("srcsw").addEventListener("click", (e) => {
+  const b = e.target.closest(".chip"); if (!b) return;
+  liveMode = b.dataset.src === "live";
+  paintWrack();
+});
+
 document.getElementById("langsw").addEventListener("click", (e) => {
   const b = e.target.closest("button"); if (!b) return;
   LANG = b.dataset.lang;
   document.querySelectorAll("#langsw button").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
   Object.values(apps).forEach(a => a.relang());   // Zustand bleibt, nur die Sprache wechselt
   paintChrome();
+  paintWrack();
 });
 
 buildRack();
+buildWrack();
 </script>
 </body>
 </html>
