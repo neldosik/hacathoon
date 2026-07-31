@@ -934,8 +934,8 @@ function Fuehrung(root) {
         style="left:${s.x}%;top:${s.y}%" aria-label="${esc(od.title)}"><img src="${IMG}${oo.img}" alt="" /></button>`);
       p.onclick = (e) => { e.stopPropagation(); selId = s.id; mode = "idle"; live = ""; render(); };
       st.append(p); pinEls.push(p);
-      if (has) st.append(el(`<div class="rtick" style="left:calc(${s.x}% + 24px);top:calc(${s.y}% + 14px)">${SVG.check}</div>`));
-      st.append(el(`<div class="rlabel" style="left:${s.x}%;top:calc(${s.y}% + 44px)">${esc(od.epoche)}</div>`));
+      if (has) st.append(el(`<div class="rtick" style="left:calc(${s.x}% + 26px);top:calc(${s.y}% + 24px)">${SVG.check}</div>`));
+      st.append(el(`<div class="rlabel" style="left:${s.x}%;top:calc(${s.y}% + 58px)">${esc(od.epoche)}</div>`));
     });
     elCone = el(`<div class="cone"></div>`); st.append(elCone);
     elMe = el(`<div class="me"></div>`); st.append(elMe);
