@@ -1,8 +1,8 @@
 {
- "greeting": "Dein Besuch war durchdrungen von tiefen Gedanken über das Jenseits.",
+ "greeting": "Dein Besuch war eine schöne Reise ins Jenseits und berührte viele Herzen.",
  "archetype": {
-  "name": "Der Nachdenkliche",
-  "subtitle": "Ein Blick auf die Ewigkeit."
+  "name": "Der Seelenwanderer",
+  "subtitle": "Entdeckungsreise durch das Jenseits"
  },
  "stats": {
   "objects_saved": 6,
@@ -14,73 +14,105 @@
   {
    "theme": "Death & Afterlife",
    "count": 5,
-   "blurb": "Du hast die Verbindung zum Jenseits ergründet."
+   "blurb": "Eine tiefe Auseinandersetzung mit dem Leben nach dem Tod."
   },
   {
    "theme": "Beauty & Body",
    "count": 2,
-   "blurb": "Die Schönheit des Lebens findet ihren Ausdruck."
+   "blurb": "Die Verbindung von Schönheit und dem Körper in der Kunst."
   },
   {
    "theme": "Writing & Knowledge",
    "count": 2,
-   "blurb": "Schrift und Zeichen erzählen Geschichten des Lebens."
+   "blurb": "Die Macht der Schrift, die Geschichten des Lebens erzählt."
   },
   {
    "theme": "Daily Life",
-   "count": 2,
-   "blurb": "Das Alltägliche für die Ewigkeit festgehalten."
+   "count": 1,
+   "blurb": "Ein Blick auf das Alltagsleben und die familiären Bindungen."
   },
   {
    "theme": "Kingship & Power",
    "count": 1,
-   "blurb": "Die Macht der Pharaonen und die Geschichte."
+   "blurb": "Die erhabene Darstellung königlicher Persönlichkeiten."
   }
  ],
  "your_words": [
   {
-   "object_id": "OBJ-14",
-   "object_title": "Oberteil des Sarges der Königstochter Satdjehuti",
-   "quote": "Das goldene Gesicht schaut zurueck. Wunderschoen und ein bisschen unheimlich.",
-   "echo": "Das goldene Antlitz ist eine Erinnerung an die Schönheit und den Frieden, die den Verstorbenen im Jenseits erwarten."
+   "object_id": "OBJ-15",
+   "object_title": "Totenbuch des Pajuheru",
+   "quote": "Das Herz gegen eine Feder gewogen. Was waere bei mir schwerer?",
+   "echo": "Die Idee, dass dein Herz gegen die Feder der Maat gewogen wird, spiegelt den tiefen Wunsch wider, in diesem Prozess des Jenseits Gewicht zu finden."
   },
   {
    "object_id": "OBJ-01",
    "object_title": "Fayencefigur eines liegenden Nilpferds",
    "quote": "So ein kleines Tier sollte jemanden ins Jenseits begleiten. Seltsam und schoen zugleich.",
-   "echo": "Diese Figur ist ein zärtlicher Begleiter auf dem Weg ins Jenseits, der Traum und Realität vereint."
+   "echo": "Das Nilpferd symbolisiert den Schutz auf der Reise ins Jenseits, und es ist ein seltsames, aber schönes Bild, das deine Gedanken an die Begleitung mitnimmt."
   },
   {
    "object_id": "OBJ-07",
    "object_title": "Sitzgruppe des Sabu, seiner Frau Meretites und des Sohnes Isebwer",
    "quote": "Eine ganze Familie, zusammen fuer die Ewigkeit. Das beruehrt mich.",
-   "echo": "Diese Darstellung zeigt die Unzertrennlichkeit der Familie, selbst über den Tod hinaus."
+   "echo": "Diese familiäre Szenarien lassen dich spüren, wie wichtig die Bindungen selbst über den Tod hinaus sind."
   },
   {
-   "object_id": "OBJ-15",
-   "object_title": "Totenbuch des Pajuheru",
-   "quote": "Das Herz gegen eine Feder gewogen. Was waere bei mir schwerer?",
-   "echo": "Das Wiegen des Herzens ist eine tiefgründige Metapher für deine eigenen Werte und Erinnerungen."
-  },
-  {
-   "object_id": "OBJ-06",
-   "object_title": "Würfelstatue des Bakenchons, Hohepriester des Amun",
-   "quote": "So viel Schrift auf einem einzigen Stein. Ein ganzes Leben in Zeichen.",
-   "echo": "Die Inschriften erzählen Geschichten, die über die Zeit hinaus wirken."
+   "object_id": "OBJ-14",
+   "object_title": "Oberteil des Sarges der Königstochter Satdjehuti",
+   "quote": "Das goldene Gesicht schaut zurueck. Wunderschoen und ein bisschen unheimlich.",
+   "echo": "Satdjehutis goldenes Antlitz trägt das Geheimnis und die Schönheit des Jenseits, was ein faszinierendes, aber auch unheimliches Gefühl vermittelt."
   },
   {
    "object_id": "OBJ-03",
    "object_title": "Gesichtsfragment einer Kolossalstatue des Königs Amenophis IV.",
    "quote": "Nur ein Bruchstueck vom Gesicht, und trotzdem erkennt man jemanden darin.",
-   "echo": "Selbst Fragmentarisches kann eine tiefe Verbindung zur Identität und Geschichte schaffen."
+   "echo": "Das Fragment zeigt, dass auch unvollständige Teile Geschichten erzählen können und Erinnerungen lebendig bleiben."
+  },
+  {
+   "object_id": "OBJ-06",
+   "object_title": "Würfelstatue des Bakenchons, Hohepriester des Amun",
+   "quote": "So viel Schrift auf einem einzigen Stein. Ein ganzes Leben in Zeichen.",
+   "echo": "Diese Inschriften sind ein wunderschönes Zeugnis für ein ganzes Leben, verankert in der spirituellen Symbolik und dem Glauben."
   }
  ],
- "reflective_question": "Was bedeutet für dich die Vorstellung vom Leben nach dem Tod?",
+ "reflective_question": "Was würde dein Herz auf die Waage legen, wenn es um deine eigene Reise geht?",
  "go_deeper": {
   "object_id": "OBJ-13",
   "title": "Scheintür der Chnumit, Gottesdienerin der Hathor",
   "room": "Raum \"Jenseits\"",
-  "reason": "Dich hat beschäftigt, was nach dem Leben kommt – dieses Stück erzählt davon weiter."
+  "theme": "Death & Afterlife",
+  "reason": "Weil dich beschäftigt hat, was nach dem Leben kommt."
  },
- "closing": "Das war dein Besuch, in deinen Worten. Deine Sprachaufnahme wurde in Text umgewandelt und danach gelöscht – gespeichert bleibt nur, was du hier siehst."
+ "closing": "Das war dein Besuch, in deinen Worten. Deine Sprachaufnahme wurde in Text umgewandelt und danach gelöscht – gespeichert bleibt nur, was du hier siehst.",
+ "recommendations": [
+  {
+   "object_id": "OBJ-13",
+   "title": "Scheintür der Chnumit, Gottesdienerin der Hathor",
+   "room": "Raum \"Jenseits\"",
+   "theme": "Death & Afterlife",
+   "reason": "Weil dich beschäftigt hat, was nach dem Leben kommt."
+  },
+  {
+   "object_id": "OBJ-10",
+   "title": "Statue des Antinoos",
+   "room": "Raum \"Kunst und Zeit\"",
+   "theme": "Beauty & Body",
+   "reason": "Weil dich beschäftigt hat, wie man aussehen wollte."
+  },
+  {
+   "object_id": "OBJ-18",
+   "title": "Stele des Upuautaa, Vorsteher der Priester",
+   "room": "Raum \"Schrift und Text\"",
+   "theme": "Writing & Knowledge",
+   "reason": "Weil dich beschäftigt hat, was aufgeschrieben und bewahrt wurde."
+  }
+ ],
+ "missed": {
+  "object_id": "OBJ-02",
+  "title": "Doppelstatue des stehenden Königs Niuserre",
+  "room": "Raum \"Kunst und Zeit\"",
+  "theme": "Kingship & Power",
+  "weight": 1,
+  "reason": "Daran bist du heute nur gestreift: wer die Macht hatte und wie er sie zeigte."
+ }
 }
