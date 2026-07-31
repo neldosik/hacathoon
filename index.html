@@ -3,19 +3,15 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Museum Wrapped — Capture, drei Richtungen</title>
+<title>Museum Wrapped — Capture</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
 <style>
   :root{
-    --bg:oklch(0.10 0.02 55);
     --fg:oklch(0.96 0.02 85);
-    --card:oklch(0.22 0.04 55);
     --muted:oklch(0.75 0.04 75);
     --gold:oklch(0.82 0.15 82);
-    --lapis:oklch(0.42 0.16 265);
-    --ember:oklch(0.62 0.21 35);
     --line:oklch(0.35 0.05 65 / 40%);
     --display:"Cormorant Garamond",Georgia,serif;
     --body:"Inter",system-ui,sans-serif;
@@ -24,23 +20,29 @@
   *{box-sizing:border-box;margin:0;padding:0}
   body{background:oklch(0.08 0.015 55);color:var(--fg);font-family:var(--body);min-height:100vh;padding:28px 20px 60px}
 
-  /* ---------- lab chrome (не часть продукта) ---------- */
+  /* ---------- Werkbank ---------- */
   .lab{max-width:1420px;margin:0 auto}
+  .labtop{display:flex;align-items:flex-start;gap:20px;flex-wrap:wrap}
   .lab h1{font-family:var(--display);font-weight:300;font-size:30px;letter-spacing:-0.01em}
-  .lab p{color:var(--muted);font-size:13px;margin-top:6px;max-width:70ch;line-height:1.6}
+  .lab p{color:var(--muted);font-size:13px;margin-top:6px;max-width:72ch;line-height:1.6}
+  .langsw{margin-left:auto;display:flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;flex:0 0 auto}
+  .langsw button{font:600 10.5px/1 var(--body);letter-spacing:.16em;color:var(--muted);background:transparent;
+    border:none;padding:11px 17px;cursor:pointer;transition:.18s}
+  .langsw button:hover{color:var(--fg)}
+  .langsw button[aria-pressed="true"]{background:var(--gold);color:oklch(0.16 0.03 55)}
   .tabs{display:flex;gap:8px;margin:22px 0 26px;flex-wrap:wrap}
   .tabs button{font:500 11px/1 var(--body);letter-spacing:.16em;text-transform:uppercase;color:var(--muted);
     background:transparent;border:1px solid var(--line);border-radius:999px;padding:9px 16px;cursor:pointer;transition:.18s}
   .tabs button:hover{color:var(--fg);border-color:oklch(0.82 0.15 82 / 45%)}
   .tabs button[aria-pressed="true"]{color:oklch(0.16 0.03 55);background:var(--gold);border-color:var(--gold)}
-  .stage{display:flex;gap:34px;align-items:flex-start;flex-wrap:wrap;justify-content:center}
+  .rack{display:flex;gap:34px;align-items:flex-start;flex-wrap:wrap}
   .slot{width:392px}
   .slot.hidden{display:none}
   .slot > figcaption{margin-bottom:12px}
   .slot .name{font-family:var(--display);font-size:22px;font-weight:400}
-  .slot .why{color:var(--muted);font-size:12px;line-height:1.55;margin-top:3px;min-height:34px}
+  .slot .why{color:var(--muted);font-size:12px;line-height:1.55;margin-top:3px;min-height:52px}
 
-  /* ---------- device ---------- */
+  /* ---------- Gerät ---------- */
   .device{position:relative;width:392px;height:846px;border-radius:38px;padding:9px;
     background:linear-gradient(160deg,oklch(0.30 0.02 60),oklch(0.14 0.01 60));
     box-shadow:0 40px 90px -30px oklch(0 0 0/.85), 0 0 0 1px oklch(0.45 0.04 65/.5) inset}
@@ -49,7 +51,7 @@
   .screen::after{content:"";position:absolute;inset:0;pointer-events:none;border-radius:30px;
     box-shadow:0 0 0 1px oklch(0.82 0.15 82/.10) inset}
 
-  /* ---------- shared bits ---------- */
+  /* ---------- gemeinsam ---------- */
   .topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 20px 12px;flex:0 0 auto}
   .brand{display:flex;align-items:center;gap:7px;font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--muted)}
   .brand i{color:var(--gold);font-style:normal}
@@ -59,7 +61,6 @@
   .eyebrow{font-size:9.5px;letter-spacing:.28em;text-transform:uppercase;color:var(--gold)}
   .frage{font-family:var(--display);font-weight:300;line-height:1.2;letter-spacing:-0.005em}
 
-  /* mic */
   .mic{position:relative;width:74px;height:74px;border-radius:50%;display:grid;place-items:center;cursor:pointer;
     background:oklch(0.82 0.15 82/.07);border:1px solid oklch(0.82 0.15 82/.45);color:var(--gold);transition:.2s}
   .mic:hover{background:oklch(0.82 0.15 82/.14)}
@@ -69,7 +70,7 @@
   .mic.rec::after{animation-delay:1.05s}
   @keyframes ring{0%{transform:scale(1);opacity:.85}100%{transform:scale(1.55);opacity:0}}
   .mic.done{background:oklch(0.82 0.15 82/.16);border-color:var(--gold)}
-  .hint{font-size:11px;color:var(--muted);letter-spacing:.02em;text-align:center;min-height:15px}
+  .hint{font-size:11px;color:var(--muted);text-align:center;min-height:15px}
   .live{font-family:var(--display);font-style:italic;font-size:15px;line-height:1.35;color:oklch(0.88 0.06 60);
     text-align:center;min-height:20px}
   .typed{width:100%;background:oklch(0.22 0.04 55/.6);border:1px solid var(--line);border-radius:14px;color:var(--fg);
@@ -78,56 +79,17 @@
   .linkish{background:none;border:none;color:var(--muted);font:500 10.5px/1 var(--body);letter-spacing:.14em;
     text-transform:uppercase;cursor:pointer;padding:6px;text-decoration:underline;text-underline-offset:4px}
   .linkish:hover{color:var(--gold)}
-
   .finish{width:100%;display:flex;align-items:center;justify-content:center;gap:8px;border-radius:999px;cursor:pointer;
     font:500 11px/1 var(--body);letter-spacing:.2em;text-transform:uppercase;padding:14px;
     background:var(--gold);color:oklch(0.16 0.03 55);border:none;transition:.2s}
   .finish:disabled{background:transparent;color:oklch(0.55 0.03 65);border:1px solid var(--line);cursor:not-allowed}
-
   .saved{display:flex;gap:9px;align-items:flex-start;border-left:2px solid var(--gold);padding-left:11px;text-align:left}
   .saved p{font-family:var(--display);font-style:italic;font-size:15px;line-height:1.4;color:oklch(0.92 0.04 70)}
-
-  /* ---------- A. Vitrine ---------- */
-  .vitrine{flex:1;display:flex;flex-direction:column;padding:0 22px 18px;min-height:0}
-  .case{position:relative;flex:1 1 auto;min-height:0;border-radius:16px;margin-bottom:16px;overflow:hidden;
-    background:linear-gradient(180deg,oklch(0.19 0.035 58),oklch(0.12 0.02 55));
-    border:1px solid oklch(0.82 0.15 82/.14);display:grid;place-items:center}
-  .case::before{content:"";position:absolute;left:50%;top:-32%;width:150%;height:80%;transform:translateX(-50%);
-    background:radial-gradient(ellipse at center,oklch(0.85 0.08 75/.16),transparent 62%);pointer-events:none}
-  .case img{max-width:88%;max-height:88%;object-fit:contain;filter:drop-shadow(0 22px 34px oklch(0 0 0/.75))}
-  .case .plaque{position:absolute;left:14px;bottom:12px;right:14px;display:flex;justify-content:space-between;gap:10px}
-  .case .plaque span{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:oklch(0.78 0.05 70/.75)}
-  .vtitle{font-family:var(--display);font-size:20px;font-weight:400;line-height:1.22;margin:2px 0 12px}
-  .vfrage{font-size:26px;margin-bottom:auto}
-  .vfoot{display:flex;flex-direction:column;align-items:center;gap:9px;padding-top:14px}
-  .dots{display:flex;gap:7px;justify-content:center;padding:12px 0 2px}
-  .dots button{width:7px;height:7px;border-radius:50%;border:1px solid oklch(0.70 0.04 70/.5);background:transparent;
-    cursor:pointer;padding:0;transition:.2s}
-  .dots button.on{background:var(--gold);border-color:var(--gold);transform:scale(1.35)}
-  .dots button.has{background:oklch(0.82 0.15 82/.45);border-color:oklch(0.82 0.15 82/.6)}
-  .nav{position:absolute;top:50%;transform:translateY(-50%);width:34px;height:34px;border-radius:50%;display:grid;
-    place-items:center;background:oklch(0.10 0.02 55/.55);border:1px solid var(--line);color:var(--muted);cursor:pointer;backdrop-filter:blur(6px)}
-  .nav:hover{color:var(--gold);border-color:oklch(0.82 0.15 82/.5)}
-  .nav.l{left:8px} .nav.r{right:8px}
-
-  /* ---------- B. Kartei ---------- */
-  .kartei{flex:1;overflow-y:auto;padding:6px 18px 96px;display:flex;flex-direction:column;gap:11px}
-  .kartei::-webkit-scrollbar{width:0}
-  .khead{font-family:var(--display);font-size:25px;font-weight:300;line-height:1.15;margin:8px 2px 4px}
-  .ksub{color:var(--muted);font-size:11.5px;line-height:1.5;margin:0 2px 10px}
-  .kcard{display:flex;gap:13px;align-items:stretch;text-align:left;cursor:pointer;padding:10px;border-radius:16px;
-    background:oklch(0.22 0.04 55/.45);border:1px solid var(--line);transition:.18s;color:inherit;font:inherit}
-  .kcard:hover{border-color:oklch(0.82 0.15 82/.4);background:oklch(0.24 0.045 55/.6)}
-  .kcard.has{border-color:oklch(0.82 0.15 82/.45);background:oklch(0.82 0.15 82/.06)}
   .kthumb{width:78px;height:78px;border-radius:11px;flex:0 0 auto;overflow:hidden;background:oklch(0.14 0.02 55);
     display:grid;place-items:center;border:1px solid oklch(0.82 0.15 82/.12)}
   .kthumb img{width:100%;height:100%;object-fit:cover}
-  .kbody{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:5px}
-  .kbody h3{font-family:var(--display);font-size:16.5px;font-weight:400;line-height:1.22}
-  .kstate{display:inline-flex;align-items:center;gap:5px;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
-  .kcard.has .kstate{color:var(--gold)}
-  .kbar{position:absolute;left:0;right:0;bottom:0;padding:14px 18px 18px;display:flex;flex-direction:column;gap:10px;
-    background:linear-gradient(180deg,transparent,oklch(0.10 0.02 55) 34%)}
+  .vtitle{font-family:var(--display);font-size:20px;font-weight:400;line-height:1.22;margin:2px 0 12px}
+
   .sheet{position:absolute;inset:0;z-index:5;display:flex;flex-direction:column;justify-content:flex-end;
     background:oklch(0.06 0.01 55/.62);backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:.24s}
   .sheet.open{opacity:1;pointer-events:auto}
@@ -140,6 +102,44 @@
   .sheethero .kthumb{width:64px;height:64px}
   .sfrage{font-size:23px}
 
+  /* ---------- A. Vitrine ---------- */
+  .vitrine{flex:1;display:flex;flex-direction:column;padding:0 22px 18px;min-height:0}
+  .case{position:relative;flex:1 1 auto;min-height:0;border-radius:16px;margin-bottom:16px;overflow:hidden;
+    background:linear-gradient(180deg,oklch(0.19 0.035 58),oklch(0.12 0.02 55));
+    border:1px solid oklch(0.82 0.15 82/.14);display:grid;place-items:center}
+  .case::before{content:"";position:absolute;left:50%;top:-32%;width:150%;height:80%;transform:translateX(-50%);
+    background:radial-gradient(ellipse at center,oklch(0.85 0.08 75/.16),transparent 62%);pointer-events:none}
+  .case img{max-width:88%;max-height:88%;object-fit:contain;filter:drop-shadow(0 22px 34px oklch(0 0 0/.75))}
+  .case .plaque{position:absolute;left:14px;bottom:12px;right:14px;display:flex;justify-content:space-between;gap:10px}
+  .case .plaque span{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:oklch(0.78 0.05 70/.75)}
+  .vfrage{font-size:26px;margin-bottom:auto}
+  .vfoot{display:flex;flex-direction:column;align-items:center;gap:9px;padding-top:14px}
+  .dots{display:flex;gap:7px;justify-content:center;padding:12px 0 2px}
+  .dots button{width:7px;height:7px;border-radius:50%;border:1px solid oklch(0.70 0.04 70/.5);background:transparent;
+    cursor:pointer;padding:0;transition:.2s}
+  .dots button.on{background:var(--gold);border-color:var(--gold);transform:scale(1.35)}
+  .dots button.has{background:oklch(0.82 0.15 82/.45);border-color:oklch(0.82 0.15 82/.6)}
+  .nav{position:absolute;top:50%;transform:translateY(-50%);width:34px;height:34px;border-radius:50%;display:grid;
+    place-items:center;background:oklch(0.10 0.02 55/.55);border:1px solid var(--line);color:var(--muted);cursor:pointer}
+  .nav:hover{color:var(--gold);border-color:oklch(0.82 0.15 82/.5)}
+  .nav.l{left:8px} .nav.r{right:8px}
+
+  /* ---------- B. Kartei ---------- */
+  .kartei{flex:1;overflow-y:auto;padding:6px 18px 96px;display:flex;flex-direction:column;gap:11px}
+  .kartei::-webkit-scrollbar{width:0}
+  .khead{font-family:var(--display);font-size:25px;font-weight:300;line-height:1.15;margin:8px 2px 4px}
+  .ksub{color:var(--muted);font-size:11.5px;line-height:1.5;margin:0 2px 10px}
+  .kcard{display:flex;gap:13px;align-items:stretch;text-align:left;cursor:pointer;padding:10px;border-radius:16px;
+    background:oklch(0.22 0.04 55/.45);border:1px solid var(--line);transition:.18s;color:inherit;font:inherit}
+  .kcard:hover{border-color:oklch(0.82 0.15 82/.4)}
+  .kcard.has{border-color:oklch(0.82 0.15 82/.45);background:oklch(0.82 0.15 82/.06)}
+  .kbody{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:5px}
+  .kbody h3{font-family:var(--display);font-size:16.5px;font-weight:400;line-height:1.22}
+  .kstate{display:inline-flex;align-items:center;gap:5px;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+  .kcard.has .kstate{color:var(--gold)}
+  .kbar{position:absolute;left:0;right:0;bottom:0;padding:14px 18px 18px;display:flex;flex-direction:column;gap:10px;
+    background:linear-gradient(180deg,transparent,oklch(0.10 0.02 55) 34%)}
+
   /* ---------- C. Saal ---------- */
   .saal{flex:1;display:flex;flex-direction:column;padding:4px 18px 18px;min-height:0}
   .plan{position:relative;flex:1 1 auto;min-height:0;border-radius:18px;border:1px solid var(--line);overflow:hidden;
@@ -147,14 +147,12 @@
       repeating-linear-gradient(0deg,oklch(0.82 0.15 82/.045) 0 1px,transparent 1px 34px),
       repeating-linear-gradient(90deg,oklch(0.82 0.15 82/.045) 0 1px,transparent 1px 34px),
       linear-gradient(165deg,oklch(0.17 0.03 58),oklch(0.11 0.018 55))}
-  .room{position:absolute;border:1px solid oklch(0.82 0.15 82/.22);border-radius:10px;
-    background:oklch(0.82 0.15 82/.035)}
+  .room{position:absolute;border:1px solid oklch(0.82 0.15 82/.22);border-radius:10px;background:oklch(0.82 0.15 82/.035)}
   .room span{position:absolute;left:9px;top:7px;font-size:8.5px;letter-spacing:.2em;text-transform:uppercase;
     color:oklch(0.78 0.05 70/.6);white-space:nowrap}
   .pin{position:absolute;width:34px;height:34px;transform:translate(-50%,-50%);border-radius:50%;cursor:pointer;
     display:grid;place-items:center;background:oklch(0.10 0.02 55/.85);border:1.5px solid oklch(0.70 0.10 75/.55);
     color:oklch(0.80 0.06 70);transition:.18s;padding:0;font:600 10px/1 var(--body)}
-  .pin:hover{transform:translate(-50%,-50%) scale(1.12);border-color:var(--gold);color:var(--gold)}
   .pin.on{border-color:var(--gold);color:var(--gold);box-shadow:0 0 0 5px oklch(0.82 0.15 82/.10)}
   .pin.has{background:var(--gold);border-color:var(--gold);color:oklch(0.16 0.03 55)}
   .planfoot{display:flex;justify-content:space-between;align-items:center;padding:10px 2px 12px}
@@ -166,7 +164,7 @@
   .detail .kthumb{width:58px;height:58px}
   .dfrage{font-size:19px}
 
-  /* ---------- D. Führung (Raum für Raum) ---------- */
+  /* ---------- D. Führung ---------- */
   .fuehrung{flex:1;display:flex;flex-direction:column;padding:2px 16px 14px;min-height:0}
   .roomhead{display:flex;align-items:center;gap:10px;padding:4px 2px 10px}
   .roomhead .rn{font-family:var(--display);font-size:23px;font-weight:400;line-height:1;flex:1}
@@ -188,7 +186,6 @@
   .door span{position:absolute;left:50%;transform:translateX(-50%);top:8px;font-size:8px;letter-spacing:.2em;
     text-transform:uppercase;color:oklch(0.78 0.05 70/.5);white-space:nowrap}
   .door.bot span{top:auto;bottom:8px}
-
   .rpin{position:absolute;transform:translate(-50%,-50%);width:66px;height:66px;border-radius:50%;padding:0;
     overflow:hidden;cursor:pointer;background:oklch(0.14 0.02 55);border:2px solid oklch(0.70 0.08 75/.45);
     transition:.2s;z-index:2}
@@ -202,8 +199,7 @@
     width:20px;height:20px;border-radius:50%;background:var(--gold);color:oklch(0.16 0.03 55);pointer-events:none}
   .rlabel{position:absolute;transform:translate(-50%,0);z-index:2;font-size:8.5px;letter-spacing:.16em;
     text-transform:uppercase;color:oklch(0.80 0.05 70/.75);white-space:nowrap;pointer-events:none;
-    background:oklch(0.10 0.02 55/.7);padding:3px 7px;border-radius:999px;backdrop-filter:blur(4px)}
-
+    background:oklch(0.10 0.02 55/.7);padding:3px 7px;border-radius:999px}
   .me{position:absolute;width:15px;height:15px;border-radius:50%;transform:translate(-50%,-50%);z-index:4;
     background:oklch(0.82 0.11 235);border:2px solid oklch(0.97 0.02 235);
     box-shadow:0 0 0 1px oklch(0.45 0.10 235/.6), 0 2px 8px oklch(0 0 0/.7);pointer-events:none;transition:left .14s linear,top .14s linear}
@@ -213,25 +209,21 @@
   .cone{position:absolute;width:70px;height:70px;transform-origin:50% 50%;z-index:3;pointer-events:none;
     background:conic-gradient(from -22deg,oklch(0.82 0.11 235/.28) 0deg,oklch(0.82 0.11 235/.03) 44deg,transparent 45deg);
     border-radius:50%;transition:left .14s linear,top .14s linear}
-
-  .fbar{display:flex;align-items:center;gap:8px;padding:9px 2px 9px}
+  .fbar{display:flex;align-items:center;gap:8px;padding:9px 2px}
   .chip{display:inline-flex;align-items:center;gap:6px;border-radius:999px;border:1px solid var(--line);
     background:oklch(0.22 0.04 55/.5);color:var(--muted);cursor:pointer;padding:8px 13px;
     font:500 9.5px/1 var(--body);letter-spacing:.15em;text-transform:uppercase;transition:.18s}
   .chip:hover{color:var(--fg);border-color:oklch(0.82 0.15 82/.45)}
   .chip.on{color:oklch(0.16 0.03 55);background:oklch(0.82 0.11 235);border-color:oklch(0.82 0.11 235)}
-  .dist{margin-left:auto;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);text-align:right}
+  .dist{margin-left:auto;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
   .dist b{color:var(--gold);font-weight:500}
   .arrived{display:inline-flex;align-items:center;gap:6px;font-size:9.5px;letter-spacing:.18em;
     text-transform:uppercase;color:oklch(0.82 0.11 235)}
-
   .tapphoto{position:relative;flex:0 0 auto;padding:0;border:none;background:none;cursor:pointer;border-radius:11px}
   .tapphoto .kthumb{width:58px;height:58px}
   .tapphoto .more{position:absolute;right:-4px;bottom:-4px;width:20px;height:20px;border-radius:50%;
-    display:grid;place-items:center;background:var(--gold);color:oklch(0.16 0.03 55);
-    font:600 11px/1 var(--body);box-shadow:0 2px 6px oklch(0 0 0/.6)}
-
-  .strip{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px}
+    display:grid;place-items:center;background:var(--gold);color:oklch(0.16 0.03 55);font:600 11px/1 var(--body)}
+  .strip{display:flex;gap:8px;overflow-x:auto}
   .strip::-webkit-scrollbar{height:0}
   .strip button{flex:0 0 auto;width:56px;height:56px;border-radius:10px;overflow:hidden;padding:0;cursor:pointer;
     border:1px solid var(--line);background:oklch(0.14 0.02 55)}
@@ -250,94 +242,183 @@
   .wave i{flex:1;background:oklch(0.78 0.06 70/.35);border-radius:1px}
   .audio .len{font-size:10px;letter-spacing:.12em;color:var(--muted)}
   .stub{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:oklch(0.70 0.04 70/.6)}
+
+  /* ---------- Wrapped (Stories) ---------- */
+  .wrap{position:absolute;inset:0;z-index:9;display:flex;flex-direction:column;background:var(--night)}
+  .wbars{display:flex;gap:4px;padding:14px 16px 8px;flex:0 0 auto}
+  .wbars i{flex:1;height:2px;border-radius:1px;background:oklch(0.70 0.04 70/.25)}
+  .wbars i.on{background:var(--gold)}
+  .wframe{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:center;gap:16px;
+    padding:8px 26px 20px;text-align:left;animation:fadein .38s ease}
+  @keyframes fadein{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .wbig{font-family:var(--display);font-weight:300;font-size:34px;line-height:1.12;letter-spacing:-0.01em}
+  .wmid{font-family:var(--display);font-weight:300;font-size:26px;line-height:1.2}
+  .wsub{color:var(--muted);font-size:13.5px;line-height:1.6}
+  .wgold{color:var(--gold)}
+  .wquote{font-family:var(--display);font-style:italic;font-size:25px;line-height:1.3;color:oklch(0.94 0.03 75)}
+  .wecho{font-size:13px;line-height:1.6;color:var(--muted);border-left:2px solid oklch(0.82 0.15 82/.5);padding-left:13px}
+  .wstats{display:flex;flex-direction:column;gap:2px}
+  .wstat{display:flex;align-items:baseline;gap:12px;padding:11px 0;border-bottom:1px solid var(--line)}
+  .wstat b{font-family:var(--display);font-weight:400;font-size:38px;color:var(--gold);min-width:66px}
+  .wshot{width:100%;height:180px;border-radius:16px;overflow:hidden;background:oklch(0.13 0.02 55);
+    display:grid;place-items:center;border:1px solid oklch(0.82 0.15 82/.16);flex:0 0 auto}
+  .wshot img{max-width:100%;max-height:100%;object-fit:contain}
+  .wtap{position:absolute;top:44px;bottom:64px;width:38%;background:transparent;border:none;cursor:pointer;z-index:2}
+  .wtap.l{left:0} .wtap.r{right:0;width:62%}
+  .wfoot{flex:0 0 auto;padding:0 26px 20px;display:flex;align-items:center;gap:12px}
+  .wfoot .linkish{padding-left:0}
+  .wload{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;padding:0 34px;text-align:center}
+  .wloadring{width:74px;height:74px;border-radius:50%;border:1px solid oklch(0.82 0.15 82/.28);
+    border-top-color:var(--gold);animation:spin 1.5s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .wloadtext{font-family:var(--display);font-size:21px;font-weight:300;line-height:1.3;min-height:56px}
+  .wnote{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:oklch(0.70 0.04 70/.6)}
 </style>
 </head>
 <body>
 <div class="lab">
-  <h1>Capture — vier Richtungen</h1>
-  <p>Konzeptskizzen, kein Produkt. Echte Objekte und echte Fotos aus dem Airtable des SMÄK. Der Besucher sagt frei heraus, was ihm durch den Kopf geht — es gibt keine vorgegebene Frage. Alle vier Skizzen sind bedienbar: Objekt wählen, Mikrofon drücken, auf Deutsch sprechen; ohne Spracherkennung erscheint das Textfeld.</p>
-  <div class="tabs" id="tabs">
-    <button data-slot="all" aria-pressed="true">Alle vier</button>
-    <button data-slot="a" aria-pressed="false">Nur Vitrine</button>
-    <button data-slot="b" aria-pressed="false">Nur Kartei</button>
-    <button data-slot="c" aria-pressed="false">Nur Saal</button>
-    <button data-slot="d" aria-pressed="false">Nur Führung</button>
+  <div class="labtop">
+    <div><h1 id="labTitle"></h1><p id="labIntro"></p></div>
+    <div class="langsw" id="langsw">
+      <button data-lang="de" aria-pressed="true">DE</button>
+      <button data-lang="en" aria-pressed="false">EN</button>
+    </div>
   </div>
-
-  <div class="stage" id="stage">
-    <figure class="slot" data-slot="a">
-      <figcaption>
-        <div class="name">A · Vitrine</div>
-        <div class="why">Ein Objekt, ganze Aufmerksamkeit. Das Foto sitzt im Passepartout wie in einer echten Vitrine — querformatige Stücke werden nicht beschnitten.</div>
-      </figcaption>
-      <div class="device"><div class="screen" id="scr-a"></div></div>
-    </figure>
-
-    <figure class="slot" data-slot="b">
-      <figcaption>
-        <div class="name">B · Kartei</div>
-        <div class="why">Die Route auf einen Blick: was gesprochen ist, was noch offen. Antworten passiert im Blatt von unten.</div>
-      </figcaption>
-      <div class="device"><div class="screen" id="scr-b"></div></div>
-    </figure>
-
-    <figure class="slot" data-slot="c">
-      <figcaption>
-        <div class="name">C · Saal</div>
-        <div class="why">Schematischer Grundriss statt 3D — die Geste des bestehenden Guides, nur ruhig. Der Plan ist erfunden, nicht vermessen.</div>
-      </figcaption>
-      <div class="device"><div class="screen" id="scr-c"></div></div>
-    </figure>
-
-    <figure class="slot" data-slot="d">
-      <figcaption>
-        <div class="name">D · Führung</div>
-        <div class="why">Wie im bestehenden Guide: Du siehst dich selbst im Plan, das nächste Objekt meldet sich von allein. Reine Skizze — die Position wird abgespielt oder mit dem Finger gesetzt, es steckt keine Ortung dahinter.</div>
-      </figcaption>
-      <div class="device"><div class="screen" id="scr-d"></div></div>
-    </figure>
-  </div>
+  <div class="tabs" id="tabs"></div>
+  <div class="rack" id="rack"></div>
 </div>
 
 <script>
-const SPEECH_LANG = "de-DE";
+/* ==========================================================================
+   Museum Wrapped — Capture + Wrapped. Konzeptskizzen, kein Produkt.
+   Zweisprachig: Oberfläche, Raumnamen, Objekttitel, Kuratorentexte und die
+   Spracherkennung wechseln mit. Am Ende geht ein echter POST an n8n.
+   ========================================================================== */
 const IMG = "assets/objects/";
+const WEBHOOK_URL = "https://y1jia.app.n8n.cloud/webhook/museum-wrapped";
+let LANG = "de";
 
-/* Der Besucher sagt, was ihm durch den Kopf geht — keine kuratierte Frage.
-   Die objektbezogenen Fragen liegen weiter in src/data/objects.json
-   (Feld reflection_prompt), falls wir sie später als Anstoss dazulegen wollen. */
-const EINLADUNG = "Was geht dir gerade durch den Kopf?";
-
-const OBJECTS = [
-  { id:"OBJ-14", title:"Oberteil des Sarges der Königstochter Satdjehuti", room:"Jenseits",
-    frage:"Wie möchtest du aussehen, wenn man sich für immer an dein Gesicht erinnert?",
-    epoche:"17. Dynastie", img:"OBJ-14@hi.jpg", plan:{x:26,y:20} },
-  { id:"OBJ-15", title:"Totenbuch des Pajuheru", room:"Jenseits",
-    frage:"Was von deinem Leben würdest du in die Waagschale legen wollen?",
-    epoche:"Spätzeit", img:"OBJ-15@hi.jpg", plan:{x:60,y:16} },
-  { id:"OBJ-07", title:"Sitzgruppe des Sabu, seiner Frau Meretites und des Sohnes Isebwer", room:"Kunst und Form",
-    frage:"Mit wem würdest du für die Ewigkeit zusammen abgebildet sein wollen?",
-    epoche:"5. Dynastie", img:"OBJ-07@hi.jpg", plan:{x:24,y:52} },
-  { id:"OBJ-06", title:"Würfelstatue des Bakenchons, Hohepriester des Amun", room:"Kunst und Form",
-    frage:"Wenn du deinen Lebensweg in wenige Sätze fassen müsstest – was bliebe stehen?",
-    epoche:"19. Dynastie", img:"OBJ-06@hi.jpg", plan:{x:56,y:56} },
-  { id:"OBJ-03", title:"Gesichtsfragment einer Kolossalstatue des Königs Amenophis IV.", room:"Kunst und Zeit",
-    frage:"Was erkennst du in einem Gesicht, von dem nur ein Bruchteil erhalten ist?",
-    epoche:"18. Dynastie", img:"OBJ-03@hi.jpg", plan:{x:30,y:84} },
-  { id:"OBJ-01", title:"Fayencefigur eines liegenden Nilpferds", room:"Kunsthandwerk",
-    frage:"Welches Tier würdest du mit auf eine lange Reise nehmen – und warum?",
-    epoche:"Mittleres Reich", img:"OBJ-01@hi.jpg", plan:{x:70,y:86} },
-];
-
-/* Kuratorentexte und weitere Aufnahmen — beides direkt aus dem Airtable des SMÄK. */
-const FACTS = {
-  "OBJ-14":"Oberteil (Kopfteil) des vergoldeten Sarges der Königstochter und Königsschwester Satdjehuti (Inv. ÄS 7163), vom Übergang der Zweiten Zwischenzeit zum Neuen Reich. Der überlebensgroße anthropoide Holzsarg war mit Blattgold überzogen; die Augen bestehen aus Einlagen aus weißem Marmor und schwarzem Stein. Satdjehuti trägt die Geierhaube, eine den königlichen Frauen vorbehaltene Kopfbedeckung.",
-  "OBJ-15":"Totenbuch des Pajuheru (Leihgabe 2). Der mehrere Meter lange Papyrus enthält Sprüche, die den Verstorbenen auf seinem Weg ins Jenseits begleiten, schützen und versorgen sollen – in hieratischer Schrift, mit rot hervorgehobenen Überschriften und Vignetten. Im Mittelpunkt steht das Totengericht unter Osiris, bei dem Anubis und Horus das Herz gegen die Feder der Maat abwiegen.",
-  "OBJ-07":"Sitzgruppe des Sabu, seiner Frau Meretites und ihres Sohnes Isebwer (Inv. ÄS 7146), 5. Dynastie, Altes Reich (um 2435–2306 v. Chr.), aus bemaltem Kalkstein. Die Statuengruppe zeigt die Familie gemeinsam sitzend.",
-  "OBJ-06":"Würfelstatue des Bakenchons (Inv. Gl. WAF 38), Hohepriester des Amun. Der hockende, in ein enges Gewand gehüllte Körper ist auf einfache geometrische Formen reduziert. Bemerkenswert ist die umfangreiche hieroglyphische Inschrift auf Vorderseite, Rückenpfeiler und Sockel – einer der wichtigsten biographischen Texte des Alten Ägypten, der Bakenchons' Lebensweg vom Schüler bis zum Hohepriester des Amun in Karnak schildert.",
-  "OBJ-03":"Gesichtsfragment einer Kolossalstatue des Königs Amenophis IV. / Echnaton (Inv. ÄS 6290). Es gehörte zu einer überlebensgroßen Statue aus dem frühen Aton-Tempel (Gem-pa-Aton) in Karnak. Die schmalen Züge, vollen Lippen und das vorspringende Kinn sind typisch für den Bildstil seiner ersten Regierungsjahre, in denen er eine tiefgreifende religiöse Umwälzung einleitete.",
-  "OBJ-01":"Fayencefigur eines liegenden Nilpferds (Inv. ÄS 6040). Solche kunstvoll verzierten Tierfiguren wurden als Grabbeigaben verwendet und sollten die Verstorbenen auf ihrem Weg ins Jenseits begleiten und schützen. Der Körper ist mit Lotosbändern und -blüten dekoriert, die auf den natürlichen Lebensraum des Tieres verweisen.",
+const L = {
+  de: {
+    speech: "de-DE",
+    labTitle: "Museum Wrapped — Skizzen",
+    labIntro: "Konzeptskizzen, kein Produkt. Echte Objekte, Fotos und Kuratorentexte aus dem Airtable des SMÄK. Der Besucher sagt frei heraus, was ihm durch den Kopf geht — es gibt keine vorgegebene Frage. Nach mindestens einer Reflexion führt „Besuch beenden“ zum echten Wrapped: die Reaktionen gehen an n8n, die KI antwortet, und die Antwort wird als Story gezeigt.",
+    tabAll: "Alle vier", tabD: "Nur Führung", tabA: "Nur Vitrine", tabB: "Nur Kartei", tabC: "Nur Saal",
+    nameA: "A · Vitrine", nameB: "B · Kartei", nameC: "C · Saal", nameD: "D · Führung",
+    whyA: "Ein Objekt, ganze Aufmerksamkeit. Das Foto sitzt im Passepartout wie in einer echten Vitrine — querformatige Stücke werden nicht beschnitten.",
+    whyB: "Die Route auf einen Blick: was erzählt ist, was noch offen. Antworten passiert im Blatt von unten.",
+    whyC: "Schematischer Grundriss statt 3D — die Geste des bestehenden Guides, nur ruhig. Der Plan ist erfunden, nicht vermessen.",
+    whyD: "Ein Raum füllt den Schirm und wechselt, sobald du weitergehst. Foto antippen öffnet Beschreibung, weitere Aufnahmen und den Audioguide. Die Position ist abgespielt — es steckt keine Ortung dahinter.",
+    einladung: "Was geht dir gerade durch den Kopf?",
+    erzaehlt: "erzählt", room: "Raum",
+    walk: "Rundgang", pause: "Pause", sketch: "Skizze",
+    next: "Nächstes", here: "Du stehst davor",
+    listening: "Ich höre zu", listenStop: "Ich höre zu — noch einmal tippen zum Beenden",
+    sayHere: "Du stehst davor — sag es einfach laut", sayAny: "Sag, was dir dazu einfällt",
+    sayOne: "Sag es laut, ein Satz genügt", again: "Nochmal sprechen und überschreiben",
+    typeInstead: "Lieber tippen", save: "Speichern", placeholder: "In deinen eigenen Worten …",
+    finish: "Besuch beenden", close: "Schliessen",
+    routeHead: "Deine Route<br/>durch die Sammlung",
+    routeSub: "Sechs Objekte. Zu jedem so viel oder so wenig, wie du sagen willst.",
+    told: "Erzählt", open: "Noch offen",
+    objectOf: (i, n) => `Objekt ${i} von ${n}`,
+    shots: (n) => `${n} Aufnahme${n > 1 ? "n" : ""}`,
+    audioStub: "Audioguide des Museums · Platzhalter",
+    legendTold: "erzählt", legendOpen: "offen", schematic: "Schematischer Plan",
+    /* Wrapped */
+    loading: ["Deine Worte werden gelesen …", "Die Fäden deines Besuchs werden gesucht …", "Dein Wrapped entsteht …"],
+    loadNote: "Das dauert einen Moment — die KI liest gerade mit",
+    wIntro: "Dein Besuch, gewoben",
+    wStatsHead: "Dein Besuch in Zahlen",
+    statReflections: "Gedanken hinterlassen", statObjects: "Objekte begleitet", statMinutes: "Minuten hier",
+    wWordsHead: "In deinen Worten",
+    wQuestion: "Eine Frage zum Mitnehmen",
+    wDeeper: "Komm wieder für",
+    restart: "Neuer Besuch", offline: "Der Server hat nicht geantwortet — dies ist ein Beispiel.",
+    toWrapped: "Wrapped",
+  },
+  en: {
+    speech: "en-US",
+    labTitle: "Museum Wrapped — sketches",
+    labIntro: "Concept sketches, not a product. Real objects, photographs and curator texts from the project's Airtable. The visitor simply says whatever comes to mind — there is no prescribed question. After at least one reflection, “Finish visit” leads to the real Wrapped: the reactions go to n8n, the AI answers, and the answer is shown as a story.",
+    tabAll: "All four", tabD: "Guided only", tabA: "Vitrine only", tabB: "Index only", tabC: "Floor plan only",
+    nameA: "A · Vitrine", nameB: "B · Index", nameC: "C · Floor plan", nameD: "D · Guided",
+    whyA: "One object, full attention. The photograph sits in a mount like a real display case — landscape pieces are never cropped.",
+    whyB: "The whole route at a glance: what has been told, what is still open. Answering happens in the sheet from below.",
+    whyC: "A schematic plan instead of 3D — the gesture of the existing guide, only calmer. The plan is invented, not surveyed.",
+    whyD: "One room fills the screen and changes as you walk on. Tap the photo for the description, further shots and the audio guide. The position is played back — there is no tracking behind it.",
+    einladung: "What's going through your mind?",
+    erzaehlt: "shared", room: "Room",
+    walk: "Walk", pause: "Pause", sketch: "Sketch",
+    next: "Next", here: "You're right here",
+    listening: "Listening", listenStop: "Listening — tap again to stop",
+    sayHere: "You're here — just say it out loud", sayAny: "Say whatever comes to mind",
+    sayOne: "Say it out loud, one sentence is enough", again: "Speak again to replace it",
+    typeInstead: "Type instead", save: "Save", placeholder: "In your own words …",
+    finish: "Finish visit", close: "Close",
+    routeHead: "Your route<br/>through the collection",
+    routeSub: "Six objects. To each of them as much or as little as you want to say.",
+    told: "Shared", open: "Still open",
+    objectOf: (i, n) => `Object ${i} of ${n}`,
+    shots: (n) => `${n} photograph${n > 1 ? "s" : ""}`,
+    audioStub: "Museum audio guide · placeholder",
+    legendTold: "shared", legendOpen: "open", schematic: "Schematic plan",
+    loading: ["Reading your words …", "Looking for the thread of your visit …", "Weaving your Wrapped …"],
+    loadNote: "This takes a moment — the AI is reading along",
+    wIntro: "Your visit, woven",
+    wStatsHead: "Your visit in numbers",
+    statReflections: "thoughts left behind", statObjects: "objects kept company", statMinutes: "minutes here",
+    wWordsHead: "In your own words",
+    wQuestion: "One question to take with you",
+    wDeeper: "Come back for",
+    restart: "New visit", offline: "The server did not answer — this is an example.",
+    toWrapped: "Wrapped",
+  },
 };
+const t = () => L[LANG];
+
+/* Objekte des Demo-Rundgangs. OBJ-16 fehlt absichtlich — es soll dem Wrapped
+   als Empfehlung übrig bleiben. Titel und Kuratorentexte je Sprache. */
+const OBJECTS = [
+  { id:"OBJ-14", img:"OBJ-14@hi.jpg", plan:{x:26,y:20},
+    de:{ title:"Oberteil des Sarges der Königstochter Satdjehuti", epoche:"17. Dynastie", room:"Jenseits",
+      fact:"Oberteil (Kopfteil) des vergoldeten Sarges der Königstochter und Königsschwester Satdjehuti (Inv. ÄS 7163), vom Übergang der Zweiten Zwischenzeit zum Neuen Reich. Der überlebensgroße anthropoide Holzsarg war mit Blattgold überzogen; die Augen bestehen aus Einlagen aus weißem Marmor und schwarzem Stein. Satdjehuti trägt die Geierhaube, eine den königlichen Frauen vorbehaltene Kopfbedeckung." },
+    en:{ title:"Upper part of the coffin of the king's daughter Satdjehuti", epoche:"17th Dynasty", room:"Afterlife",
+      fact:"Upper part (head section) of the gilded coffin of Satdjehuti, king's daughter and king's sister (inv. ÄS 7163), from the transition between the Second Intermediate Period and the New Kingdom. The over-lifesize anthropoid wooden coffin was covered in gold leaf; the eyes are inlaid with white marble and black stone. Satdjehuti wears the vulture headdress, a covering reserved for royal women." } },
+
+  { id:"OBJ-15", img:"OBJ-15@hi.jpg", plan:{x:60,y:16},
+    de:{ title:"Totenbuch des Pajuheru", epoche:"Spätzeit", room:"Jenseits",
+      fact:"Totenbuch des Pajuheru (Leihgabe 2). Der mehrere Meter lange Papyrus enthält Sprüche, die den Verstorbenen auf seinem Weg ins Jenseits begleiten, schützen und versorgen sollen – in hieratischer Schrift, mit rot hervorgehobenen Überschriften und Vignetten. Im Mittelpunkt steht das Totengericht unter Osiris, bei dem Anubis und Horus das Herz gegen die Feder der Maat abwiegen." },
+    en:{ title:"Book of the Dead of Pajuheru", epoche:"Late Period", room:"Afterlife",
+      fact:"Book of the Dead of Pajuheru (loan 2). The papyrus, several metres long, holds the spells that were to accompany, protect and provide for the deceased on the way into the afterlife — in hieratic script, with headings picked out in red, and with vignettes. At its centre stands the judgement of the dead under Osiris, where Anubis and Horus weigh the heart against the feather of Maat." } },
+
+  { id:"OBJ-07", img:"OBJ-07@hi.jpg", plan:{x:24,y:52},
+    de:{ title:"Sitzgruppe des Sabu, seiner Frau Meretites und des Sohnes Isebwer", epoche:"5. Dynastie", room:"Kunst und Form",
+      fact:"Sitzgruppe des Sabu, seiner Frau Meretites und ihres Sohnes Isebwer (Inv. ÄS 7146), 5. Dynastie, Altes Reich (um 2435–2306 v. Chr.), aus bemaltem Kalkstein. Die Statuengruppe zeigt die Familie gemeinsam sitzend." },
+    en:{ title:"Seated group of Sabu, his wife Meretites and their son Isebwer", epoche:"5th Dynasty", room:"Art and Form",
+      fact:"Seated group of Sabu, his wife Meretites and their son Isebwer (inv. ÄS 7146), 5th Dynasty, Old Kingdom (about 2435–2306 BC), in painted limestone. The group shows the family seated together." } },
+
+  { id:"OBJ-06", img:"OBJ-06@hi.jpg", plan:{x:56,y:56},
+    de:{ title:"Würfelstatue des Bakenchons, Hohepriester des Amun", epoche:"19. Dynastie", room:"Kunst und Form",
+      fact:"Würfelstatue des Bakenchons (Inv. Gl. WAF 38), Hohepriester des Amun. Der hockende, in ein enges Gewand gehüllte Körper ist auf einfache geometrische Formen reduziert. Bemerkenswert ist die umfangreiche hieroglyphische Inschrift auf Vorderseite, Rückenpfeiler und Sockel – einer der wichtigsten biographischen Texte des Alten Ägypten, der Bakenchons' Lebensweg vom Schüler bis zum Hohepriester des Amun in Karnak schildert." },
+    en:{ title:"Block statue of Bakenkhons, High Priest of Amun", epoche:"19th Dynasty", room:"Art and Form",
+      fact:"Block statue of Bakenkhons (inv. Gl. WAF 38), High Priest of Amun. The crouching body, wrapped in a tight garment, is reduced to simple geometric forms. Remarkable is the extensive hieroglyphic inscription on the front, the back pillar and the base — one of the most important biographical texts of ancient Egypt, tracing Bakenkhons' path from pupil to High Priest of Amun at Karnak." } },
+
+  { id:"OBJ-03", img:"OBJ-03@hi.jpg", plan:{x:30,y:84},
+    de:{ title:"Gesichtsfragment einer Kolossalstatue des Königs Amenophis IV.", epoche:"18. Dynastie", room:"Kunst und Zeit",
+      fact:"Gesichtsfragment einer Kolossalstatue des Königs Amenophis IV. / Echnaton (Inv. ÄS 6290). Es gehörte zu einer überlebensgroßen Statue aus dem frühen Aton-Tempel (Gem-pa-Aton) in Karnak. Die schmalen Züge, vollen Lippen und das vorspringende Kinn sind typisch für den Bildstil seiner ersten Regierungsjahre, in denen er eine tiefgreifende religiöse Umwälzung einleitete." },
+    en:{ title:"Face fragment of a colossal statue of King Amenhotep IV", epoche:"18th Dynasty", room:"Art and Time",
+      fact:"Face fragment of a colossal statue of King Amenhotep IV / Akhenaten (inv. ÄS 6290). It belonged to an over-lifesize statue from the early Aten temple (Gem-pa-Aten) at Karnak. The narrow features, full lips and projecting chin are typical of the style of his first regnal years, in which he set a profound religious upheaval in motion." } },
+
+  { id:"OBJ-01", img:"OBJ-01@hi.jpg", plan:{x:70,y:86},
+    de:{ title:"Fayencefigur eines liegenden Nilpferds", epoche:"Mittleres Reich", room:"Kunsthandwerk",
+      fact:"Fayencefigur eines liegenden Nilpferds (Inv. ÄS 6040). Solche kunstvoll verzierten Tierfiguren wurden als Grabbeigaben verwendet und sollten die Verstorbenen auf ihrem Weg ins Jenseits begleiten und schützen. Der Körper ist mit Lotosbändern und -blüten dekoriert, die auf den natürlichen Lebensraum des Tieres verweisen." },
+    en:{ title:"Faience figure of a reclining hippopotamus", epoche:"Middle Kingdom", room:"Decorative Arts",
+      fact:"Faience figure of a reclining hippopotamus (inv. ÄS 6040). Such richly decorated animal figures were placed in tombs and were meant to accompany and protect the dead on the way into the afterlife. The body is decorated with lotus stems and blossoms, a reference to the animal's natural habitat." } },
+];
+const loc = (o) => o[LANG];
+const obj = (id) => OBJECTS.find(o => o.id === id);
+
 const GALERIE = {
   "OBJ-14":["OBJ-14_1.jpg","OBJ-14_2.jpg"],
   "OBJ-15":["OBJ-15_1.jpg"],
@@ -346,19 +427,18 @@ const GALERIE = {
   "OBJ-03":["OBJ-03_1.jpg","OBJ-03_2.jpg","OBJ-03_3.jpg"],
   "OBJ-01":["OBJ-01_1.jpg","OBJ-01_2.jpg","OBJ-01_3.jpg","OBJ-01_4.jpg"],
 };
-/* Führung: ein Raum füllt den Schirm, beim Durchgehen wechselt er. */
-const ROUTE_ROOMS = [
-  { name:"Jenseits",       spots:[{id:"OBJ-14",x:30,y:33},{id:"OBJ-15",x:69,y:63}] },
-  { name:"Kunst und Form", spots:[{id:"OBJ-07",x:28,y:36},{id:"OBJ-06",x:70,y:61}] },
-  { name:"Kunst und Zeit", spots:[{id:"OBJ-03",x:50,y:45}] },
-  { name:"Kunsthandwerk",  spots:[{id:"OBJ-01",x:50,y:48}] },
-];
 
+const ROUTE_ROOMS = [
+  { de:"Jenseits",       en:"Afterlife",       spots:[{id:"OBJ-14",x:30,y:33},{id:"OBJ-15",x:69,y:63}] },
+  { de:"Kunst und Form", en:"Art and Form",    spots:[{id:"OBJ-07",x:28,y:36},{id:"OBJ-06",x:70,y:61}] },
+  { de:"Kunst und Zeit", en:"Art and Time",    spots:[{id:"OBJ-03",x:50,y:45}] },
+  { de:"Kunsthandwerk",  en:"Decorative Arts", spots:[{id:"OBJ-01",x:50,y:48}] },
+];
 const ROOMS = [
-  { name:"Jenseits",       x:10, y:6,  w:78, h:26 },
-  { name:"Kunst und Form", x:10, y:38, w:78, h:26 },
-  { name:"Kunst und Zeit", x:10, y:70, w:38, h:24 },
-  { name:"Kunsthandwerk",  x:52, y:70, w:36, h:24 },
+  { de:"Jenseits",       en:"Afterlife",       x:10, y:6,  w:78, h:26 },
+  { de:"Kunst und Form", en:"Art and Form",    x:10, y:38, w:78, h:26 },
+  { de:"Kunst und Zeit", en:"Art and Time",    x:10, y:70, w:38, h:24 },
+  { de:"Kunsthandwerk",  en:"Decorative Arts", x:52, y:70, w:36, h:24 },
 ];
 
 const SVG = {
@@ -369,26 +449,25 @@ const SVG = {
   left:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>',
   right:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>',
   play:'<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg>',
+  redo:'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>',
 };
 
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 let activeRec = null;
 
-/* Ein Recorder-Kern für alle drei Varianten. Der Austausch gegen eine
-   aufgezeichnete Tonspur wäre später genau eine Änderung: start(). */
 function makeRecorder({ onInterim, onFinal, onState }) {
   return {
     toggle(objId) {
-      if (activeRec) { try { activeRec.stop(); } catch(e){} activeRec = null; onState("idle"); return; }
+      if (activeRec) { try { activeRec.stop(); } catch (e) {} activeRec = null; onState("idle"); return; }
       if (!SR) { onState("nospeech"); return; }
       const rec = new SR();
-      rec.lang = SPEECH_LANG; rec.interimResults = true; rec.continuous = false;
+      rec.lang = t().speech; rec.interimResults = true; rec.continuous = false;
       let finalText = "";
       rec.onresult = (e) => {
         let interim = "";
         for (let i = e.resultIndex; i < e.results.length; i++) {
-          const t = e.results[i][0].transcript;
-          if (e.results[i].isFinal) finalText += t; else interim += t;
+          const s = e.results[i][0].transcript;
+          if (e.results[i].isFinal) finalText += s; else interim += s;
         }
         onInterim((finalText + " " + interim).trim());
       };
@@ -398,277 +477,379 @@ function makeRecorder({ onInterim, onFinal, onState }) {
         if (finalText.trim()) onFinal(objId, finalText.trim());
       };
       activeRec = rec; onState("rec"); onInterim("");
-      try { rec.start(); } catch(e) { activeRec = null; onState("idle"); }
+      try { rec.start(); } catch (e) { activeRec = null; onState("idle"); }
     }
   };
 }
 
-const el = (html) => { const t = document.createElement("template"); t.innerHTML = html.trim(); return t.content.firstElementChild; };
-const esc = (s) => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const el = (html) => { const tpl = document.createElement("template"); tpl.innerHTML = html.trim(); return tpl.content.firstElementChild; };
+const esc = (s) => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" }[c]));
+
+/* ==========================================================================
+   WRAPPED — Stories. Tippen blättert, kein Timer.
+   ========================================================================== */
+const FALLBACK = () => ({
+  greeting: LANG === "de" ? "Dein Besuch hatte einen roten Faden – und er gehörte dir."
+                          : "Your visit had a thread running through it — and it was yours.",
+  archetype: LANG === "de"
+    ? { name: "Wanderin am Nil", subtitle: t().offline }
+    : { name: "Wanderer of the Nile", subtitle: t().offline },
+  stats: {}, themes: [], your_words: [],
+  reflective_question: LANG === "de" ? "Was nimmst du mit?" : "What do you take with you?",
+  go_deeper: null,
+  closing: LANG === "de"
+    ? "Das war dein Besuch, in deinen Worten. Deine Sprachaufnahme wurde in Text umgewandelt und danach gelöscht."
+    : "That was your visit, in your own words. Your voice recording was turned into text and then deleted.",
+});
+
+function startWrapped(host, answers, startedAt, onRestart) {
+  const T0 = t();
+  const reactions = Object.keys(answers).map(id => ({
+    object_id: id, input_type: "text", transcript_text: answers[id],
+    reaction_emoji: null, timestamp: new Date().toISOString(),
+  }));
+  const payload = {
+    session: "S-" + Date.now(),
+    duration_min: Math.max(1, Math.round((Date.now() - startedAt) / 60000)),
+    mode: "solo",
+    reactions,
+  };
+
+  const layer = el(`<div class="wrap"></div>`);
+  host.append(layer);
+
+  /* Ladezustand: der Aufruf dauert um die 15 Sekunden, das muss die Skizze tragen */
+  let li = 0;
+  layer.innerHTML = "";
+  const load = el(`<div class="wload">
+      <div class="wloadring"></div>
+      <div class="wloadtext">${esc(T0.loading[0])}</div>
+      <div class="wnote">${esc(T0.loadNote)}</div>
+    </div>`);
+  layer.append(load);
+  const cycle = setInterval(() => {
+    li = (li + 1) % T0.loading.length;
+    const n = load.querySelector(".wloadtext");
+    if (n) { n.style.animation = "none"; n.textContent = T0.loading[li]; n.offsetHeight; n.style.animation = "fadein .5s ease"; }
+  }, 3600);
+
+  fetch(WEBHOOK_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  })
+    .then(r => r.json())
+    .then(j => show(j && j.greeting ? j : FALLBACK()))
+    .catch(() => show(FALLBACK()));
+
+  function show(w) {
+    clearInterval(cycle);
+    const T = t();
+    const words = (Array.isArray(w.your_words) ? w.your_words : []).slice(0, 3);
+    const st = w.stats || {};
+    const frames = [];
+
+    frames.push(() => `<div class="eyebrow">${esc(T.wIntro)}</div>
+      <div class="wbig">${esc(w.greeting)}</div>`);
+
+    if (w.archetype && w.archetype.name) frames.push(() => `<div class="eyebrow">${esc(T.wIntro)}</div>
+      <div class="wbig wgold">${esc(w.archetype.name)}</div>
+      <div class="wsub">${esc(w.archetype.subtitle)}</div>`);
+
+    frames.push(() => `<div class="eyebrow">${esc(T.wStatsHead)}</div>
+      <div class="wstats">
+        <div class="wstat"><b>${esc(st.reflections ?? Object.keys(answers).length)}</b><span class="wsub">${esc(T.statReflections)}</span></div>
+        <div class="wstat"><b>${esc(st.objects_saved ?? Object.keys(answers).length)}</b><span class="wsub">${esc(T.statObjects)}</span></div>
+        <div class="wstat"><b>${esc(st.duration_min ?? payload.duration_min)}</b><span class="wsub">${esc(T.statMinutes)}</span></div>
+      </div>`);
+
+    words.forEach(m => {
+      const o = obj(m.object_id);
+      frames.push(() => `
+        ${o ? `<div class="wshot"><img src="${IMG}${o.img}" alt="" /></div>` : ""}
+        <div class="eyebrow">${esc(T.wWordsHead)}</div>
+        <div class="wquote">„${esc(m.quote)}“</div>
+        ${m.echo ? `<div class="wecho">${esc(m.echo)}</div>` : ""}
+        <div class="wsub" style="font-size:11.5px">${esc(o ? loc(o).title : m.object_title)}</div>`);
+    });
+
+    if (w.reflective_question) frames.push(() => `<div class="eyebrow">${esc(T.wQuestion)}</div>
+      <div class="wmid"><span class="wgold">„</span>${esc(w.reflective_question)}<span class="wgold">“</span></div>`);
+
+    if (w.go_deeper && w.go_deeper.title) frames.push(() => `<div class="eyebrow">${esc(T.wDeeper)}</div>
+      <div class="wmid">${esc(w.go_deeper.title)}</div>
+      <div class="wsub">${esc(w.go_deeper.reason)}</div>
+      <div class="eyebrow" style="color:var(--muted)">${esc(String(w.go_deeper.room || "").replace(/^Raum\s*"|"$/g, ""))}</div>`);
+
+    frames.push(() => `<div class="wmid">${esc(w.closing)}</div>
+      <div class="wnote">SMÄK · Museum Wrapped</div>`);
+
+    let i = 0;
+    function paint() {
+      layer.innerHTML = "";
+      layer.append(el(`<div class="wbars">${frames.map((_, k) => `<i class="${k <= i ? "on" : ""}"></i>`).join("")}</div>`));
+      layer.append(el(`<div class="wframe">${frames[i]()}</div>`));
+      const foot = el(`<div class="wfoot"></div>`);
+      if (i === frames.length - 1) {
+        const again = el(`<button class="linkish">${SVG.redo} ${esc(T.restart)}</button>`);
+        again.onclick = () => { layer.remove(); onRestart(); };
+        foot.append(again);
+      }
+      layer.append(foot);
+      const back = el(`<button class="wtap l" aria-label="back"></button>`);
+      const fwd = el(`<button class="wtap r" aria-label="next"></button>`);
+      back.onclick = () => { if (i > 0) { i--; paint(); } };
+      fwd.onclick = () => { if (i < frames.length - 1) { i++; paint(); } };
+      layer.append(back, fwd);
+    }
+    paint();
+  }
+}
+
+/* Gemeinsame Fusszeile mit dem Knopf, der zum Wrapped führt */
+function finishBar(host, answers, startedAt, pad, onRestart, rerender) {
+  const T = t(), n = Object.keys(answers).length;
+  const bar = el(`<div style="padding:0 ${pad}px ${pad}px"><button class="finish" ${n ? "" : "disabled"}>${esc(T.finish)} ${SVG.arrow}</button></div>`);
+  bar.querySelector("button").onclick = () => {
+    if (!n) return;
+    startWrapped(host, answers, startedAt, () => {
+      Object.keys(answers).forEach(k => delete answers[k]);
+      onRestart(); rerender();
+    });
+  };
+  return bar;
+}
 
 /* ======================= A · VITRINE ======================= */
 function Vitrine(root) {
-  let idx = 0, answers = {}, mode = "idle", live = "";
+  let idx = 0, answers = {}, mode = "idle", live = "", startedAt = Date.now();
   const rec = makeRecorder({
-    onInterim: t => { live = t; render(); },
-    onFinal: (id, t) => { answers[id] = t; live = ""; render(); },
+    onInterim: s => { live = s; render(); },
+    onFinal: (id, s) => { answers[id] = s; live = ""; render(); },
     onState: s => { mode = s; render(); },
   });
 
   function render() {
-    const o = OBJECTS[idx], saved = answers[o.id];
+    const T = t(), o = OBJECTS[idx], d = loc(o), saved = answers[o.id];
     root.innerHTML = "";
-    root.append(el(`
-      <div class="topbar">
-        <div class="brand"><i>◆</i> SMÄK</div>
-        <div class="count"><b>${Object.keys(answers).length}</b> / ${OBJECTS.length} erzählt</div>
-      </div>`));
+    root.append(el(`<div class="topbar">
+      <div class="brand"><i>◆</i> SMÄK</div>
+      <div class="count"><b>${Object.keys(answers).length}</b> / ${OBJECTS.length} ${esc(T.erzaehlt)}</div></div>`));
     root.append(el(`<div class="hair"></div>`));
 
-    const body = el(`
-      <div class="vitrine">
-        <div class="case">
-          <img src="${IMG}${o.img}" alt="${esc(o.title)}" />
-          <div class="plaque"><span>${esc(o.room)}</span><span>${esc(o.epoche)}</span></div>
-          <button class="nav l" aria-label="Zurück">${SVG.left}</button>
-          <button class="nav r" aria-label="Weiter">${SVG.right}</button>
-        </div>
-        <div class="eyebrow">Objekt ${idx + 1} von ${OBJECTS.length}</div>
-        <div class="vtitle">${esc(o.title)}</div>
-        ${saved
-          ? `<div class="saved">${SVG.check}<p>„${esc(saved)}“</p></div>`
-          : `<div class="frage vfrage">${esc(EINLADUNG)}</div>`}
-        <div class="vfoot"></div>
-        <div class="dots"></div>
-      </div>`);
+    const body = el(`<div class="vitrine">
+      <div class="case">
+        <img src="${IMG}${o.img}" alt="${esc(d.title)}" />
+        <div class="plaque"><span>${esc(d.room)}</span><span>${esc(d.epoche)}</span></div>
+        <button class="nav l">${SVG.left}</button><button class="nav r">${SVG.right}</button>
+      </div>
+      <div class="eyebrow">${esc(T.objectOf(idx + 1, OBJECTS.length))}</div>
+      <div class="vtitle">${esc(d.title)}</div>
+      ${saved ? `<div class="saved">${SVG.check}<p>„${esc(saved)}“</p></div>`
+              : `<div class="frage vfrage">${esc(T.einladung)}</div>`}
+      <div class="vfoot"></div><div class="dots"></div></div>`);
 
     const foot = body.querySelector(".vfoot");
     if (mode === "nospeech") {
-      const ta = el(`<textarea class="typed" rows="3" placeholder="Deine Antwort in eigenen Worten …"></textarea>`);
-      const ok = el(`<button class="linkish">Speichern</button>`);
-      ok.onclick = () => { if (ta.value.trim()) { answers[o.id] = ta.value.trim(); } mode = "idle"; render(); };
-      foot.append(ta, ok);
-      setTimeout(() => ta.focus(), 30);
+      const ta = el(`<textarea class="typed" rows="3" placeholder="${esc(T.placeholder)}"></textarea>`);
+      const ok = el(`<button class="linkish">${esc(T.save)}</button>`);
+      ok.onclick = () => { if (ta.value.trim()) answers[o.id] = ta.value.trim(); mode = "idle"; render(); };
+      foot.append(ta, ok); setTimeout(() => ta.focus(), 30);
     } else {
       foot.append(el(`<div class="live">${mode === "rec" ? esc(live || "…") : ""}</div>`));
-      const mic = el(`<button class="mic ${mode === "rec" ? "rec" : (saved ? "done" : "")}" aria-label="Sprechen">${mode === "rec" ? SVG.stop : SVG.mic}</button>`);
+      const mic = el(`<button class="mic ${mode === "rec" ? "rec" : (saved ? "done" : "")}">${mode === "rec" ? SVG.stop : SVG.mic}</button>`);
       mic.onclick = () => rec.toggle(o.id);
-      foot.append(mic);
-      foot.append(el(`<div class="hint">${mode === "rec" ? "Ich höre zu — noch einmal tippen zum Beenden" : (saved ? "Nochmal sprechen und überschreiben" : "Antworte laut, in einem Satz")}</div>`));
+      foot.append(mic, el(`<div class="hint">${esc(mode === "rec" ? T.listenStop : (saved ? T.again : T.sayOne))}</div>`));
       if (mode !== "rec") {
-        const alt = el(`<button class="linkish">Lieber tippen</button>`);
+        const alt = el(`<button class="linkish">${esc(T.typeInstead)}</button>`);
         alt.onclick = () => { mode = "nospeech"; render(); };
         foot.append(alt);
       }
     }
-
     const dots = body.querySelector(".dots");
     OBJECTS.forEach((oo, i) => {
-      const b = el(`<button class="${i === idx ? "on" : ""} ${answers[oo.id] ? "has" : ""}" aria-label="${esc(oo.title)}"></button>`);
+      const b = el(`<button class="${i === idx ? "on" : ""} ${answers[oo.id] ? "has" : ""}"></button>`);
       b.onclick = () => { idx = i; live = ""; render(); };
       dots.append(b);
     });
     body.querySelector(".nav.l").onclick = () => { idx = (idx - 1 + OBJECTS.length) % OBJECTS.length; live = ""; render(); };
     body.querySelector(".nav.r").onclick = () => { idx = (idx + 1) % OBJECTS.length; live = ""; render(); };
     root.append(body);
-
-    const n = Object.keys(answers).length;
-    const bar = el(`<div style="padding:0 22px 20px"><button class="finish" ${n ? "" : "disabled"}>Besuch beenden ${SVG.arrow}</button></div>`);
-    bar.querySelector("button").onclick = () => alert("→ Museum Wrapped (" + n + " Reflexionen)");
-    root.append(bar);
+    root.append(finishBar(root, answers, startedAt, 22, () => { idx = 0; startedAt = Date.now(); }, render));
   }
   render();
+  return { relang: render };
 }
 
 /* ======================= B · KARTEI ======================= */
 function Kartei(root) {
-  let open = null, answers = {}, mode = "idle", live = "";
+  let open = null, answers = {}, mode = "idle", live = "", startedAt = Date.now();
   const rec = makeRecorder({
-    onInterim: t => { live = t; render(); },
-    onFinal: (id, t) => { answers[id] = t; live = ""; render(); },
+    onInterim: s => { live = s; render(); },
+    onFinal: (id, s) => { answers[id] = s; live = ""; render(); },
     onState: s => { mode = s; render(); },
   });
 
   function render() {
+    const T = t();
     root.innerHTML = "";
-    root.append(el(`
-      <div class="topbar">
-        <div class="brand"><i>◆</i> SMÄK</div>
-        <div class="count"><b>${Object.keys(answers).length}</b> / ${OBJECTS.length} erzählt</div>
-      </div>`));
+    root.append(el(`<div class="topbar">
+      <div class="brand"><i>◆</i> SMÄK</div>
+      <div class="count"><b>${Object.keys(answers).length}</b> / ${OBJECTS.length} ${esc(T.erzaehlt)}</div></div>`));
     root.append(el(`<div class="hair"></div>`));
 
     const list = el(`<div class="kartei">
-      <div class="khead">Deine Route<br/>durch die Sammlung</div>
-      <div class="ksub">Sechs Objekte. Zu jedem eine Frage, die nur du beantworten kannst.</div>
-    </div>`);
+      <div class="khead">${T.routeHead}</div>
+      <div class="ksub">${esc(T.routeSub)}</div></div>`);
     OBJECTS.forEach(o => {
-      const has = !!answers[o.id];
-      const c = el(`
-        <button class="kcard ${has ? "has" : ""}">
-          <div class="kthumb"><img src="${IMG}${o.img}" alt="" /></div>
-          <div class="kbody">
-            <div class="eyebrow">${esc(o.room)}</div>
-            <h3>${esc(o.title)}</h3>
-            <div class="kstate">${has ? SVG.check + " Erzählt" : "Noch offen"}</div>
-          </div>
-        </button>`);
+      const d = loc(o), has = !!answers[o.id];
+      const c = el(`<button class="kcard ${has ? "has" : ""}">
+        <div class="kthumb"><img src="${IMG}${o.img}" alt="" /></div>
+        <div class="kbody"><div class="eyebrow">${esc(d.room)}</div>
+        <h3>${esc(d.title)}</h3>
+        <div class="kstate">${has ? SVG.check + " " + esc(T.told) : esc(T.open)}</div></div></button>`);
       c.onclick = () => { open = o.id; live = ""; mode = "idle"; render(); };
       list.append(c);
     });
     root.append(list);
 
     const n = Object.keys(answers).length;
-    const bar = el(`<div class="kbar">
-      <button class="finish" ${n ? "" : "disabled"}>Besuch beenden ${SVG.arrow}</button>
-    </div>`);
-    bar.querySelector("button").onclick = () => alert("→ Museum Wrapped (" + n + " Reflexionen)");
+    const bar = el(`<div class="kbar"><button class="finish" ${n ? "" : "disabled"}>${esc(T.finish)} ${SVG.arrow}</button></div>`);
+    bar.querySelector("button").onclick = () => {
+      if (!n) return;
+      startWrapped(root, answers, startedAt, () => {
+        Object.keys(answers).forEach(k => delete answers[k]);
+        open = null; startedAt = Date.now(); render();
+      });
+    };
     root.append(bar);
 
-    const o = OBJECTS.find(x => x.id === open);
+    const o = obj(open);
     const sheet = el(`<div class="sheet ${o ? "open" : ""}"><div class="sheetbody"><div class="grab"></div></div></div>`);
     sheet.onclick = (e) => { if (e.target === sheet) { open = null; render(); } };
     if (o) {
-      const sb = sheet.querySelector(".sheetbody");
-      const saved = answers[o.id];
-      sb.append(el(`
-        <div class="sheethero">
-          <div class="kthumb"><img src="${IMG}${o.img}" alt="" /></div>
-          <div><div class="eyebrow">${esc(o.room)} · ${esc(o.epoche)}</div>
-          <div class="vtitle" style="margin:4px 0 0;font-size:17px">${esc(o.title)}</div></div>
-        </div>`));
-      sb.append(el(saved
-        ? `<div class="saved">${SVG.check}<p>„${esc(saved)}“</p></div>`
-        : `<div class="frage sfrage">${esc(EINLADUNG)}</div>`));
-
+      const d = loc(o), sb = sheet.querySelector(".sheetbody"), saved = answers[o.id];
+      sb.append(el(`<div class="sheethero">
+        <div class="kthumb"><img src="${IMG}${o.img}" alt="" /></div>
+        <div><div class="eyebrow">${esc(d.room)} · ${esc(d.epoche)}</div>
+        <div class="vtitle" style="margin:4px 0 0;font-size:17px">${esc(d.title)}</div></div></div>`));
+      sb.append(el(saved ? `<div class="saved">${SVG.check}<p>„${esc(saved)}“</p></div>`
+                        : `<div class="frage sfrage">${esc(T.einladung)}</div>`));
       if (mode === "nospeech") {
-        const ta = el(`<textarea class="typed" rows="3" placeholder="Deine Antwort in eigenen Worten …"></textarea>`);
-        const ok = el(`<button class="linkish">Speichern</button>`);
+        const ta = el(`<textarea class="typed" rows="3" placeholder="${esc(T.placeholder)}"></textarea>`);
+        const ok = el(`<button class="linkish">${esc(T.save)}</button>`);
         ok.onclick = () => { if (ta.value.trim()) answers[o.id] = ta.value.trim(); mode = "idle"; render(); };
-        sb.append(ta, ok);
-        setTimeout(() => ta.focus(), 30);
+        sb.append(ta, ok); setTimeout(() => ta.focus(), 30);
       } else {
         sb.append(el(`<div class="live">${mode === "rec" ? esc(live || "…") : ""}</div>`));
         const wrap = el(`<div style="display:flex;flex-direction:column;align-items:center;gap:8px"></div>`);
         const mic = el(`<button class="mic ${mode === "rec" ? "rec" : (saved ? "done" : "")}">${mode === "rec" ? SVG.stop : SVG.mic}</button>`);
         mic.onclick = () => rec.toggle(o.id);
-        wrap.append(mic, el(`<div class="hint">${mode === "rec" ? "Ich höre zu" : "Antworte laut, in einem Satz"}</div>`));
+        wrap.append(mic, el(`<div class="hint">${esc(mode === "rec" ? T.listening : T.sayOne)}</div>`));
         if (mode !== "rec") {
-          const alt = el(`<button class="linkish">Lieber tippen</button>`);
+          const alt = el(`<button class="linkish">${esc(T.typeInstead)}</button>`);
           alt.onclick = () => { mode = "nospeech"; render(); };
           wrap.append(alt);
         }
         sb.append(wrap);
       }
-      const close = el(`<button class="linkish" style="align-self:center">Schliessen</button>`);
+      const close = el(`<button class="linkish" style="align-self:center">${esc(T.close)}</button>`);
       close.onclick = () => { open = null; render(); };
       sb.append(close);
     }
     root.append(sheet);
   }
   render();
+  return { relang: render };
 }
 
 /* ======================= C · SAAL ======================= */
 function Saal(root) {
-  let sel = 0, answers = {}, mode = "idle", live = "";
+  let sel = 0, answers = {}, mode = "idle", live = "", startedAt = Date.now();
   const rec = makeRecorder({
-    onInterim: t => { live = t; render(); },
-    onFinal: (id, t) => { answers[id] = t; live = ""; render(); },
+    onInterim: s => { live = s; render(); },
+    onFinal: (id, s) => { answers[id] = s; live = ""; render(); },
     onState: s => { mode = s; render(); },
   });
 
   function render() {
-    const o = OBJECTS[sel], saved = answers[o.id];
+    const T = t(), o = OBJECTS[sel], d = loc(o), saved = answers[o.id];
     root.innerHTML = "";
-    root.append(el(`
-      <div class="topbar">
-        <div class="brand"><i>◆</i> SMÄK</div>
-        <div class="count"><b>${Object.keys(answers).length}</b> / ${OBJECTS.length} erzählt</div>
-      </div>`));
+    root.append(el(`<div class="topbar">
+      <div class="brand"><i>◆</i> SMÄK</div>
+      <div class="count"><b>${Object.keys(answers).length}</b> / ${OBJECTS.length} ${esc(T.erzaehlt)}</div></div>`));
     root.append(el(`<div class="hair"></div>`));
 
     const body = el(`<div class="saal"><div class="plan"></div>
       <div class="planfoot">
-        <div class="legend"><span><i style="background:var(--gold)"></i>erzählt</span><span><i style="border:1px solid oklch(0.70 0.10 75/.6)"></i>offen</span></div>
-        <div class="eyebrow">Schematischer Plan</div>
-      </div>
-      <div class="detail"></div></div>`);
+        <div class="legend"><span><i style="background:var(--gold)"></i>${esc(T.legendTold)}</span><span><i style="border:1px solid oklch(0.70 0.10 75/.6)"></i>${esc(T.legendOpen)}</span></div>
+        <div class="eyebrow">${esc(T.schematic)}</div>
+      </div><div class="detail"></div></div>`);
 
     const plan = body.querySelector(".plan");
     ROOMS.forEach(r => plan.append(el(
-      `<div class="room" style="left:${r.x}%;top:${r.y}%;width:${r.w}%;height:${r.h}%"><span>${esc(r.name)}</span></div>`)));
+      `<div class="room" style="left:${r.x}%;top:${r.y}%;width:${r.w}%;height:${r.h}%"><span>${esc(r[LANG])}</span></div>`)));
     OBJECTS.forEach((oo, i) => {
       const p = el(`<button class="pin ${i === sel ? "on" : ""} ${answers[oo.id] ? "has" : ""}"
-        style="left:${oo.plan.x}%;top:${oo.plan.y}%" aria-label="${esc(oo.title)}">${answers[oo.id] ? SVG.check : (i + 1)}</button>`);
+        style="left:${oo.plan.x}%;top:${oo.plan.y}%">${answers[oo.id] ? SVG.check : (i + 1)}</button>`);
       p.onclick = () => { sel = i; live = ""; mode = "idle"; render(); };
       plan.append(p);
     });
 
-    const d = body.querySelector(".detail");
-    d.append(el(`
-      <div class="row">
-        <div class="kthumb"><img src="${IMG}${o.img}" alt="" /></div>
-        <div><div class="eyebrow">${esc(o.room)}</div>
-        <div class="vtitle" style="margin:4px 0 0;font-size:16px">${esc(o.title)}</div></div>
-      </div>`));
-    d.append(el(saved
-      ? `<div class="saved">${SVG.check}<p>„${esc(saved)}“</p></div>`
-      : `<div class="frage dfrage">${esc(EINLADUNG)}</div>`));
-
+    const det = body.querySelector(".detail");
+    det.append(el(`<div class="row">
+      <div class="kthumb"><img src="${IMG}${o.img}" alt="" /></div>
+      <div><div class="eyebrow">${esc(d.room)}</div>
+      <div class="vtitle" style="margin:4px 0 0;font-size:16px">${esc(d.title)}</div></div></div>`));
+    det.append(el(saved ? `<div class="saved">${SVG.check}<p>„${esc(saved)}“</p></div>`
+                        : `<div class="frage dfrage">${esc(T.einladung)}</div>`));
     if (mode === "nospeech") {
-      const ta = el(`<textarea class="typed" rows="2" placeholder="Deine Antwort …"></textarea>`);
-      const ok = el(`<button class="linkish">Speichern</button>`);
+      const ta = el(`<textarea class="typed" rows="2" placeholder="${esc(T.placeholder)}"></textarea>`);
+      const ok = el(`<button class="linkish">${esc(T.save)}</button>`);
       ok.onclick = () => { if (ta.value.trim()) answers[o.id] = ta.value.trim(); mode = "idle"; render(); };
-      d.append(ta, ok);
-      setTimeout(() => ta.focus(), 30);
+      det.append(ta, ok); setTimeout(() => ta.focus(), 30);
     } else {
       const row = el(`<div style="display:flex;align-items:center;gap:13px"></div>`);
       const mic = el(`<button class="mic ${mode === "rec" ? "rec" : (saved ? "done" : "")}" style="width:56px;height:56px;flex:0 0 auto">${mode === "rec" ? SVG.stop : SVG.mic}</button>`);
       mic.onclick = () => rec.toggle(o.id);
-      row.append(mic);
-      row.append(el(`<div style="flex:1;text-align:left">
+      row.append(mic, el(`<div style="flex:1;text-align:left">
         <div class="live" style="text-align:left">${mode === "rec" ? esc(live || "…") : ""}</div>
-        <div class="hint" style="text-align:left">${mode === "rec" ? "Ich höre zu" : "Antworte laut, in einem Satz"}</div></div>`));
-      d.append(row);
+        <div class="hint" style="text-align:left">${esc(mode === "rec" ? T.listening : T.sayAny)}</div></div>`));
+      det.append(row);
       if (mode !== "rec") {
-        const alt = el(`<button class="linkish" style="align-self:flex-start;padding-left:0">Lieber tippen</button>`);
+        const alt = el(`<button class="linkish" style="align-self:flex-start;padding-left:0">${esc(T.typeInstead)}</button>`);
         alt.onclick = () => { mode = "nospeech"; render(); };
-        d.append(alt);
+        det.append(alt);
       }
     }
     root.append(body);
-
-    const n = Object.keys(answers).length;
-    const bar = el(`<div style="padding:0 18px 18px"><button class="finish" ${n ? "" : "disabled"}>Besuch beenden ${SVG.arrow}</button></div>`);
-    bar.querySelector("button").onclick = () => alert("→ Museum Wrapped (" + n + " Reflexionen)");
-    root.append(bar);
+    root.append(finishBar(root, answers, startedAt, 18, () => { sel = 0; startedAt = Date.now(); }, render));
   }
   render();
+  return { relang: render };
 }
 
-/* ======================= D · FÜHRUNG (Live-Position) ======================= */
-/* Reine Konzeptskizze. Keine Ortung, keine Sensoren — die Position wird
-   abgespielt oder mit dem Finger gesetzt. Sie zeigt nur die Idee: das nächste
-   Objekt meldet sich von allein, statt dass man es sucht. */
+/* ======================= D · FÜHRUNG ======================= */
+/* Konzeptskizze. Keine Ortung: die Position wird abgespielt oder mit dem
+   Finger gesetzt. Sie zeigt nur die Idee — das nächste Objekt meldet sich
+   von allein, statt dass man es sucht. */
 function Fuehrung(root) {
   const SCALE_X = 14, SCALE_Y = 20;   // Meter, die ein Raum in der Skizze misst
-  const ARRIVE  = 2.6;                // ab hier gilt "du stehst davor"
+  const ARRIVE = 2.6;
 
   let roomIdx = 0;
-  let me = { x: 50, y: 94 }, heading = -90, wp = 0, t = 0, walking = false;
+  let me = { x: 50, y: 94 }, heading = -90, wp = 0, seg = 0, walking = false;
   let answers = {}, selId = ROUTE_ROOMS[0].spots[0].id, arrived = false;
-  let mode = "idle", live = "", sheetId = null, shot = 0;
-  let elMe, elCone, elDist, pinEls = [];
+  let mode = "idle", live = "", sheetId = null, shot = 0, startedAt = Date.now();
+  let elMe, elCone, elDist, pinEls = [], inWrapped = false;
 
   const rec = makeRecorder({
-    onInterim: t2 => { live = t2; render(); },
-    onFinal: (id, t2) => { answers[id] = t2; live = ""; render(); },
+    onInterim: s => { live = s; render(); },
+    onFinal: (id, s) => { answers[id] = s; live = ""; render(); },
     onState: s => { mode = s; render(); },
   });
 
   const room = () => ROUTE_ROOMS[roomIdx];
-  const obj = (id) => OBJECTS.find(o => o.id === id);
   const path = () => [{ x: 50, y: 94 }].concat(room().spots.map(s => ({ x: s.x, y: s.y })), [{ x: 50, y: 6 }]);
   const distM = (a, b) => Math.hypot((a.x - b.x) * SCALE_X / 100, (a.y - b.y) * SCALE_Y / 100);
 
@@ -678,81 +859,75 @@ function Fuehrung(root) {
     return { spot: best, d: bd };
   }
 
-  /* Raumwechsel: dir 1 = weiter, dir -1 = zurück */
   function enterRoom(i, dir) {
     roomIdx = (i + ROUTE_ROOMS.length) % ROUTE_ROOMS.length;
     me = { x: 50, y: dir < 0 ? 6 : 94 };
-    wp = 0; t = 0; heading = dir < 0 ? 90 : -90;
+    wp = 0; seg = 0; heading = dir < 0 ? 90 : -90;
     selId = room().spots[0].id; mode = "idle"; live = ""; sheetId = null;
     render();
   }
 
   function tick() {
-    if (!walking || sheetId) return;
+    if (!walking || sheetId || inWrapped) return;
     const P = path();
     if (wp >= P.length - 1) { enterRoom(roomIdx + 1, 1); return; }
     const a = P[wp], b = P[wp + 1];
     const len = Math.hypot(b.x - a.x, b.y - a.y) || 1;
-    t += 1.2 / len;
-    if (t >= 1) { t = 0; wp++; if (wp >= P.length - 1) { enterRoom(roomIdx + 1, 1); return; } }
+    seg += 1.2 / len;
+    if (seg >= 1) { seg = 0; wp++; if (wp >= P.length - 1) { enterRoom(roomIdx + 1, 1); return; } }
     const A = P[wp], B = P[wp + 1] || P[wp];
-    me = { x: A.x + (B.x - A.x) * t, y: A.y + (B.y - A.y) * t };
+    me = { x: A.x + (B.x - A.x) * seg, y: A.y + (B.y - A.y) * seg };
     heading = Math.atan2(B.y - A.y, B.x - A.x) * 180 / Math.PI;
     paint();
   }
   setInterval(tick, 80);
 
   function paint() {
-    if (!elMe) return;
+    if (!elMe || !elMe.isConnected) return;
+    const T = t();
     elMe.style.left = me.x + "%"; elMe.style.top = me.y + "%";
     elCone.style.left = me.x + "%"; elCone.style.top = me.y + "%";
     elCone.style.transform = `translate(-50%,-50%) rotate(${heading}deg)`;
     const n = nearest(), now = !!(n.spot && n.d < ARRIVE);
     pinEls.forEach(p => p.classList.toggle("near", now && p.dataset.id === n.spot.id));
     elDist.innerHTML = now
-      ? `<span class="arrived">${SVG.check} Du stehst davor</span>`
-      : `Nächstes · <b>${Math.max(1, Math.round(n.d))} m</b>`;
+      ? `<span class="arrived">${SVG.check} ${esc(T.here)}</span>`
+      : `${esc(T.next)} · <b>${Math.max(1, Math.round(n.d))} m</b>`;
     if (now && selId !== n.spot.id) { selId = n.spot.id; arrived = true; mode = "idle"; live = ""; render(); return; }
     arrived = now;
   }
 
   function render() {
-    const o = obj(selId), saved = answers[selId], R = room();
+    const T = t(), o = obj(selId), d = loc(o), saved = answers[selId], R = room();
     root.innerHTML = ""; pinEls = [];
-    root.append(el(`
-      <div class="topbar">
-        <div class="brand"><i>◆</i> SMÄK</div>
-        <div class="count"><b>${Object.keys(answers).length}</b> / ${OBJECTS.length} erzählt</div>
-      </div>`));
+    root.append(el(`<div class="topbar">
+      <div class="brand"><i>◆</i> SMÄK</div>
+      <div class="count"><b>${Object.keys(answers).length}</b> / ${OBJECTS.length} ${esc(T.erzaehlt)}</div></div>`));
     root.append(el(`<div class="hair"></div>`));
 
     const body = el(`<div class="fuehrung">
-      <div class="roomhead"></div>
-      <div class="rstage"></div>
-      <div class="fbar"></div>
-      <div class="detail"></div></div>`);
+      <div class="roomhead"></div><div class="rstage"></div>
+      <div class="fbar"></div><div class="detail"></div></div>`);
 
-    /* Kopf: welcher Raum, mit Handsteuerung für die Bühne */
     const head = body.querySelector(".roomhead");
-    const prev = el(`<button class="rnav" aria-label="Vorheriger Raum">${SVG.left}</button>`);
-    const next = el(`<button class="rnav" aria-label="Nächster Raum">${SVG.right}</button>`);
+    const prev = el(`<button class="rnav">${SVG.left}</button>`);
+    const next = el(`<button class="rnav">${SVG.right}</button>`);
     prev.onclick = () => enterRoom(roomIdx - 1, -1);
     next.onclick = () => enterRoom(roomIdx + 1, 1);
-    head.append(prev, el(`<div class="rn">${esc(R.name)}</div>`),
-      el(`<div class="rc">Raum ${roomIdx + 1} / ${ROUTE_ROOMS.length}</div>`), next);
+    head.append(prev, el(`<div class="rn">${esc(R[LANG])}</div>`),
+      el(`<div class="rc">${esc(T.room)} ${roomIdx + 1} / ${ROUTE_ROOMS.length}</div>`), next);
 
-    /* Bühne: ein Raum füllt den Schirm */
     const st = body.querySelector(".rstage");
-    st.append(el(`<div class="door top"><span>${esc(ROUTE_ROOMS[(roomIdx + 1) % ROUTE_ROOMS.length].name)}</span></div>`));
-    st.append(el(`<div class="door bot"><span>${esc(ROUTE_ROOMS[(roomIdx - 1 + ROUTE_ROOMS.length) % ROUTE_ROOMS.length].name)}</span></div>`));
+    st.append(el(`<div class="door top"><span>${esc(ROUTE_ROOMS[(roomIdx + 1) % ROUTE_ROOMS.length][LANG])}</span></div>`));
+    st.append(el(`<div class="door bot"><span>${esc(ROUTE_ROOMS[(roomIdx - 1 + ROUTE_ROOMS.length) % ROUTE_ROOMS.length][LANG])}</span></div>`));
     R.spots.forEach(s => {
-      const oo = obj(s.id), has = !!answers[s.id];
+      const oo = obj(s.id), od = loc(oo), has = !!answers[s.id];
       const p = el(`<button class="rpin ${has ? "has" : ""}" data-id="${s.id}"
-        style="left:${s.x}%;top:${s.y}%" aria-label="${esc(oo.title)}"><img src="${IMG}${oo.img}" alt="" /></button>`);
+        style="left:${s.x}%;top:${s.y}%" aria-label="${esc(od.title)}"><img src="${IMG}${oo.img}" alt="" /></button>`);
       p.onclick = (e) => { e.stopPropagation(); selId = s.id; mode = "idle"; live = ""; render(); };
       st.append(p); pinEls.push(p);
       if (has) st.append(el(`<div class="rtick" style="left:calc(${s.x}% + 24px);top:calc(${s.y}% + 14px)">${SVG.check}</div>`));
-      st.append(el(`<div class="rlabel" style="left:${s.x}%;top:calc(${s.y}% + 44px)">${esc(oo.epoche)}</div>`));
+      st.append(el(`<div class="rlabel" style="left:${s.x}%;top:calc(${s.y}% + 44px)">${esc(od.epoche)}</div>`));
     });
     elCone = el(`<div class="cone"></div>`); st.append(elCone);
     elMe = el(`<div class="me"></div>`); st.append(elMe);
@@ -764,67 +939,71 @@ function Fuehrung(root) {
     };
 
     const bar = body.querySelector(".fbar");
-    const go = el(`<button class="chip ${walking ? "on" : ""}">${walking ? "Pause" : "Rundgang"}</button>`);
+    const go = el(`<button class="chip ${walking ? "on" : ""}">${esc(walking ? T.pause : T.walk)}</button>`);
     go.onclick = () => { walking = !walking; render(); };
     elDist = el(`<div class="dist"></div>`);
-    bar.append(go, el(`<span class="stub">Skizze</span>`), elDist);
+    bar.append(go, el(`<span class="stub">${esc(T.sketch)}</span>`), elDist);
 
-    /* Panel: Foto antippen öffnet das Objektblatt */
-    const d = body.querySelector(".detail");
+    const det = body.querySelector(".detail");
     const row = el(`<div class="row"></div>`);
-    const tap = el(`<button class="tapphoto" aria-label="Mehr zu diesem Objekt">
+    const tap = el(`<button class="tapphoto">
       <div class="kthumb"><img src="${IMG}${o.img}" alt="" /></div><span class="more">+</span></button>`);
     tap.onclick = () => { sheetId = selId; shot = 0; render(); };
-    row.append(tap, el(`<div><div class="eyebrow">${esc(o.room)} · ${esc(o.epoche)}</div>
-      <div class="vtitle" style="margin:4px 0 0;font-size:16px">${esc(o.title)}</div></div>`));
-    d.append(row);
-    d.append(el(saved
-      ? `<div class="saved">${SVG.check}<p>„${esc(saved)}“</p></div>`
-      : `<div class="frage dfrage">${esc(EINLADUNG)}</div>`));
+    row.append(tap, el(`<div><div class="eyebrow">${esc(d.room)} · ${esc(d.epoche)}</div>
+      <div class="vtitle" style="margin:4px 0 0;font-size:16px">${esc(d.title)}</div></div>`));
+    det.append(row);
+    det.append(el(saved ? `<div class="saved">${SVG.check}<p>„${esc(saved)}“</p></div>`
+                        : `<div class="frage dfrage">${esc(T.einladung)}</div>`));
 
     if (mode === "nospeech") {
-      const ta = el(`<textarea class="typed" rows="2" placeholder="Deine Antwort …"></textarea>`);
-      const ok = el(`<button class="linkish">Speichern</button>`);
+      const ta = el(`<textarea class="typed" rows="2" placeholder="${esc(T.placeholder)}"></textarea>`);
+      const ok = el(`<button class="linkish">${esc(T.save)}</button>`);
       ok.onclick = () => { if (ta.value.trim()) answers[selId] = ta.value.trim(); mode = "idle"; render(); };
-      d.append(ta, ok);
-      setTimeout(() => ta.focus(), 30);
+      det.append(ta, ok); setTimeout(() => ta.focus(), 30);
     } else {
       const mrow = el(`<div style="display:flex;align-items:center;gap:13px"></div>`);
       const mic = el(`<button class="mic ${mode === "rec" ? "rec" : (saved ? "done" : "")}" style="width:56px;height:56px;flex:0 0 auto">${mode === "rec" ? SVG.stop : SVG.mic}</button>`);
       mic.onclick = () => rec.toggle(selId);
-      mrow.append(mic);
-      mrow.append(el(`<div style="flex:1;text-align:left">
+      mrow.append(mic, el(`<div style="flex:1;text-align:left">
         <div class="live" style="text-align:left">${mode === "rec" ? esc(live || "…") : ""}</div>
-        <div class="hint" style="text-align:left">${mode === "rec" ? "Ich höre zu" : (arrived ? "Du stehst davor — sag es einfach laut" : "Sag, was dir dazu einfällt")}</div></div>`));
-      d.append(mrow);
+        <div class="hint" style="text-align:left">${esc(mode === "rec" ? T.listening : (arrived ? T.sayHere : T.sayAny))}</div></div>`));
+      det.append(mrow);
       if (mode !== "rec") {
-        const alt = el(`<button class="linkish" style="align-self:flex-start;padding-left:0">Lieber tippen</button>`);
+        const alt = el(`<button class="linkish" style="align-self:flex-start;padding-left:0">${esc(T.typeInstead)}</button>`);
         alt.onclick = () => { mode = "nospeech"; render(); };
-        d.append(alt);
+        det.append(alt);
       }
     }
     root.append(body);
 
     const n = Object.keys(answers).length;
-    const fin = el(`<div style="padding:0 16px 16px"><button class="finish" ${n ? "" : "disabled"}>Besuch beenden ${SVG.arrow}</button></div>`);
-    fin.querySelector("button").onclick = () => alert("→ Museum Wrapped (" + n + " Reflexionen)");
+    const fin = el(`<div style="padding:0 16px 16px"><button class="finish" ${n ? "" : "disabled"}>${esc(T.finish)} ${SVG.arrow}</button></div>`);
+    fin.querySelector("button").onclick = () => {
+      if (!n) return;
+      inWrapped = true; walking = false;
+      startWrapped(root, answers, startedAt, () => {
+        Object.keys(answers).forEach(k => delete answers[k]);
+        inWrapped = false; roomIdx = 0; startedAt = Date.now();
+        enterRoom(0, 1);
+      });
+    };
     root.append(fin);
-
     root.append(objektblatt());
     paint();
   }
 
   /* Objektblatt: Beschreibung, weitere Aufnahmen, Audioguide (Platzhalter) */
   function objektblatt() {
+    const T = t();
     const sheet = el(`<div class="sheet ${sheetId ? "open" : ""}"><div class="sheetbody"><div class="grab"></div></div></div>`);
     sheet.onclick = (e) => { if (e.target === sheet) { sheetId = null; render(); } };
     if (!sheetId) return sheet;
-    const o = obj(sheetId), gal = GALERIE[sheetId] || [];
+
+    const o = obj(sheetId), d = loc(o), gal = GALERIE[sheetId] || [];
     const big = gal[shot] || o.img;
     const sb = sheet.querySelector(".sheetbody");
 
-    sb.append(el(`<div class="bigshot"><img src="${IMG}${big}" alt="${esc(o.title)}" /></div>`));
-
+    sb.append(el(`<div class="bigshot"><img src="${IMG}${big}" alt="${esc(d.title)}" /></div>`));
     if (gal.length > 1) {
       const strip = el(`<div class="strip"></div>`);
       gal.forEach((g, i) => {
@@ -834,43 +1013,81 @@ function Fuehrung(root) {
       });
       sb.append(strip);
     }
-
     sb.append(el(`<div>
-      <div class="eyebrow">${esc(o.room)} · ${esc(o.epoche)} · ${gal.length || 1} Aufnahme${(gal.length || 1) > 1 ? "n" : ""}</div>
-      <div class="vtitle" style="margin:5px 0 0;font-size:18px">${esc(o.title)}</div></div>`));
-    sb.append(el(`<div class="beschreibung">${esc(FACTS[sheetId] || "")}</div>`));
+      <div class="eyebrow">${esc(d.room)} · ${esc(d.epoche)} · ${esc(T.shots(gal.length || 1))}</div>
+      <div class="vtitle" style="margin:5px 0 0;font-size:18px">${esc(d.title)}</div></div>`));
+    sb.append(el(`<div class="beschreibung">${esc(d.fact)}</div>`));
 
     const bars = Array.from({ length: 34 }, (_, i) =>
       `<i style="height:${20 + Math.round(70 * Math.abs(Math.sin(i * 1.7)))}%"></i>`).join("");
     sb.append(el(`<div>
-      <div class="audio">
-        <div class="play">${SVG.play}</div>
-        <div class="wave">${bars}</div>
-        <div class="len">2:14</div>
-      </div>
-      <div class="stub" style="margin-top:7px">Audioguide des Museums · Platzhalter</div>
-    </div>`));
+      <div class="audio"><div class="play">${SVG.play}</div><div class="wave">${bars}</div><div class="len">2:14</div></div>
+      <div class="stub" style="margin-top:7px">${esc(T.audioStub)}</div></div>`));
 
-    const close = el(`<button class="linkish" style="align-self:center">Schliessen</button>`);
+    const close = el(`<button class="linkish" style="align-self:center">${esc(T.close)}</button>`);
     close.onclick = () => { sheetId = null; render(); };
     sb.append(close);
     return sheet;
   }
 
   render();
+  return { relang: render };
 }
 
-Vitrine(document.getElementById("scr-a"));
-Kartei(document.getElementById("scr-b"));
-Saal(document.getElementById("scr-c"));
-Fuehrung(document.getElementById("scr-d"));
+/* ======================= Werkbank ======================= */
+const SLOTS = [
+  { key:"d", make:Fuehrung, name:"nameD", why:"whyD" },
+  { key:"a", make:Vitrine,  name:"nameA", why:"whyA" },
+  { key:"b", make:Kartei,   name:"nameB", why:"whyB" },
+  { key:"c", make:Saal,     name:"nameC", why:"whyC" },
+];
+let visible = "d";                     // Fokus liegt auf D
+const apps = {};
 
-document.getElementById("tabs").addEventListener("click", (e) => {
+function buildRack() {
+  const rack = document.getElementById("rack");
+  rack.innerHTML = "";
+  SLOTS.forEach(s => {
+    rack.append(el(`<figure class="slot" data-slot="${s.key}">
+      <figcaption><div class="name"></div><div class="why"></div></figcaption>
+      <div class="device"><div class="screen" id="scr-${s.key}"></div></div></figure>`));
+    apps[s.key] = s.make(document.getElementById("scr-" + s.key));
+  });
+  paintChrome();
+}
+
+function paintChrome() {
+  const T = t();
+  document.documentElement.lang = LANG;
+  document.getElementById("labTitle").textContent = T.labTitle;
+  document.getElementById("labIntro").textContent = T.labIntro;
+
+  const tabs = document.getElementById("tabs");
+  tabs.innerHTML = "";
+  [{ k:"all", l:T.tabAll }].concat(SLOTS.map(s => ({ k:s.key, l:T["tab" + s.key.toUpperCase()] })))
+    .forEach(dd => {
+      const b = el(`<button data-slot="${dd.k}" aria-pressed="${visible === dd.k}">${esc(dd.l)}</button>`);
+      b.onclick = () => { visible = dd.k; paintChrome(); };
+      tabs.append(b);
+    });
+
+  SLOTS.forEach(s => {
+    const fig = document.querySelector(`.slot[data-slot="${s.key}"]`);
+    fig.querySelector(".name").textContent = T[s.name];
+    fig.querySelector(".why").textContent = T[s.why];
+    fig.classList.toggle("hidden", visible !== "all" && visible !== s.key);
+  });
+}
+
+document.getElementById("langsw").addEventListener("click", (e) => {
   const b = e.target.closest("button"); if (!b) return;
-  const want = b.dataset.slot;
-  document.querySelectorAll("#tabs button").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
-  document.querySelectorAll(".slot").forEach(s => s.classList.toggle("hidden", want !== "all" && s.dataset.slot !== want));
+  LANG = b.dataset.lang;
+  document.querySelectorAll("#langsw button").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+  Object.values(apps).forEach(a => a.relang());   // Zustand bleibt, nur die Sprache wechselt
+  paintChrome();
 });
+
+buildRack();
 </script>
 </body>
 </html>
