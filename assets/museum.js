@@ -75,7 +75,11 @@ const L = {
     textSource: "Woher kommt der Text?", sampleShort: "Beispiel", liveShort: "Live",
     saal: "Saal", youAreHere: "Du bist hier", walkRunning: "Rundgang läuft",
     steps: (n) => n + (n === 1 ? " Schritt" : " Schritte"), vitrine: (n) => "Vitrine " + n,
-    toEntrance: "Eingang", finishShort: "Besuch beenden",
+    toEntrance: "Eingang", finishShort: "Besuch beenden", goTo: "Weiter zum Saal",
+    keep: "Behalten", keepTitle: "Deinen Besuch behalten",
+    keepNote: "Nichts davon liegt auf einem Server — der Text geht mit, nicht ein Link darauf.",
+    keepShare: "Teilen", keepMail: "Per E-Mail schicken", keepCopy: "Text kopieren",
+    keepCopied: "Kopiert.",
     settings: "Einstellungen", setLang: "Sprache", setSource: "Text", setFont: "Schrift",
     likeLabel: "Merken", likeHint: "Andere Besucher haben hier gehalten",
     demoBadge: "Beispieltext",
@@ -135,7 +139,11 @@ const L = {
     textSource: "Where does the text come from?", sampleShort: "Sample", liveShort: "Live",
     saal: "Room", youAreHere: "You are here", walkRunning: "Walk running",
     steps: (n) => n + (n === 1 ? " step" : " steps"), vitrine: (n) => "Case " + n,
-    toEntrance: "Entrance", finishShort: "Finish visit",
+    toEntrance: "Entrance", finishShort: "Finish visit", goTo: "Go to room",
+    keep: "Keep", keepTitle: "Keep your visit",
+    keepNote: "None of this sits on a server — the text travels with you, not a link to it.",
+    keepShare: "Share", keepMail: "Send by e-mail", keepCopy: "Copy the text",
+    keepCopied: "Copied.",
     settings: "Settings", setLang: "Language", setSource: "Text", setFont: "Typeface",
     likeLabel: "Keep", likeHint: "Other visitors stopped here",
     demoBadge: "Sample text",
@@ -444,6 +452,11 @@ function renderStory(layer, w, onRestart) {
     layer.append(el(`<div class="wframe">${frames[i]()}</div>`));
     const foot = el(`<div class="wfoot"></div>`);
     if (i === frames.length - 1) {
+      if (onRestart) {
+        const keep = el(`<button class="btn gold" style="flex:0 0 auto;padding:0 18px;min-height:44px">${esc(T.keep)}</button>`);
+        keep.onclick = () => keepSheet(layer, w);
+        foot.append(keep);
+      }
       const p = peerBtn(layer, w, onRestart, "faden"); if (p) foot.append(p);
       const r = restartBtn(onRestart, layer); if (r) foot.append(r);
     }
@@ -549,12 +562,81 @@ function renderFaden(layer, w, onRestart) {
       <div class="recwhy">${esc(w.missed.reason)}</div></div>
     </div></div>`));
   end.append(el(`<div class="bfoot">${esc(w.closing)}</div>`));
-  const acts = el(`<div style="display:flex;gap:14px;flex-wrap:wrap"></div>`);
+  const acts = el(`<div style="display:flex;gap:14px;flex-wrap:wrap;align-items:center"></div>`);
+  if (onRestart) {
+    const keep = el(`<button class="btn gold" style="flex:0 0 auto;padding:0 18px;min-height:46px">${esc(T.keep)}</button>`);
+    keep.onclick = () => keepSheet(layer, w);
+    acts.append(keep);
+  }
   const p = peerBtn(layer, w, onRestart, "story"); if (p) acts.append(p);
   const r = restartBtn(onRestart, layer); if (r) acts.append(r);
   if (acts.children.length) end.append(acts);
   f.append(end);
   layer.append(f);
+}
+
+/* Der Besuch zum Mitnehmen. Es gibt keinen Server, der ihn aufhebt — also
+   geht der Text mit, nicht ein Link darauf. */
+function wrappedAsText(w) {
+  const T = t(), L = [];
+  L.push("MUSEUM WRAPPED · SMÄK München", "");
+  if (w.greeting) L.push(w.greeting, "");
+  if (w.archetype && w.archetype.name) L.push(w.archetype.name + (w.archetype.subtitle ? " — " + w.archetype.subtitle : ""), "");
+  const words = Array.isArray(w.your_words) ? w.your_words : [];
+  if (words.length) {
+    L.push(T.wWordsHead.toUpperCase(), "");
+    words.forEach(m => {
+      L.push("„" + m.quote + "“");
+      if (m.echo) L.push(m.echo);
+      L.push("— " + titleOf(m.object_id, m.object_title), "");
+    });
+  }
+  if (w.reflective_question) L.push(T.wQuestion.toUpperCase(), w.reflective_question, "");
+  const recs = Array.isArray(w.recommendations) ? w.recommendations : [];
+  if (recs.length) {
+    L.push(T.recsHead.toUpperCase());
+    recs.forEach(r => L.push("· " + titleOf(r.object_id, r.title) + " — " + r.reason));
+    L.push("");
+  }
+  if (w.missed) L.push(T.missedHead.toUpperCase(), "· " + titleOf(w.missed.object_id, w.missed.title), "");
+  if (w.closing) L.push(w.closing);
+  return L.join(String.fromCharCode(10));
+}
+
+function keepSheet(host, w) {
+  const T = t(), text = wrappedAsText(w);
+  const sheet = el(`<div class="sheet open"><div class="sheetbody"><div class="grab"></div></div></div>`);
+  sheet.onclick = (e) => { if (e.target === sheet) sheet.remove(); };
+  const sb = sheet.querySelector(".sheetbody");
+  sb.append(el(`<div class="vtitle" style="margin:0;font-size:22px">${esc(T.keepTitle)}</div>`));
+  sb.append(el(`<div class="sethint" style="margin:0">${esc(T.keepNote)}</div>`));
+
+  const say = (msg) => { const n = sb.querySelector(".keepmsg"); if (n) n.textContent = msg; };
+
+  if (navigator.share) {
+    const b = el(`<button class="btn gold" style="min-height:52px">${esc(T.keepShare)}</button>`);
+    b.onclick = () => navigator.share({ title: "Museum Wrapped", text }).catch(() => {});
+    sb.append(b);
+  }
+  const mail = el(`<button class="btn" style="min-height:50px">${esc(T.keepMail)}</button>`);
+  mail.onclick = () => {
+    location.href = "mailto:?subject=" + encodeURIComponent("Museum Wrapped · SMÄK")
+      + "&body=" + encodeURIComponent(text);
+  };
+  sb.append(mail);
+
+  const copy = el(`<button class="btn" style="min-height:50px">${esc(T.keepCopy)}</button>`);
+  copy.onclick = () => {
+    const done = () => say(T.keepCopied);
+    if (navigator.clipboard) navigator.clipboard.writeText(text).then(done, done);
+    else done();
+  };
+  sb.append(copy, el(`<div class="keepmsg sethint" style="margin:0;text-align:center;min-height:18px"></div>`));
+
+  const close = el(`<button class="linkish" style="align-self:center">${esc(T.close)}</button>`);
+  close.onclick = () => sheet.remove();
+  sb.append(close);
+  host.append(sheet);
 }
 
 const WSTYLES = [
@@ -964,10 +1046,20 @@ function Fuehrung(root) {
     const st = body.querySelector(".rstage");
     if (lastRoom !== roomIdx) { st.classList.add("fresh"); lastRoom = roomIdx; }
     st.append(el(`<div class="walls"></div>`));
+    /* Durch den Proeben geht man weiter — auch mit dem Finger, nicht nur im Rundgang */
     const nextRoom = ROUTE_ROOMS[(roomIdx + 1) % ROUTE_ROOMS.length][LANG];
     const prevName = roomIdx === 0 ? T.toEntrance : ROUTE_ROOMS[roomIdx - 1][LANG];
-    st.append(el(`<div class="door top"><i></i><span>→ ${esc(nextRoom)}</span></div>`));
-    st.append(el(`<div class="door bot"><i></i><span>← ${esc(prevName)}</span></div>`));
+    const doorTop = el(`<button class="door top" aria-label="${esc(T.goTo)} ${esc(nextRoom)}">
+      <i></i><span>→ ${esc(nextRoom)}</span></button>`);
+    doorTop.onclick = (e) => { e.stopPropagation(); walking = false; enterRoom(roomIdx + 1, 1); };
+    st.append(doorTop);
+
+    const first = roomIdx === 0;
+    const doorBot = el(`<button class="door bot ${first ? "shut" : ""}"
+      ${first ? "disabled" : `aria-label="${esc(T.goTo)} ${esc(prevName)}"`}>
+      <i></i><span>← ${esc(prevName)}</span></button>`);
+    if (!first) doorBot.onclick = (e) => { e.stopPropagation(); walking = false; enterRoom(roomIdx - 1, -1); };
+    st.append(doorBot);
 
     R.spots.forEach(sp => {
       const oo = obj(sp.id), od = loc(oo), has = !!answers[sp.id];

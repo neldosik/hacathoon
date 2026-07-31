@@ -191,8 +191,13 @@
 
   /* Proeben in den Waenden, mit dem Namen des Nachbarsaals */
   .door{position:absolute;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;
-    align-items:center;gap:4px;z-index:3}
-  .door.top{top:8px} .door.bot{bottom:8px;flex-direction:column-reverse}
+    align-items:center;gap:4px;z-index:3;background:none;border:none;cursor:pointer;
+    padding:8px 14px;border-radius:12px;transition:.18s;min-height:44px;min-width:124px}
+  .door:not(.shut):hover{background:oklch(0.82 0.15 82/.08)}
+  .door:not(.shut):active{background:oklch(0.82 0.15 82/.14)}
+  .door:not(.shut):hover span{color:oklch(0.90 0.06 82)}
+  .door.shut{cursor:default;opacity:.75}
+  .door.top{top:2px} .door.bot{bottom:2px;flex-direction:column-reverse}
   .door i{display:block;width:96px;height:12px;border-radius:3px;background:var(--plan-bg);
     border-left:2px solid oklch(0.82 0.15 82/.5);border-right:2px solid oklch(0.82 0.15 82/.5)}
   .door.bot i{border-left-color:oklch(0.82 0.15 82/.3);border-right-color:oklch(0.82 0.15 82/.3)}
@@ -439,3 +444,61 @@ body.app .wrap{border-radius:0}
   color:oklch(0.88 0.02 80);font:500 14px/1 var(--body);letter-spacing:0;cursor:pointer}
 .seg button.on{background:var(--gold);border-color:var(--gold);color:oklch(0.16 0.03 55);font-weight:600}
 .sethint{font-size:12.5px;line-height:1.55;color:var(--muted);margin-top:-4px}
+
+/* ==========================================================================
+   Kurze Telefone. Safari lässt von 844 px nur rund 700 übrig; ohne diesen
+   Abschnitt frisst das Aufnahmefeld den Saalplan auf und nichts ist mehr
+   zu erkennen. Alles wird enger, aber kein Tippziel unter 44 px.
+   ========================================================================== */
+body.app .screen{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}
+.rstage{min-height:210px}
+.fuehrung{overflow-y:auto}
+.fuehrung::-webkit-scrollbar{width:0}
+
+@media (max-height:820px){
+  .topbar{padding:11px 18px 8px}
+  .rail{padding:0 14px}
+  .railbox{padding:7px 10px;gap:9px}
+  .railthumb{width:30px;height:30px}
+  .raillabel{font-size:11px}
+  .railtitle{font-size:12.5px}
+
+  .planwrap{padding:9px 14px 0}
+  .roomhead{padding:0 2px 6px}
+  .roomhead .rn{font-size:19px}
+  .rstage{padding:10px}
+  .walls{inset:10px;border-width:5px}
+  .door{padding:5px 12px}
+  .door.top{top:0} .door.bot{bottom:0}
+  .door i{width:84px;height:10px}
+  .rpin .shot{width:56px;height:70px}
+  .rpin.near .shot{width:64px;height:80px}
+  .rpin .cap{font-size:9.5px;padding:3px 7px}
+  .vbar{width:74px;height:8px}
+  .me::before{width:44px;height:44px}
+  .range{width:82px;height:82px}
+
+  .fbar{padding:6px 2px 0}
+  .detail{margin:9px 14px 12px;padding:13px;gap:9px;border-radius:18px}
+  .detail .row{gap:10px}
+  .detail .row .kthumb{width:46px!important;height:46px!important}
+  .detail .vtitle{font-size:16px!important;margin-top:3px!important}
+  .dfrage{font-size:17px;line-height:1.28;max-height:3.9em;overflow:hidden}
+  .recbox{padding:8px 10px;gap:10px}
+  .recbox .live{font-size:15px}
+  .detail .mic{width:46px!important;height:46px!important}
+  .btn{min-height:44px;font-size:13.5px}
+}
+
+/* Sehr kurze Geräte: der Plan darf schrumpfen, aber die Karte bleibt lesbar */
+@media (max-height:660px){
+  .rail{display:none}                 /* die Entfernung steht auch im Panel */
+  .rstage{min-height:190px}
+  .dfrage{font-size:16px;max-height:2.7em}
+}
+
+/* Tippziele, die noch zu klein waren */
+.likebtn{min-height:44px;padding:0 13px}
+.gear{position:relative}
+.gear::after{content:"";position:absolute;inset:-5px}
+.wfoot{flex-wrap:wrap;gap:10px}
