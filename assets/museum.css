@@ -362,7 +362,27 @@ body.app .wrap{border-radius:0}
 .seg button.on{background:var(--gold);color:oklch(0.16 0.03 55)}
 .diag{font:400 10.5px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;color:oklch(0.72 0.05 70/.75);
   white-space:pre-wrap;word-break:break-word}
-.demobadge{position:absolute;top:14px;right:14px;z-index:6;pointer-events:none;
-  font:600 8.5px/1 var(--body);letter-spacing:.2em;text-transform:uppercase;
+.wrap[data-demo]::after{content:attr(data-demo);position:absolute;top:14px;right:14px;z-index:6;
+  pointer-events:none;font:600 8.5px/1 var(--body);letter-spacing:.2em;text-transform:uppercase;
   color:oklch(0.16 0.03 55);background:oklch(0.82 0.15 82/.85);
   padding:6px 10px;border-radius:999px}
+
+/* ---------- Merken ---------- */
+.likebtn{display:inline-flex;align-items:center;gap:6px;flex:0 0 auto;cursor:pointer;
+  border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--muted);
+  padding:7px 11px;font:500 11px/1 var(--body);transition:.18s}
+.likebtn:hover{color:oklch(0.80 0.16 25);border-color:oklch(0.80 0.16 25/.5)}
+.likebtn.on{color:oklch(0.80 0.16 25);border-color:oklch(0.80 0.16 25/.6);background:oklch(0.80 0.16 25/.10)}
+
+/* Der Raum wird nur beim Raumwechsel eingeblendet — sonst blinkt er bei jedem Tipp */
+.rstage{animation:none}
+.rstage.fresh{animation:roomin .42s ease}
+
+/* Bilder ganz zeigen statt beschneiden */
+.kthumb{background:oklch(0.12 0.02 55)}
+.kthumb img{object-fit:contain;padding:4px}
+.rpin img{object-fit:contain;padding:7px}
+.strip img{object-fit:contain;padding:3px}
+.bigshot{height:min(34vh,230px)}
+.sheetbody{max-height:88vh;overflow-y:auto}
+.sheetbody::-webkit-scrollbar{width:0}

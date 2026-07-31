@@ -7,6 +7,30 @@ const IMG = "assets/objects/";
 const WEBHOOK_URL = "https://y1jia.app.n8n.cloud/webhook/museum-wrapped";
 let LANG = "de";
 
+/* Die Anzeigeschrift lässt sich am Gerät wechseln — welche trägt, sieht man
+   erst auf dem Telefon. Geladen wird erst beim Umschalten. */
+const FONTS = [
+  { key:"cormorant",  label:"Cormorant",  css:'"Cormorant Garamond", Georgia, serif' },
+  { key:"spectral",   label:"Spectral",   css:'"Spectral", Georgia, serif',
+    google:"Spectral:ital,wght@0,300;0,400;0,500;1,300;1,400" },
+  { key:"fraunces",   label:"Fraunces",   css:'"Fraunces", Georgia, serif',
+    google:"Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..500" },
+  { key:"instrument", label:"Instrument", css:'"Instrument Serif", Georgia, serif',
+    google:"Instrument+Serif:ital@0;1" },
+];
+let fontKey = "cormorant";
+function setFont(key) {
+  const f = FONTS.find(x => x.key === key) || FONTS[0];
+  fontKey = f.key;
+  if (f.google && !document.getElementById("font-" + f.key)) {
+    const l = document.createElement("link");
+    l.id = "font-" + f.key; l.rel = "stylesheet";
+    l.href = "https://fonts.googleapis.com/css2?family=" + f.google + "&display=swap";
+    document.head.append(l);
+  }
+  document.documentElement.style.setProperty("--display", f.css);
+}
+
 const L = {
   de: {
     speech: "de-DE",
@@ -20,11 +44,11 @@ const L = {
     whyD: "Ein Raum füllt den Schirm und wechselt, sobald du weitergehst. Foto antippen öffnet Beschreibung, weitere Aufnahmen und den Audioguide. Die Position ist abgespielt — es steckt keine Ortung dahinter.",
     einladung: "Was geht dir gerade durch den Kopf?",
     erzaehlt: "erzählt", room: "Raum",
-    walk: "Rundgang", pause: "Pause", sketch: "Skizze",
+    walk: "Rundgang", pause: "Pause", sketch: "Position simuliert",
     next: "Nächstes", here: "Du stehst davor",
     listening: "Ich höre zu", listenStop: "Ich höre zu — noch einmal tippen zum Beenden",
-    sayHere: "Du stehst davor — sag es einfach laut", sayAny: "Sag, was dir dazu einfällt",
-    sayOne: "Sag es laut, ein Satz genügt", again: "Nochmal sprechen und überschreiben",
+    sayHere: "Du stehst davor — flüster es einfach", sayAny: "Flüster es einfach, ganz leise",
+    sayOne: "Flüstern genügt — ein Satz reicht", again: "Nochmal sprechen und überschreiben",
     typeInstead: "Lieber tippen", save: "Speichern", placeholder: "In deinen eigenen Worten …",
     finish: "Besuch beenden", close: "Schliessen",
     routeHead: "Deine Route<br/>durch die Sammlung",
@@ -48,7 +72,8 @@ const L = {
     demoNote: "Beispieltext — der Server wird nicht gefragt",
     toThread: "Mein Faden", toStory: "Als Story ansehen",
     recsHead: "Für den nächsten Besuch", missedHead: "Daran bist du vorbeigegangen",
-    settings: "Einstellungen", setLang: "Sprache", setSource: "Text",
+    settings: "Einstellungen", setLang: "Sprache", setSource: "Text", setFont: "Schrift",
+    likeLabel: "Merken", likeHint: "Andere Besucher haben hier gehalten",
     demoBadge: "Beispieltext",
     diagIdle: "Noch kein Aufruf in dieser Sitzung.", diagHead: "Letzter Aufruf",
     /* Galerie der Wrapped-Entwürfe */
@@ -76,11 +101,11 @@ const L = {
     whyD: "One room fills the screen and changes as you walk on. Tap the photo for the description, further shots and the audio guide. The position is played back — there is no tracking behind it.",
     einladung: "What's going through your mind?",
     erzaehlt: "shared", room: "Room",
-    walk: "Walk", pause: "Pause", sketch: "Sketch",
+    walk: "Walk", pause: "Pause", sketch: "Simulated position",
     next: "Next", here: "You're right here",
     listening: "Listening", listenStop: "Listening — tap again to stop",
-    sayHere: "You're here — just say it out loud", sayAny: "Say whatever comes to mind",
-    sayOne: "Say it out loud, one sentence is enough", again: "Speak again to replace it",
+    sayHere: "You're here — just whisper it", sayAny: "Whisper it, quietly is enough",
+    sayOne: "A whisper is enough — one sentence will do", again: "Speak again to replace it",
     typeInstead: "Type instead", save: "Save", placeholder: "In your own words …",
     finish: "Finish visit", close: "Close",
     routeHead: "Your route<br/>through the collection",
@@ -103,7 +128,8 @@ const L = {
     demoNote: "Sample text — the server is not called",
     toThread: "My thread", toStory: "View as story",
     recsHead: "For your next visit", missedHead: "What you walked past",
-    settings: "Settings", setLang: "Language", setSource: "Text",
+    settings: "Settings", setLang: "Language", setSource: "Text", setFont: "Typeface",
+    likeLabel: "Keep", likeHint: "Other visitors stopped here",
     demoBadge: "Sample text",
     diagIdle: "No call in this session yet.", diagHead: "Last call",
     wsecTitle: "Wrapped — four drafts",
@@ -172,6 +198,78 @@ const GALERIE = {
   "OBJ-01":["OBJ-01_1.jpg","OBJ-01_2.jpg","OBJ-01_3.jpg","OBJ-01_4.jpg"],
 };
 
+/* Alle 22 Objekte zweisprachig — sonst stehen in den Empfehlungen deutsche
+   Titel mitten in der englischen Fassung. */
+const TITLES = {
+  "OBJ-01":{de:"Fayencefigur eines liegenden Nilpferds", en:"Faience figure of a reclining hippopotamus"},
+  "OBJ-02":{de:"Doppelstatue des stehenden Königs Niuserre", en:"Double statue of the standing king Niuserre"},
+  "OBJ-03":{de:"Gesichtsfragment einer Kolossalstatue des Königs Amenophis IV.", en:"Face fragment of a colossal statue of King Amenhotep IV"},
+  "OBJ-04":{de:"Statue eines falkenköpfigen Gottes", en:"Statue of a falcon-headed god"},
+  "OBJ-05":{de:"Relief eines geflügelten Genius aus Nimrud", en:"Relief of a winged genius from Nimrud"},
+  "OBJ-06":{de:"Würfelstatue des Bakenchons, Hohepriester des Amun", en:"Block statue of Bakenkhons, High Priest of Amun"},
+  "OBJ-07":{de:"Sitzgruppe des Sabu, seiner Frau Meretites und des Sohnes Isebwer", en:"Seated group of Sabu, his wife Meretites and their son Isebwer"},
+  "OBJ-08":{de:"Standstatuette eines hohen Beamten", en:"Standing statuette of a high official"},
+  "OBJ-09":{de:"Kniestatue mit Sistrum des Senenmut", en:"Kneeling statue of Senenmut with a sistrum"},
+  "OBJ-10":{de:"Statue des Antinoos", en:"Statue of Antinous"},
+  "OBJ-11":{de:"Obelisk des Titus Sextius Africanus", en:"Obelisk of Titus Sextius Africanus"},
+  "OBJ-12":{de:"Oberteil einer Sitzstatue des Königs Ramses II.", en:"Upper part of a seated statue of King Ramesses II"},
+  "OBJ-13":{de:"Scheintür der Chnumit, Gottesdienerin der Hathor", en:"False door of Khnumit, servant of the goddess Hathor"},
+  "OBJ-14":{de:"Oberteil des Sarges der Königstochter Satdjehuti", en:"Upper part of the coffin of the king's daughter Satdjehuti"},
+  "OBJ-15":{de:"Totenbuch des Pajuheru", en:"Book of the Dead of Pajuheru"},
+  "OBJ-16":{de:"Statue eines Falkengottes (Silber)", en:"Statue of a falcon god (silver)"},
+  "OBJ-17":{de:"Statue der Göttin Isis lactans mit Horuskind", en:"Statue of the goddess Isis lactans with the child Horus"},
+  "OBJ-18":{de:"Stele des Upuautaa, Vorsteher der Priester", en:"Stela of Wepwawetaa, overseer of the priests"},
+  "OBJ-19":{de:"Schildring mit Widderkopf des Gottes Amun", en:"Shield ring with the ram's head of the god Amun"},
+  "OBJ-20":{de:"Glasbecher mit dem Thronnamen Thutmosis III.", en:"Glass beaker with the throne name of Thutmose III"},
+  "OBJ-21":{de:"Bronzestatuette eines Krokodils", en:"Bronze statuette of a crocodile"},
+  "OBJ-22":{de:"Stele der Königin Amanishakheto", en:"Stela of Queen Amanishakheto"},
+};
+const ROOM_EN = {
+  "Jenseits":"Afterlife", "Kunst und Form":"Art and Form", "Kunst und Zeit":"Art and Time",
+  "Kunsthandwerk":"Decorative Arts", "Alter Orient":"Ancient Near East", "Obelisk":"Obelisk",
+  "Pharao":"Pharaoh", "Religion":"Religion", "Nach den Pharaonen":"After the Pharaohs",
+  "Schrift und Text":"Writing and Text", "Nubien und Sudan":"Nubia and Sudan",
+};
+const titleOf = (id, fallback) => (TITLES[id] && TITLES[id][LANG]) || fallback || id;
+const roomOf = (raw) => {
+  const g = String(raw || "").replace(/^Raum\s*"/, "").replace(/"$/, "").trim();
+  return LANG === "de" ? g : (ROOM_EN[g] || g);
+};
+
+/* Die Fragen des Museums zu den Objekten des Rundgangs (Airtable:
+   reflection_prompt). Sie führen den Aufnahme-Schirm. */
+const FRAGEN = {
+  "OBJ-14":{de:"Wie möchtest du aussehen, wenn man sich für immer an dein Gesicht erinnert?",
+            en:"How would you want to look, if your face were remembered forever?"},
+  "OBJ-15":{de:"Was von deinem Leben würdest du in die Waagschale legen wollen?",
+            en:"What part of your life would you want to put on the scales?"},
+  "OBJ-07":{de:"Mit wem würdest du für die Ewigkeit zusammen abgebildet sein wollen?",
+            en:"Who would you want to be portrayed with, for eternity?"},
+  "OBJ-06":{de:"Wenn du deinen Lebensweg in wenige Sätze fassen müsstest – was bliebe stehen?",
+            en:"If you had to put your life into a few sentences — what would remain?"},
+  "OBJ-03":{de:"Was erkennst du in einem Gesicht, von dem nur ein Bruchteil erhalten ist?",
+            en:"What do you recognise in a face when only a fragment of it survives?"},
+  "OBJ-01":{de:"Welches Tier würdest du mit auf eine lange Reise nehmen – und warum?",
+            en:"Which animal would you take with you on a long journey — and why?"},
+};
+const frageOf = (id) => (FRAGEN[id] && FRAGEN[id][LANG]) || t().einladung;
+
+/* Wie oft andere Besucher hier stehen geblieben sind. Erfundene, aber stabile
+   Zahlen — es gibt keine Datenbank und keine fremden Besuche. */
+const likesOf = (id) => {
+  let h = 0;
+  for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) % 997;
+  return 40 + (h % 260);
+};
+const myLikes = {};
+const likeBtn = (id, onChange) => {
+  const mine = !!myLikes[id];
+  const b = el(`<button class="likebtn ${mine ? "on" : ""}" aria-label="${esc(t().likeLabel)}">
+    ${mine ? SVG.heartOn : SVG.heart}<span>${likesOf(id) + (mine ? 1 : 0)}</span></button>`);
+  b.onclick = (e) => { e.stopPropagation(); myLikes[id] = !mine; onChange(); };
+  return b;
+};
+
 const ROUTE_ROOMS = [
   { de:"Jenseits",       en:"Afterlife",       spots:[{id:"OBJ-14",x:30,y:33},{id:"OBJ-15",x:69,y:63}] },
   { de:"Kunst und Form", en:"Art and Form",    spots:[{id:"OBJ-07",x:28,y:36},{id:"OBJ-06",x:70,y:61}] },
@@ -193,6 +291,8 @@ const SVG = {
   left:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>',
   right:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>',
   play:'<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg>',
+  heart:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 20s-7-4.4-7-9.3A4.1 4.1 0 0 1 12 7.8a4.1 4.1 0 0 1 7 2.9C19 15.6 12 20 12 20z"/></svg>',
+  heartOn:'<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 20s-7-4.4-7-9.3A4.1 4.1 0 0 1 12 7.8a4.1 4.1 0 0 1 7 2.9C19 15.6 12 20 12 20z"/></svg>',
   redo:'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>',
 };
 
@@ -313,12 +413,12 @@ function renderStory(layer, w, onRestart) {
     <div class="reclist">${recs.map(r => `
       <div class="rec">
         <div class="kthumb"><img src="${IMG}${r.object_id}.jpg" alt="" /></div>
-        <div><div class="rectitle">${esc(r.title)}</div>
+        <div><div class="rectitle">${esc(titleOf(r.object_id, r.title))}</div>
         <div class="recwhy">${esc(r.reason)}</div></div>
       </div>`).join("")}</div>`);
   if (w.missed && w.missed.title) frames.push(() => `<div class="eyebrow">${esc(T.missedHead)}</div>
     <div class="wshot"><img src="${IMG}${w.missed.object_id}.jpg" alt="" /></div>
-    <div class="wmid">${esc(w.missed.title)}</div>
+    <div class="wmid">${esc(titleOf(w.missed.object_id, w.missed.title))}</div>
     <div class="wsub">${esc(w.missed.reason)}</div>`);
   frames.push(() => `<div class="wmid">${esc(w.closing)}</div>
     <div class="wnote">SMÄK · Museum Wrapped</div>`);
@@ -368,7 +468,7 @@ function renderBlatt(layer, w, onRestart) {
   if (w.go_deeper && w.go_deeper.title) {
     b.append(el(`<div class="brule"></div>`));
     b.append(el(`<div class="blabel">${esc(T.wDeeper)}</div>`));
-    b.append(el(`<div><div class="barch" style="font-size:19px">${esc(w.go_deeper.title)}</div>
+    b.append(el(`<div><div class="barch" style="font-size:19px">${esc(titleOf(w.go_deeper.object_id, w.go_deeper.title))}</div>
       <div class="bsub" style="margin-top:6px">${esc(w.go_deeper.reason)}</div></div>`));
   }
   b.append(el(`<div class="brule"></div>`));
@@ -424,14 +524,14 @@ function renderFaden(layer, w, onRestart) {
     <div class="reclist" style="margin-top:9px">${recs.map(r => `
       <div class="rec">
         <div class="kthumb"><img src="${IMG}${r.object_id}.jpg" alt="" /></div>
-        <div><div class="rectitle">${esc(r.title)}</div>
+        <div><div class="rectitle">${esc(titleOf(r.object_id, r.title))}</div>
         <div class="recwhy">${esc(r.reason)}</div></div>
       </div>`).join("")}</div></div>`));
   if (w.missed && w.missed.title) end.append(el(`<div class="missed">
     <div class="blabel">${esc(T.missedHead)}</div>
     <div class="rec" style="margin-top:9px">
       <div class="kthumb"><img src="${IMG}${w.missed.object_id}.jpg" alt="" /></div>
-      <div><div class="rectitle">${esc(w.missed.title)}</div>
+      <div><div class="rectitle">${esc(titleOf(w.missed.object_id, w.missed.title))}</div>
       <div class="recwhy">${esc(w.missed.reason)}</div></div>
     </div></div>`));
   end.append(el(`<div class="bfoot">${esc(w.closing)}</div>`));
@@ -450,8 +550,10 @@ const WSTYLES = [
 function showWrapped(layer, w, onRestart, style) {
   layer.innerHTML = "";
   (WSTYLES.find(s => s.key === (style || wrappedStyle)) || WSTYLES[0]).fn(layer, w, onRestart);
-  // Im Beispielmodus muss sichtbar bleiben, dass das nicht der eigene Besuch ist
-  if (!liveMode && onRestart) layer.append(el(`<div class="demobadge">${esc(t().demoBadge)}</div>`));
+  // Im Beispielmodus muss sichtbar bleiben, dass das nicht der eigene Besuch ist.
+  // Als Attribut, damit die Marke das Neuzeichnen der Kader ueberlebt.
+  if (!liveMode && onRestart) layer.dataset.demo = t().demoBadge;
+  else delete layer.dataset.demo;
 }
 
 function showLoading(layer, autoMs, then) {
@@ -477,7 +579,8 @@ function startWrapped(host, answers, startedAt, onRestart) {
   const layer = el(`<div class="wrap"></div>`);
   host.append(layer);
 
-  if (!liveMode) {                        // Beispieltext: kein Netz, keine Credits
+  const count = Object.keys(answers).length;
+  if (!liveMode || !count) {              // Beispieltext: kein Netz, keine Credits
     showLoading(layer, 1500, () => showWrapped(layer, sample(), onRestart));
     return;
   }
@@ -515,9 +618,8 @@ function startWrapped(host, answers, startedAt, onRestart) {
 /* Gemeinsame Fusszeile mit dem Knopf, der zum Wrapped führt */
 function finishBar(host, answers, startedAt, pad, onRestart, rerender) {
   const T = t(), n = Object.keys(answers).length;
-  const bar = el(`<div style="padding:0 ${pad}px ${pad}px"><button class="finish" ${n ? "" : "disabled"}>${esc(T.finish)} ${SVG.arrow}</button></div>`);
+  const bar = el(`<div style="padding:0 ${pad}px ${pad}px"><button class="finish">${esc(T.finish)} ${SVG.arrow}</button></div>`);
   bar.querySelector("button").onclick = () => {
-    if (!n) return;
     startWrapped(host, answers, startedAt, () => {
       Object.keys(answers).forEach(k => delete answers[k]);
       onRestart(); rerender();
@@ -552,7 +654,7 @@ function Vitrine(root) {
       <div class="eyebrow">${esc(T.objectOf(idx + 1, OBJECTS.length))}</div>
       <div class="vtitle">${esc(d.title)}</div>
       ${saved ? `<div class="saved">${SVG.check}<p>„${esc(saved)}“</p></div>`
-              : `<div class="frage vfrage">${esc(T.einladung)}</div>`}
+              : `<div class="frage vfrage">${esc(frageOf(o.id))}</div>`}
       <div class="vfoot"></div><div class="dots"></div></div>`);
 
     const foot = body.querySelector(".vfoot");
@@ -620,9 +722,8 @@ function Kartei(root) {
     root.append(list);
 
     const n = Object.keys(answers).length;
-    const bar = el(`<div class="kbar"><button class="finish" ${n ? "" : "disabled"}>${esc(T.finish)} ${SVG.arrow}</button></div>`);
+    const bar = el(`<div class="kbar"><button class="finish">${esc(T.finish)} ${SVG.arrow}</button></div>`);
     bar.querySelector("button").onclick = () => {
-      if (!n) return;
       startWrapped(root, answers, startedAt, () => {
         Object.keys(answers).forEach(k => delete answers[k]);
         open = null; startedAt = Date.now(); render();
@@ -640,7 +741,7 @@ function Kartei(root) {
         <div><div class="eyebrow">${esc(d.room)} · ${esc(d.epoche)}</div>
         <div class="vtitle" style="margin:4px 0 0;font-size:17px">${esc(d.title)}</div></div></div>`));
       sb.append(el(saved ? `<div class="saved">${SVG.check}<p>„${esc(saved)}“</p></div>`
-                        : `<div class="frage sfrage">${esc(T.einladung)}</div>`));
+                        : `<div class="frage sfrage">${esc(frageOf(o.id))}</div>`));
       if (mode === "nospeech") {
         const ta = el(`<textarea class="typed" rows="3" placeholder="${esc(T.placeholder)}"></textarea>`);
         const ok = el(`<button class="linkish">${esc(T.save)}</button>`);
@@ -708,7 +809,7 @@ function Saal(root) {
       <div><div class="eyebrow">${esc(d.room)}</div>
       <div class="vtitle" style="margin:4px 0 0;font-size:16px">${esc(d.title)}</div></div></div>`));
     det.append(el(saved ? `<div class="saved">${SVG.check}<p>„${esc(saved)}“</p></div>`
-                        : `<div class="frage dfrage">${esc(T.einladung)}</div>`));
+                        : `<div class="frage dfrage">${esc(frageOf(o.id))}</div>`));
     if (mode === "nospeech") {
       const ta = el(`<textarea class="typed" rows="2" placeholder="${esc(T.placeholder)}"></textarea>`);
       const ok = el(`<button class="linkish">${esc(T.save)}</button>`);
@@ -747,7 +848,7 @@ function Fuehrung(root) {
   let me = { x: 50, y: 94 }, heading = -90, wp = 0, seg = 0, walking = false;
   let answers = {}, selId = ROUTE_ROOMS[0].spots[0].id, arrived = false;
   let mode = "idle", live = "", sheetId = null, shot = 0, startedAt = Date.now();
-  let elMe, elCone, elDist, pinEls = [], inWrapped = false;
+  let elMe, elCone, elDist, pinEls = [], inWrapped = false, lastRoom = -1;
 
   const rec = makeRecorder({
     onInterim: s => { live = s; render(); },
@@ -824,6 +925,7 @@ function Fuehrung(root) {
       el(`<div class="rc">${esc(T.room)} ${roomIdx + 1} / ${ROUTE_ROOMS.length}</div>`), next);
 
     const st = body.querySelector(".rstage");
+    if (lastRoom !== roomIdx) { st.classList.add("fresh"); lastRoom = roomIdx; }
     st.append(el(`<div class="door top"><span>${esc(ROUTE_ROOMS[(roomIdx + 1) % ROUTE_ROOMS.length][LANG])}</span></div>`));
     st.append(el(`<div class="door bot"><span>${esc(ROUTE_ROOMS[(roomIdx - 1 + ROUTE_ROOMS.length) % ROUTE_ROOMS.length][LANG])}</span></div>`));
     R.spots.forEach(s => {
@@ -855,11 +957,12 @@ function Fuehrung(root) {
     const tap = el(`<button class="tapphoto">
       <div class="kthumb"><img src="${IMG}${o.img}" alt="" /></div><span class="more">+</span></button>`);
     tap.onclick = () => { sheetId = selId; shot = 0; render(); };
-    row.append(tap, el(`<div><div class="eyebrow">${esc(d.room)} · ${esc(d.epoche)}</div>
+    row.append(tap, el(`<div style="flex:1;min-width:0"><div class="eyebrow">${esc(d.room)} · ${esc(d.epoche)}</div>
       <div class="vtitle" style="margin:4px 0 0;font-size:16px">${esc(d.title)}</div></div>`));
+    row.append(likeBtn(selId, render));
     det.append(row);
     det.append(el(saved ? `<div class="saved">${SVG.check}<p>„${esc(saved)}“</p></div>`
-                        : `<div class="frage dfrage">${esc(T.einladung)}</div>`));
+                        : `<div class="frage dfrage">${esc(frageOf(selId))}</div>`));
 
     if (mode === "nospeech") {
       const ta = el(`<textarea class="typed" rows="2" placeholder="${esc(T.placeholder)}"></textarea>`);
@@ -883,9 +986,8 @@ function Fuehrung(root) {
     root.append(body);
 
     const n = Object.keys(answers).length;
-    const fin = el(`<div style="padding:0 16px 16px"><button class="finish" ${n ? "" : "disabled"}>${esc(T.finish)} ${SVG.arrow}</button></div>`);
+    const fin = el(`<div style="padding:0 16px 16px"><button class="finish">${esc(T.finish)} ${SVG.arrow}</button></div>`);
     fin.querySelector("button").onclick = () => {
-      if (!n) return;
       inWrapped = true; walking = false;
       startWrapped(root, answers, startedAt, () => {
         Object.keys(answers).forEach(k => delete answers[k]);
@@ -923,6 +1025,10 @@ function Fuehrung(root) {
       <div class="eyebrow">${esc(d.room)} · ${esc(d.epoche)} · ${esc(T.shots(gal.length || 1))}</div>
       <div class="vtitle" style="margin:5px 0 0;font-size:18px">${esc(d.title)}</div></div>`));
     sb.append(el(`<div class="beschreibung">${esc(d.fact)}</div>`));
+
+    const likeRow = el(`<div class="setrow" style="border:none;padding:2px 0"><span>${esc(t().likeHint)}</span></div>`);
+    likeRow.append(likeBtn(sheetId, render));
+    sb.append(likeRow);
 
     const bars = Array.from({ length: 34 }, (_, i) =>
       `<i style="height:${20 + Math.round(70 * Math.abs(Math.sin(i * 1.7)))}%"></i>`).join("");
@@ -1026,6 +1132,7 @@ function paintWrack() {
   WSTYLES.forEach(s => {
     const cap = s.key[0].toUpperCase() + s.key.slice(1);
     const fig = document.querySelector(`.slot[data-wslot="${s.key}"]`);
+    if (!fig) return;                     // Galerie steht noch nicht
     fig.querySelector(".name").textContent = T["n" + cap];
     fig.querySelector(".why").textContent = T["w" + cap];
     fig.classList.toggle("hidden", wVisible !== "all" && wVisible !== s.key);
@@ -1039,8 +1146,6 @@ function paintWrack() {
 /* Die Werkbank gibt es nur auf der Auswahlseite. Die App bindet dieselbe
    Datei ein und baut ihre eigene Oberflaeche darum. */
 if (document.getElementById("rack")) {
-  window.__wrapReady = paintWrack;
-
   document.getElementById("srcsw").addEventListener("click", (e) => {
     const b = e.target.closest(".chip"); if (!b) return;
     liveMode = b.dataset.src === "live";
@@ -1058,4 +1163,5 @@ if (document.getElementById("rack")) {
 
   buildRack();
   buildWrack();
+  window.__wrapReady = paintWrack;   // erst wenn die Galerie steht
 }

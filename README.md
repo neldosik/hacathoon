@@ -40,6 +40,9 @@ Faden), nebeneinander zum Vergleichen. Gewählt wurden Führung, Story und Faden
 - **Skizze:** die eigene Position im Grundriss wird abgespielt oder mit dem
   Finger gesetzt — es steckt keine Ortung dahinter. Der Audioguide im
   Objektblatt ist ein Platzhalter.
+- **Erfunden:** die Zahl neben dem Herz („andere Besucher haben hier
+  gehalten“). Es gibt keine Datenbank und keine fremden Besuche; die Zahl
+  wird aus der Objekt-Nummer berechnet und bleibt darum stabil.
 
 ## Empfehlungen
 

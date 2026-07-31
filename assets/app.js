@@ -15,6 +15,7 @@
   const q = new URLSearchParams(location.search);
   if (q.get("lang") === "en") LANG = "en";
   if (q.get("live") === "1") liveMode = true;
+  if (q.get("font")) setFont(q.get("font"));
 
   wrappedPeer = true;        // Story und Faden verweisen aufeinander
   wrappedStyle = "story";    // die Story kommt zuerst
@@ -54,6 +55,9 @@
     }));
     sb.append(seg(T.setSource, [[false, T.srcSample], [true, T.srcLive]], v => liveMode === v, v => {
       liveMode = v;
+    }));
+    sb.append(seg(T.setFont, FONTS.map(f => [f.key, f.label]), v => fontKey === v, v => {
+      setFont(v);
     }));
     sb.append(el(`<div class="diag">${esc(diagText())}</div>`));
 
