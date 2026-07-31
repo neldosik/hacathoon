@@ -72,6 +72,10 @@ const L = {
     demoNote: "Beispieltext — der Server wird nicht gefragt",
     toThread: "Mein Faden", toStory: "Als Story ansehen",
     recsHead: "Für den nächsten Besuch", missedHead: "Daran bist du vorbeigegangen",
+    textSource: "Woher kommt der Text?", sampleShort: "Beispiel", liveShort: "Live",
+    saal: "Saal", youAreHere: "Du bist hier", walkRunning: "Rundgang läuft",
+    steps: (n) => n + (n === 1 ? " Schritt" : " Schritte"), vitrine: (n) => "Vitrine " + n,
+    toEntrance: "Eingang", finishShort: "Besuch beenden",
     settings: "Einstellungen", setLang: "Sprache", setSource: "Text", setFont: "Schrift",
     likeLabel: "Merken", likeHint: "Andere Besucher haben hier gehalten",
     demoBadge: "Beispieltext",
@@ -128,6 +132,10 @@ const L = {
     demoNote: "Sample text — the server is not called",
     toThread: "My thread", toStory: "View as story",
     recsHead: "For your next visit", missedHead: "What you walked past",
+    textSource: "Where does the text come from?", sampleShort: "Sample", liveShort: "Live",
+    saal: "Room", youAreHere: "You are here", walkRunning: "Walk running",
+    steps: (n) => n + (n === 1 ? " step" : " steps"), vitrine: (n) => "Case " + n,
+    toEntrance: "Entrance", finishShort: "Finish visit",
     settings: "Settings", setLang: "Language", setSource: "Text", setFont: "Typeface",
     likeLabel: "Keep", likeHint: "Other visitors stopped here",
     demoBadge: "Sample text",
@@ -271,10 +279,14 @@ const likeBtn = (id, onChange) => {
 };
 
 const ROUTE_ROOMS = [
-  { de:"Jenseits",       en:"Afterlife",       spots:[{id:"OBJ-14",x:30,y:33},{id:"OBJ-15",x:69,y:63}] },
-  { de:"Kunst und Form", en:"Art and Form",    spots:[{id:"OBJ-07",x:28,y:36},{id:"OBJ-06",x:70,y:61}] },
-  { de:"Kunst und Zeit", en:"Art and Time",    spots:[{id:"OBJ-03",x:50,y:45}] },
-  { de:"Kunsthandwerk",  en:"Decorative Arts", spots:[{id:"OBJ-01",x:50,y:48}] },
+  { de:"Jenseits",       en:"Afterlife",       spots:[
+      {id:"OBJ-14",x:30,y:26,side:"left", nr:3},{id:"OBJ-15",x:70,y:66,side:"right",nr:7}] },
+  { de:"Kunst und Form", en:"Art and Form",    spots:[
+      {id:"OBJ-07",x:30,y:28,side:"left", nr:1},{id:"OBJ-06",x:70,y:64,side:"right",nr:4}] },
+  { de:"Kunst und Zeit", en:"Art and Time",    spots:[
+      {id:"OBJ-03",x:30,y:42,side:"left", nr:2}] },
+  { de:"Kunsthandwerk",  en:"Decorative Arts", spots:[
+      {id:"OBJ-01",x:70,y:44,side:"right",nr:9}] },
 ];
 const ROOMS = [
   { de:"Jenseits",       en:"Afterlife",       x:10, y:6,  w:78, h:26 },
@@ -293,6 +305,8 @@ const SVG = {
   play:'<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg>',
   heart:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 20s-7-4.4-7-9.3A4.1 4.1 0 0 1 12 7.8a4.1 4.1 0 0 1 7 2.9C19 15.6 12 20 12 20z"/></svg>',
   heartOn:'<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 20s-7-4.4-7-9.3A4.1 4.1 0 0 1 12 7.8a4.1 4.1 0 0 1 7 2.9C19 15.6 12 20 12 20z"/></svg>',
+  heading:'<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3l7 17-7-4-7 4z"/></svg>',
+  shield:'<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5.5c0 4.3-2.9 7.7-7 8.5-4.1-.8-7-4.2-7-8.5V6z"/><path d="M9 12l2.2 2.2L15.5 10"/></svg>',
   redo:'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>',
 };
 
@@ -848,7 +862,7 @@ function Fuehrung(root) {
   let me = { x: 50, y: 94 }, heading = -90, wp = 0, seg = 0, walking = false;
   let answers = {}, selId = ROUTE_ROOMS[0].spots[0].id, arrived = false;
   let mode = "idle", live = "", sheetId = null, shot = 0, startedAt = Date.now();
-  let elMe, elCone, elDist, pinEls = [], inWrapped = false, lastRoom = -1;
+  let elMe, elRange, elLabel, elRail, pinEls = [], inWrapped = false, lastRoom = -1;
 
   const rec = makeRecorder({
     onInterim: s => { live = s; render(); },
@@ -893,52 +907,86 @@ function Fuehrung(root) {
     if (!elMe || !elMe.isConnected) return;
     const T = t();
     elMe.style.left = me.x + "%"; elMe.style.top = me.y + "%";
-    elCone.style.left = me.x + "%"; elCone.style.top = me.y + "%";
-    elCone.style.transform = `translate(-50%,-50%) rotate(${heading}deg)`;
+    elRange.style.left = me.x + "%"; elRange.style.top = me.y + "%";
+    elLabel.style.left = me.x + "%"; elLabel.style.top = `calc(${me.y}% + 34px)`;
+    const tri = elMe.querySelector("svg");
+    if (tri) tri.style.transform = `rotate(${heading + 90}deg)`;
+
     const n = nearest(), now = !!(n.spot && n.d < ARRIVE);
     pinEls.forEach(p => p.classList.toggle("near", now && p.dataset.id === n.spot.id));
-    elDist.innerHTML = now
-      ? `<span class="arrived">${SVG.check} ${esc(T.here)}</span>`
-      : `${esc(T.next)} · <b>${Math.max(1, Math.round(n.d))} m</b>`;
+
+    // Die Schiene zeigt mit, wie weit es noch ist
+    if (elRail && n.spot) {
+      const oo = obj(n.spot.id);
+      elRail.querySelector(".raillabel").textContent = now ? T.here : T.steps(Math.max(1, Math.round(n.d / 0.7)));
+      elRail.querySelector(".railtitle").textContent = loc(oo).title;
+      const im = elRail.querySelector("img");
+      if (im && !im.src.endsWith(oo.img)) im.src = IMG + oo.img;
+    }
     if (now && selId !== n.spot.id) { selId = n.spot.id; arrived = true; mode = "idle"; live = ""; render(); return; }
     arrived = now;
   }
 
   function render() {
     const T = t(), o = obj(selId), d = loc(o), saved = answers[selId], R = room();
+    const near = nearest();
     root.innerHTML = ""; pinEls = [];
+
     root.append(el(`<div class="topbar">
       <div class="brand"><i>◆</i> SMÄK</div>
-      <div class="count"><b>${Object.keys(answers).length}</b> / ${OBJECTS.length} ${esc(T.erzaehlt)}</div></div>`));
+      <div class="topright"><div class="count"><b>${Object.keys(answers).length}</b> / ${OBJECTS.length} ${esc(T.erzaehlt)}</div></div>
+    </div>`));
     root.append(el(`<div class="hair"></div>`));
 
     const body = el(`<div class="fuehrung">
-      <div class="roomhead"></div><div class="rstage"></div>
-      <div class="fbar"></div><div class="detail"></div></div>`);
+      <div class="rail"></div>
+      <div class="planwrap">
+        <div class="roomhead"></div><div class="rstage"></div><div class="fbar"></div>
+      </div>
+      <div class="detail"></div></div>`);
+
+    /* Schiene: was als Nächstes kommt und wie weit es noch ist */
+    const nearObj = near.spot ? obj(near.spot.id) : o;
+    const schritte = arrived ? T.here : T.steps(Math.max(1, Math.round(near.d / 0.7)));
+    elRail = el(`<div class="railbox">
+      <span class="railthumb"><img src="${IMG}${nearObj.img}" alt="" /></span>
+      <div style="min-width:0">
+        <div class="raillabel">${esc(schritte)}</div>
+        <div class="railtitle">${esc(loc(nearObj).title)}</div>
+      </div></div>`);
+    body.querySelector(".rail").append(elRail);
 
     const head = body.querySelector(".roomhead");
-    const prev = el(`<button class="rnav">${SVG.left}</button>`);
-    const next = el(`<button class="rnav">${SVG.right}</button>`);
-    prev.onclick = () => enterRoom(roomIdx - 1, -1);
-    next.onclick = () => enterRoom(roomIdx + 1, 1);
-    head.append(prev, el(`<div class="rn">${esc(R[LANG])}</div>`),
-      el(`<div class="rc">${esc(T.room)} ${roomIdx + 1} / ${ROUTE_ROOMS.length}</div>`), next);
+    head.append(el(`<div class="rn">${esc(T.saal)} ${esc(R[LANG])}</div>`),
+                el(`<div class="rc">${esc(T.room)} ${roomIdx + 1} / ${ROUTE_ROOMS.length}</div>`));
 
+    /* Der Saal: Wände, Durchgänge, Vitrinen */
     const st = body.querySelector(".rstage");
     if (lastRoom !== roomIdx) { st.classList.add("fresh"); lastRoom = roomIdx; }
-    st.append(el(`<div class="door top"><span>${esc(ROUTE_ROOMS[(roomIdx + 1) % ROUTE_ROOMS.length][LANG])}</span></div>`));
-    st.append(el(`<div class="door bot"><span>${esc(ROUTE_ROOMS[(roomIdx - 1 + ROUTE_ROOMS.length) % ROUTE_ROOMS.length][LANG])}</span></div>`));
-    R.spots.forEach(s => {
-      const oo = obj(s.id), od = loc(oo), has = !!answers[s.id];
-      const p = el(`<button class="rpin ${has ? "has" : ""}" data-id="${s.id}"
-        style="left:${s.x}%;top:${s.y}%" aria-label="${esc(od.title)}"><img src="${IMG}${oo.img}" alt="" /></button>`);
-      p.onclick = (e) => { e.stopPropagation(); selId = s.id; mode = "idle"; live = ""; render(); };
+    st.append(el(`<div class="walls"></div>`));
+    const nextRoom = ROUTE_ROOMS[(roomIdx + 1) % ROUTE_ROOMS.length][LANG];
+    const prevName = roomIdx === 0 ? T.toEntrance : ROUTE_ROOMS[roomIdx - 1][LANG];
+    st.append(el(`<div class="door top"><i></i><span>→ ${esc(nextRoom)}</span></div>`));
+    st.append(el(`<div class="door bot"><i></i><span>← ${esc(prevName)}</span></div>`));
+
+    R.spots.forEach(sp => {
+      const oo = obj(sp.id), od = loc(oo), has = !!answers[sp.id];
+      const isNear = !!(near.spot && near.spot.id === sp.id && arrived);
+      const wall = sp.side === "left" ? "left:26px" : "right:26px";
+      const card = sp.side === "left" ? "left:30px" : "right:30px";
+      st.append(el(`<div class="vbar ${isNear ? "on" : ""}" style="${wall};top:calc(${sp.y}% - 5px)"></div>`));
+      const p = el(`<button class="rpin ${isNear ? "near" : ""} ${has ? "has" : ""}" data-id="${sp.id}"
+        style="${card};top:calc(${sp.y}% + 11px)" aria-label="${esc(od.title)}">
+        <span class="shot"><img src="${IMG}${oo.img}" alt="" /></span>
+        <span class="cap">${esc(T.vitrine(sp.nr))}</span></button>`);
+      p.onclick = (e) => { e.stopPropagation(); selId = sp.id; mode = "idle"; live = ""; render(); };
       st.append(p); pinEls.push(p);
-      if (has) st.append(el(`<div class="rtick" style="left:calc(${s.x}% + 26px);top:calc(${s.y}% + 24px)">${SVG.check}</div>`));
-      st.append(el(`<div class="rlabel" style="left:${s.x}%;top:calc(${s.y}% + 58px)">${esc(od.epoche)}</div>`));
+      if (has) st.append(el(`<div class="rtick" style="${sp.side === "left" ? "left:78px" : "right:78px"};top:calc(${sp.y}% + 14px)">${SVG.check}</div>`));
     });
-    elCone = el(`<div class="cone"></div>`); st.append(elCone);
-    elMe = el(`<div class="me"></div>`); st.append(elMe);
+
+    elRange = el(`<div class="range"></div>`); st.append(elRange);
+    elMe = el(`<div class="me"><i>${SVG.heading}</i></div>`); st.append(elMe);
+    elLabel = el(`<div class="melabel">${esc(T.youAreHere)}</div>`); st.append(elLabel);
     st.onclick = (e) => {
       const r = st.getBoundingClientRect();
       const nx = (e.clientX - r.left) / r.width * 100, ny = (e.clientY - r.top) / r.height * 100;
@@ -947,57 +995,70 @@ function Fuehrung(root) {
     };
 
     const bar = body.querySelector(".fbar");
-    const go = el(`<button class="chip ${walking ? "on" : ""}">${esc(walking ? T.pause : T.walk)}</button>`);
+    const go = el(`<button class="chip ${walking ? "on" : ""}">${esc(walking ? T.walkRunning : T.walk)}</button>`);
     go.onclick = () => { walking = !walking; render(); };
-    elDist = el(`<div class="dist"></div>`);
-    bar.append(go, el(`<span class="stub">${esc(T.sketch)}</span>`), elDist);
+    bar.append(go, el(`<span class="stub">${esc(T.sketch)}</span>`));
 
+    /* Aufnahmefeld */
     const det = body.querySelector(".detail");
     const row = el(`<div class="row"></div>`);
-    const tap = el(`<button class="tapphoto">
-      <div class="kthumb"><img src="${IMG}${o.img}" alt="" /></div><span class="more">+</span></button>`);
+    const tap = el(`<button class="tapphoto"><span class="kthumb" style="width:56px;height:56px;border-radius:12px">
+      <img src="${IMG}${o.img}" alt="" /></span></button>`);
     tap.onclick = () => { sheetId = selId; shot = 0; render(); };
-    row.append(tap, el(`<div style="flex:1;min-width:0"><div class="eyebrow">${esc(d.room)} · ${esc(d.epoche)}</div>
-      <div class="vtitle" style="margin:4px 0 0;font-size:16px">${esc(d.title)}</div></div>`));
+    row.append(tap, el(`<div style="flex:1;min-width:0">
+      <div class="eyebrow">${esc(d.room)} · ${esc(d.epoche)}</div>
+      <div class="vtitle" style="margin:4px 0 0;font-size:18px">${esc(d.title)}</div></div>`));
     row.append(likeBtn(selId, render));
     det.append(row);
+
     det.append(el(saved ? `<div class="saved">${SVG.check}<p>„${esc(saved)}“</p></div>`
                         : `<div class="frage dfrage">${esc(frageOf(selId))}</div>`));
 
     if (mode === "nospeech") {
       const ta = el(`<textarea class="typed" rows="2" placeholder="${esc(T.placeholder)}"></textarea>`);
-      const ok = el(`<button class="linkish">${esc(T.save)}</button>`);
+      det.append(ta);
+      setTimeout(() => ta.focus(), 30);
+      const acts = el(`<div class="actions"></div>`);
+      const ok = el(`<button class="btn">${esc(T.save)}</button>`);
       ok.onclick = () => { if (ta.value.trim()) answers[selId] = ta.value.trim(); mode = "idle"; render(); };
-      det.append(ta, ok); setTimeout(() => ta.focus(), 30);
-    } else {
-      const mrow = el(`<div style="display:flex;align-items:center;gap:13px"></div>`);
-      const mic = el(`<button class="mic ${mode === "rec" ? "rec" : (saved ? "done" : "")}" style="width:56px;height:56px;flex:0 0 auto">${mode === "rec" ? SVG.stop : SVG.mic}</button>`);
+      acts.append(ok, finishButton());
+      det.append(acts);
+    } else if (mode === "rec") {
+      const box = el(`<div class="recbox"></div>`);
+      const mic = el(`<button class="mic rec" style="width:52px;height:52px;flex:0 0 auto">${SVG.stop}</button>`);
       mic.onclick = () => rec.toggle(selId);
-      mrow.append(mic, el(`<div style="flex:1;text-align:left">
-        <div class="live" style="text-align:left">${mode === "rec" ? esc(live || "…") : ""}</div>
-        <div class="hint" style="text-align:left">${esc(mode === "rec" ? T.listening : (arrived ? T.sayHere : T.sayAny))}</div></div>`));
-      det.append(mrow);
-      if (mode !== "rec") {
-        const alt = el(`<button class="linkish" style="align-self:flex-start;padding-left:0">${esc(T.typeInstead)}</button>`);
-        alt.onclick = () => { mode = "nospeech"; render(); };
-        det.append(alt);
-      }
+      box.append(mic, el(`<div style="flex:1;min-width:0">
+        <div class="live">${esc(live || "…")}</div>
+        <div class="hint">${esc(T.listenStop)}</div></div>`));
+      det.append(box);
+    } else {
+      const box = el(`<div style="display:flex;align-items:center;gap:12px"></div>`);
+      const mic = el(`<button class="mic ${saved ? "done" : ""}" style="width:52px;height:52px;flex:0 0 auto">${SVG.mic}</button>`);
+      mic.onclick = () => rec.toggle(selId);
+      box.append(mic, el(`<div class="hint" style="text-align:left;flex:1">${esc(arrived ? T.sayHere : T.sayAny)}</div>`));
+      det.append(box);
+      const acts = el(`<div class="actions"></div>`);
+      const alt = el(`<button class="btn">${esc(T.typeInstead)}</button>`);
+      alt.onclick = () => { mode = "nospeech"; render(); };
+      acts.append(alt, finishButton());
+      det.append(acts);
     }
     root.append(body);
+    root.append(objektblatt());
+    paint();
+  }
 
-    const n = Object.keys(answers).length;
-    const fin = el(`<div style="padding:0 16px 16px"><button class="finish">${esc(T.finish)} ${SVG.arrow}</button></div>`);
-    fin.querySelector("button").onclick = () => {
+  function finishButton() {
+    const b = el(`<button class="btn gold">${esc(t().finishShort)}</button>`);
+    b.onclick = () => {
       inWrapped = true; walking = false;
       startWrapped(root, answers, startedAt, () => {
         Object.keys(answers).forEach(k => delete answers[k]);
-        inWrapped = false; roomIdx = 0; startedAt = Date.now();
+        inWrapped = false; roomIdx = 0; lastRoom = -1; startedAt = Date.now();
         enterRoom(0, 1);
       });
     };
-    root.append(fin);
-    root.append(objektblatt());
-    paint();
+    return b;
   }
 
   /* Objektblatt: Beschreibung, weitere Aufnahmen, Audioguide (Platzhalter) */

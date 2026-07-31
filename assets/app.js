@@ -25,11 +25,6 @@
   const app = Fuehrung(root);
 
   /* --- Einstellungen ------------------------------------------------- */
-  function diagText() {
-    const T = t(), c = window.__lastCall;
-    if (!c) return T.diagIdle;
-    return T.diagHead + "\n" + Object.keys(c).map(k => k + ": " + c[k]).join("\n");
-  }
 
   function openSettings() {
     const T = t();
@@ -53,15 +48,12 @@
     sb.append(seg(T.setLang, [["de", "DE"], ["en", "EN"]], v => LANG === v, v => {
       LANG = v; document.documentElement.lang = v; app.relang();
     }));
-    sb.append(seg(T.setSource, [[false, T.srcSample], [true, T.srcLive]], v => liveMode === v, v => {
+    sb.append(seg(T.textSource, [[false, T.sampleShort], [true, T.liveShort]], v => liveMode === v, v => {
       liveMode = v;
     }));
-    sb.append(seg(T.setFont, FONTS.map(f => [f.key, f.label]), v => fontKey === v, v => {
-      setFont(v);
-    }));
-    sb.append(el(`<div class="diag">${esc(diagText())}</div>`));
+    sb.append(el(`<div class="sethint">${esc(T.srcNote)}</div>`));
 
-    const close = el(`<button class="linkish" style="align-self:center">${esc(T.close)}</button>`);
+    const close = el(`<button class="btn" style="min-height:52px;margin-top:4px">${esc(T.close)}</button>`);
     close.onclick = () => sheet.remove();
     sb.append(close);
     document.body.append(sheet);
@@ -72,11 +64,11 @@
   const GEAR = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 9 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 4.6 9a1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg>';
 
   function mountGear() {
-    const bar = root.querySelector(".topbar");
-    if (!bar || bar.querySelector(".gear")) return;
-    const b = el(`<button class="gear" aria-label="Einstellungen">${GEAR}</button>`);
+    const slot = root.querySelector(".topright") || root.querySelector(".topbar");
+    if (!slot || slot.querySelector(".gear")) return;
+    const b = el(`<button class="gear" aria-label="${esc(t().settings)}">${GEAR}</button>`);
     b.onclick = openSettings;
-    bar.append(b);
+    slot.append(b);
   }
   new MutationObserver(mountGear).observe(root, { childList: true, subtree: true });
   mountGear();
