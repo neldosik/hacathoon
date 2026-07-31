@@ -509,3 +509,51 @@ body.app .screen{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-ar
   border:1px solid oklch(0.62 0.21 35/.45);border-radius:14px;padding:12px 13px}
 .speecherr span{font:400 10.5px/1 ui-monospace,SFMono-Regular,Menlo,monospace;
   color:oklch(0.75 0.05 45/.8);letter-spacing:.06em}
+
+/* ==========================================================================
+   1 · Willkommen — erklärt die Idee, bevor der erste Saal kommt
+   ========================================================================== */
+.intro{flex:1;min-height:0;display:flex;flex-direction:column}
+.introtop{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;padding:18px 20px 10px}
+.langpills{display:flex;border:1px solid var(--line);border-radius:999px;overflow:hidden}
+.langpills button{min-height:36px;padding:0 14px;font:600 12px/1 var(--body);
+  background:transparent;color:oklch(0.80 0.03 76);border:none;cursor:pointer}
+.langpills button.on{background:var(--gold);color:oklch(0.16 0.03 55)}
+.introbody{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;justify-content:center;
+  gap:26px;padding:0 26px}
+.introbody::-webkit-scrollbar{width:0}
+.introeyebrow{font-size:11px;font-weight:600;letter-spacing:.28em;text-transform:uppercase;color:var(--gold)}
+.introhead{font-family:var(--display);font-weight:300;font-size:36px;line-height:1.12;
+  letter-spacing:-0.01em;margin-top:12px;text-wrap:pretty}
+.steps{display:flex;flex-direction:column;gap:14px}
+.step{display:flex;gap:14px;align-items:flex-start}
+.stepnum{width:34px;height:34px;border-radius:50%;flex:0 0 auto;display:grid;place-items:center;
+  background:oklch(0.82 0.15 82/.12);border:1px solid oklch(0.82 0.15 82/.4);
+  color:var(--gold-soft);font:600 14px/1 var(--body)}
+.steptitle{font-size:15px;font-weight:500;line-height:1.35}
+.steptext{font-size:13.5px;line-height:1.6;color:oklch(0.78 0.03 75);margin-top:4px}
+.privacy{display:flex;gap:11px;align-items:flex-start;padding:14px;border-radius:16px;
+  background:var(--panel);border:1px solid var(--line);font-size:13px;line-height:1.6;
+  color:oklch(0.84 0.02 78)}
+.privacy > span{color:var(--you);flex:0 0 auto;margin-top:1px}
+.introfoot{flex:0 0 auto;display:flex;flex-direction:column;gap:11px;padding:20px 26px 26px}
+.btnbig{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;min-height:58px;
+  border-radius:16px;border:none;background:var(--gold);color:oklch(0.16 0.03 55);
+  font:600 16px/1 var(--body);cursor:pointer}
+.btnghost{width:100%;min-height:50px;border-radius:15px;background:transparent;border:1px solid var(--line);
+  color:oklch(0.88 0.02 80);font:500 15px/1 var(--body);cursor:pointer}
+.footnote{font-size:12px;color:oklch(0.70 0.04 70/.85);text-align:center}
+
+@media (max-height:820px){
+  .introtop{padding:12px 18px 6px}
+  .introbody{gap:18px;padding:0 20px;justify-content:flex-start;padding-top:6px}
+  .introhead{font-size:28px;margin-top:9px}
+  .steps{gap:11px}
+  .stepnum{width:30px;height:30px;font-size:13px}
+  .steptitle{font-size:14px}
+  .steptext{font-size:12.5px;margin-top:3px}
+  .privacy{padding:11px;font-size:12.5px}
+  .introfoot{padding:12px 20px 16px;gap:9px}
+  .btnbig{min-height:52px;font-size:15px}
+  .btnghost{min-height:46px;font-size:14px}
+}

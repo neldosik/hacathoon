@@ -18,6 +18,7 @@
   if (q.get("font")) setFont(q.get("font"));
 
   wrappedPeer = true;        // Story und Faden verweisen aufeinander
+  introEnabled = q.get("intro") !== "0";   // ?intro=0 überspringt die Erklärung beim Testen
   wrappedStyle = "story";    // die Story kommt zuerst
   document.documentElement.lang = LANG;
 

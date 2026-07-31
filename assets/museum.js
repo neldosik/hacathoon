@@ -87,6 +87,16 @@ const L = {
       unknown: "Die Spracherkennung hat abgebrochen.",
     },
     tryAgain: "Nochmal versuchen",
+    introTitle: "Erzähl mir, was du siehst — am Ende bekommst du deinen Besuch zurück.",
+    introStep1: "Du gehst durch die Säle",
+    introStep1Sub: "Der Guide sagt dir, wenn ein Objekt vor dir steht.",
+    introStep2: "Sag frei heraus, was dir durch den Kopf geht",
+    introStep2Sub: "Es gibt keine richtige Antwort. Flüstern genügt — ein Satz reicht.",
+    introStep3: "Am Ende: dein Faden",
+    introStep3Sub: "Deine Worte, was sie über deinen Tag sagen, und drei Objekte für das nächste Mal.",
+    introPrivacy: "Die Aufnahme wird in Text umgewandelt und danach gelöscht. Gespeichert bleibt nur, was du selbst siehst.",
+    introVoice: "Ich erzähle mit der Stimme", introType: "Lieber schreiben",
+    introSwitch: "Du kannst jederzeit wechseln.",
     keep: "Behalten", keepTitle: "Deinen Besuch behalten",
     keepNote: "Nichts davon liegt auf einem Server — der Text geht mit, nicht ein Link darauf.",
     keepShare: "Teilen", keepMail: "Per E-Mail schicken", keepCopy: "Text kopieren",
@@ -162,6 +172,16 @@ const L = {
       unknown: "Speech recognition stopped.",
     },
     tryAgain: "Try again",
+    introTitle: "Tell me what you see — at the end you get your visit back.",
+    introStep1: "You walk through the rooms",
+    introStep1Sub: "The guide tells you when an object is in front of you.",
+    introStep2: "Say whatever comes to mind",
+    introStep2Sub: "There is no right answer. A whisper is enough — one sentence will do.",
+    introStep3: "At the end: your thread",
+    introStep3Sub: "Your words, what they say about your day, and three objects for next time.",
+    introPrivacy: "The recording is turned into text and then deleted. Only what you see yourself is kept.",
+    introVoice: "I'll speak", introType: "I'd rather write",
+    introSwitch: "You can switch at any time.",
     keep: "Keep", keepTitle: "Keep your visit",
     keepNote: "None of this sits on a server — the text travels with you, not a link to it.",
     keepShare: "Share", keepMail: "Send by e-mail", keepCopy: "Copy the text",
@@ -439,6 +459,7 @@ const restartBtn = (onRestart, layer) => {
 /* In der App leben Story und Faden nebeneinander: die eine zum Zeigen,
    die andere zum Behalten. Auf der Auswahlseite bleibt das aus. */
 let wrappedPeer = false;
+let introEnabled = false;   // nur die App zeigt den Willkommen-Schirm
 const peerBtn = (layer, w, onRestart, to) => {
   if (!wrappedPeer) return null;
   const b = el(`<button class="linkish">${esc(t()[to === "faden" ? "toThread" : "toStory"])}</button>`);
@@ -991,6 +1012,7 @@ function Fuehrung(root) {
   let me = { x: 50, y: 94 }, heading = -90, wp = 0, seg = 0, walking = false;
   let answers = {}, selId = ROUTE_ROOMS[0].spots[0].id, arrived = false;
   let mode = "idle", live = "", speechCode = null, sheetId = null, shot = 0, startedAt = Date.now();
+  let intro = introEnabled, inputPref = "voice";
   let elMe, elRange, elLabel, elRail, pinEls = [], inWrapped = false, lastRoom = -1;
 
   const rec = makeRecorder({
@@ -1057,6 +1079,7 @@ function Fuehrung(root) {
   }
 
   function render() {
+    if (intro) return renderIntro();
     const T = t(), o = obj(selId), d = loc(o), saved = answers[selId], R = room();
     const near = nearest();
     root.innerHTML = ""; pinEls = [];
@@ -1194,6 +1217,52 @@ function Fuehrung(root) {
     root.append(body);
     root.append(objektblatt());
     paint();
+  }
+
+  /* 1 · Willkommen: worum es geht, bevor der erste Saal kommt */
+  function renderIntro() {
+    const T = t();
+    root.innerHTML = "";
+    const v = el(`<div class="intro">
+      <div class="introtop">
+        <div class="brand"><i>◆</i> SMÄK</div>
+        <div class="langpills"></div>
+      </div>
+      <div class="introbody">
+        <div>
+          <div class="introeyebrow">Museum Wrapped</div>
+          <div class="introhead">${esc(T.introTitle)}</div>
+        </div>
+        <div class="steps"></div>
+        <div class="privacy"><span>${SVG.shield}</span><div>${esc(T.introPrivacy)}</div></div>
+      </div>
+      <div class="introfoot"></div></div>`);
+
+    const pills = v.querySelector(".langpills");
+    [["de", "DE"], ["en", "EN"]].forEach(([k, label]) => {
+      const b = el(`<button class="${LANG === k ? "on" : ""}">${label}</button>`);
+      b.onclick = () => { LANG = k; document.documentElement.lang = k; render(); };
+      pills.append(b);
+    });
+
+    const steps = v.querySelector(".steps");
+    [1, 2, 3].forEach(i => steps.append(el(`<div class="step">
+      <span class="stepnum">${i}</span>
+      <div style="padding-top:6px">
+        <div class="steptitle">${esc(T["introStep" + i])}</div>
+        <div class="steptext">${esc(T["introStep" + i + "Sub"])}</div>
+      </div></div>`)));
+
+    const foot = v.querySelector(".introfoot");
+    const voice = el(`<button class="btnbig">${SVG.mic} ${esc(T.introVoice)}</button>`);
+    voice.onclick = () => { inputPref = "voice"; intro = false; mode = "idle"; render(); };
+    const type = el(`<button class="btnghost">${esc(T.introType)}</button>`);
+    type.onclick = () => { inputPref = "text"; intro = false; mode = "nospeech"; render(); };
+    foot.append(voice, type, el(`<div class="footnote">${esc(T.introSwitch)}</div>`));
+
+    // Ohne Spracherkennung im Browser führt nur der Schreibweg weiter
+    if (!SR) { voice.disabled = true; voice.style.opacity = ".45"; voice.style.cursor = "not-allowed"; }
+    root.append(v);
   }
 
   function finishButton() {
