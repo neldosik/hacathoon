@@ -1,0 +1,349 @@
+[
+  {
+    "id": "OBJ-04",
+    "title": "Statue eines falkenköpfigen Gottes",
+    "room": "Kunst und Form",
+    "route_order": 1,
+    "themes": [
+      "Gods & Belief"
+    ],
+    "curator_fact": "Lebensgroße Statue eines falkenköpfigen Gottes (Inv. Gl. WAF 22 a) aus Assuan-Granit, stilistisch in die Regierungszeit Amenophis' III. datiert. Die stehende Gottheit mit Falkenkopf und Strähnenperücke hält in der linken Hand ein Anch-Zeichen; die Statue war ursprünglich bemalt.",
+    "reflection_prompt": "Was gibt dir das Gefühl von Schutz?",
+    "image": "OBJ-04.jpg",
+    "image_hi": null,
+    "orientation": "portrait",
+    "image_count": 4
+  },
+  {
+    "id": "OBJ-06",
+    "title": "Würfelstatue des Bakenchons, Hohepriester des Amun",
+    "room": "Kunst und Form",
+    "route_order": 2,
+    "themes": [
+      "Writing & Knowledge",
+      "Gods & Belief"
+    ],
+    "curator_fact": "Würfelstatue des Bakenchons (Inv. Gl. WAF 38), Hohepriester des Amun. Der hockende, in ein enges Gewand gehüllte Körper ist auf einfache geometrische Formen reduziert. Bemerkenswert ist die umfangreiche hieroglyphische Inschrift auf Vorderseite, Rückenpfeiler und Sockel – einer der wichtigsten biographischen Texte des Alten Ägypten, der Bakenchons' Lebensweg vom Schüler bis zum Hohepriester des Amun in Karnak schildert.",
+    "reflection_prompt": "Wenn du deinen Lebensweg in wenige Sätze fassen müsstest – was bliebe stehen?",
+    "image": "OBJ-06.jpg",
+    "image_hi": "OBJ-06@hi.jpg",
+    "orientation": "portrait",
+    "image_count": 11
+  },
+  {
+    "id": "OBJ-07",
+    "title": "Sitzgruppe des Sabu, seiner Frau Meretites und des Sohnes Isebwer",
+    "room": "Kunst und Form",
+    "route_order": 3,
+    "themes": [
+      "Daily Life",
+      "Death & Afterlife"
+    ],
+    "curator_fact": "Sitzgruppe des Sabu, seiner Frau Meretites und ihres Sohnes Isebwer (Inv. ÄS 7146), 5. Dynastie, Altes Reich (um 2435–2306 v. Chr.), aus bemaltem Kalkstein. Die Statuengruppe zeigt die Familie gemeinsam sitzend.",
+    "reflection_prompt": "Mit wem würdest du für die Ewigkeit zusammen abgebildet sein wollen?",
+    "image": "OBJ-07.jpg",
+    "image_hi": "OBJ-07@hi.jpg",
+    "orientation": "portrait",
+    "image_count": 5
+  },
+  {
+    "id": "OBJ-02",
+    "title": "Doppelstatue des stehenden Königs Niuserre",
+    "room": "Kunst und Zeit",
+    "route_order": 4,
+    "themes": [
+      "Kingship & Power"
+    ],
+    "curator_fact": "Doppelstatue des stehenden Königs Niuserre (Inv. ÄS 6794), 5. Dynastie, Altes Reich (um 2402–2375 v. Chr.), aus Kalzitalabaster. Sie steht im Zusammenhang mit dem Sonnenheiligtum des Niuserre in Abu Gurob.",
+    "reflection_prompt": "Wie möchtest du in Erinnerung bleiben, wenn dich niemand mehr persönlich kennt?",
+    "image": "OBJ-02.jpg",
+    "image_hi": null,
+    "orientation": "square",
+    "image_count": 11
+  },
+  {
+    "id": "OBJ-08",
+    "title": "Standstatuette eines hohen Beamten",
+    "room": "Kunst und Zeit",
+    "route_order": 5,
+    "themes": [
+      "Kingship & Power",
+      "Daily Life"
+    ],
+    "curator_fact": "Standstatuette eines hohen Beamten (Inv. ÄS 7105), 13. Dynastie, Mittleres Reich (um 1759–1630 v. Chr.), gefertigt aus Kupfer und Silber; laut Sekundärliteratur aus Hawara im Fayum.",
+    "reflection_prompt": "Woran misst du den Wert eines Menschen?",
+    "image": "OBJ-08.jpg",
+    "image_hi": null,
+    "orientation": "portrait",
+    "image_count": 5
+  },
+  {
+    "id": "OBJ-21",
+    "title": "Bronzestatuette eines Krokodils",
+    "room": "Kunst und Zeit",
+    "route_order": 5,
+    "themes": [
+      "Gods & Belief"
+    ],
+    "curator_fact": "Bronzestatuette eines Krokodils (Inv. ÄS 6080), Raum 'Kunst und Zeit'. Die krokodilgestaltige Götterfigur gilt als frühester Beleg eines in Ägypten hergestellten Objekts aus 'schwarzem Kupfer' und datiert um 1850 v. Chr. (Mittleres Reich). Bereits beim Guss wurden Vertiefungen für spätere Verzierungen aus Elektron ausgespart.",
+    "reflection_prompt": "Vor welcher Kraft der Natur hast du Ehrfurcht?",
+    "image": "OBJ-21.jpg",
+    "image_hi": null,
+    "orientation": "landscape",
+    "image_count": 8
+  },
+  {
+    "id": "OBJ-09",
+    "title": "Kniestatue mit Sistrum (Sistrophor) des Senenmut",
+    "room": "Kunst und Zeit",
+    "route_order": 6,
+    "themes": [
+      "Gods & Belief",
+      "Kingship & Power"
+    ],
+    "curator_fact": "Granitstatue des hohen Beamten Senenmut als 'Sistrophor' (Inv. ÄS 6265). Er kniet und hält mit beiden Händen ein Sistrum vor dem Körper – ein Rasselinstrument aus dem Kult verschiedener Göttinnen. Das Instrument ist mit einem Hathorkopf mit Strähnenperücke und Kuhohren aufwendig gestaltet.",
+    "reflection_prompt": "Welcher Gegenstand trägt für dich eine besondere, fast heilige Bedeutung?",
+    "image": "OBJ-09.jpg",
+    "image_hi": null,
+    "orientation": "portrait",
+    "image_count": 7
+  },
+  {
+    "id": "OBJ-03",
+    "title": "Gesichtsfragment einer Kolossalstatue des Königs Amenophis IV.",
+    "room": "Kunst und Zeit",
+    "route_order": 7,
+    "themes": [
+      "Kingship & Power",
+      "Gods & Belief"
+    ],
+    "curator_fact": "Gesichtsfragment einer Kolossalstatue des Königs Amenophis IV. / Echnaton (Inv. ÄS 6290). Es gehörte zu einer überlebensgroßen Statue aus dem frühen Aton-Tempel (Gem-pa-Aton) in Karnak. Die schmalen Züge, vollen Lippen und das vorspringende Kinn sind typisch für den Bildstil seiner ersten Regierungsjahre, in denen er eine tiefgreifende religiöse Umwälzung einleitete.",
+    "reflection_prompt": "Was erkennst du in einem Gesicht, von dem nur ein Bruchteil erhalten ist?",
+    "image": "OBJ-03.jpg",
+    "image_hi": "OBJ-03@hi.jpg",
+    "orientation": "portrait",
+    "image_count": 3
+  },
+  {
+    "id": "OBJ-10",
+    "title": "Statue des Antinoos",
+    "room": "Kunst und Zeit",
+    "route_order": 8,
+    "themes": [
+      "Beauty & Body",
+      "Gods & Belief"
+    ],
+    "curator_fact": "Überlebensgroße Marmorstatue des Antinoos (Inv. Gl. WAF 24), um 135 n. Chr. Antinoos, der Gefährte Kaiser Hadrians, wurde nach seinem frühen Tod durch Ertrinken im Nil (130 n. Chr.) vergöttlicht; Hadrian förderte reichsweit Kultbilder und Heiligtümer für ihn. Die Statue zeigt ihn idealisiert mit jugendlich-athletischem Körper und entrücktem Gesichtsausdruck.",
+    "reflection_prompt": "Wie hältst du die Erinnerung an jemanden fest, der dir wichtig war?",
+    "image": "OBJ-10.jpg",
+    "image_hi": null,
+    "orientation": "portrait",
+    "image_count": 5
+  },
+  {
+    "id": "OBJ-11",
+    "title": "Obelisk des Titus Sextius Africanus",
+    "room": "Obelisk",
+    "route_order": 9,
+    "themes": [
+      "Writing & Knowledge",
+      "Kingship & Power"
+    ],
+    "curator_fact": "Obelisk des Titus Sextius Africanus (Inv. Gl. WAF 39), einer der wenigen erhaltenen römischen Obelisken mit hieroglyphischer Inschrift, aus Assuaner Rosengranit. Das heute 5,50 m hohe Monument besteht aus drei Teilen; nur das 3,20 m hohe Mittelstück ist antik. Die Inschrift nennt den römischen Magistraten Titus Sextius Africanus als Stifter.",
+    "reflection_prompt": "Welches Zeichen würdest du hinterlassen, damit man sich an dich erinnert?",
+    "image": "OBJ-11.jpg",
+    "image_hi": null,
+    "orientation": "portrait",
+    "image_count": 4
+  },
+  {
+    "id": "OBJ-12",
+    "title": "Oberteil einer Sitzstatue des Königs Ramses II.",
+    "room": "Pharao",
+    "route_order": 10,
+    "themes": [
+      "Kingship & Power"
+    ],
+    "curator_fact": "Oberteil einer Sitzstatue des Königs Ramses II. (Inv. Gl. 89), aus nubischem Sandstein. Der König trägt das quergestreifte Nemes-Kopftuch mit einst blau-gelber Bemalung, breiten Schmuckkragen und Zeremonialbart; in den Händen hielt er Krummstab und Wedel. Eine zweizeilige Inschrift auf dem Rückenpfeiler nennt den Namen Ramses'.",
+    "reflection_prompt": "Wie zeigst du dich, wenn du willst, dass man dich ernst nimmt?",
+    "image": "OBJ-12.jpg",
+    "image_hi": null,
+    "orientation": "portrait",
+    "image_count": 4
+  },
+  {
+    "id": "OBJ-13",
+    "title": "Scheintür der Chnumit, Gottesdienerin der Hathor",
+    "room": "Jenseits",
+    "route_order": 11,
+    "themes": [
+      "Death & Afterlife",
+      "Writing & Knowledge"
+    ],
+    "curator_fact": "Scheintür der Chnumit, Gottesdienerin der Hathor (Inv. ÄS 6288). Die bemalte Kalksteinplatte bildete die Hauptkultstelle ihres Grabes – Teil einer Mastaba, dem 'Wohnhaus für die Ewigkeit' der Elite. Im Zentrum steht eine Tür mit Flügeln und Riegeln; darüber sitzt Chnumit an einem gedeckten Tisch, umgeben von Namen, Titeln und einer an Anubis gerichteten Opferformel.",
+    "reflection_prompt": "Welche Tür in deinem Leben würdest du gern noch einmal öffnen?",
+    "image": "OBJ-13.jpg",
+    "image_hi": null,
+    "orientation": "portrait",
+    "image_count": 5
+  },
+  {
+    "id": "OBJ-14",
+    "title": "Oberteil des Sarges der Königstochter Satdjehuti",
+    "room": "Jenseits",
+    "route_order": 12,
+    "themes": [
+      "Death & Afterlife",
+      "Beauty & Body"
+    ],
+    "curator_fact": "Oberteil (Kopfteil) des vergoldeten Sarges der Königstochter und Königsschwester Satdjehuti (Inv. ÄS 7163), vom Übergang der Zweiten Zwischenzeit zum Neuen Reich. Der überlebensgroße anthropoide Holzsarg war mit Blattgold überzogen; die Augen bestehen aus Einlagen aus weißem Marmor und schwarzem Stein. Satdjehuti trägt die Geierhaube, eine den königlichen Frauen vorbehaltene Kopfbedeckung.",
+    "reflection_prompt": "Wie möchtest du aussehen, wenn man sich für immer an dein Gesicht erinnert?",
+    "image": "OBJ-14.jpg",
+    "image_hi": "OBJ-14@hi.jpg",
+    "orientation": "landscape",
+    "image_count": 2
+  },
+  {
+    "id": "OBJ-15",
+    "title": "Totenbuch des Pajuheru",
+    "room": "Jenseits",
+    "route_order": 13,
+    "themes": [
+      "Writing & Knowledge",
+      "Death & Afterlife"
+    ],
+    "curator_fact": "Totenbuch des Pajuheru (Leihgabe 2). Der mehrere Meter lange Papyrus enthält Sprüche, die den Verstorbenen auf seinem Weg ins Jenseits begleiten, schützen und versorgen sollen – in hieratischer Schrift, mit rot hervorgehobenen Überschriften und Vignetten. Im Mittelpunkt steht das Totengericht unter Osiris, bei dem Anubis und Horus das Herz gegen die Feder der Maat abwiegen.",
+    "reflection_prompt": "Was von deinem Leben würdest du in die Waagschale legen wollen?",
+    "image": "OBJ-15.jpg",
+    "image_hi": "OBJ-15@hi.jpg",
+    "orientation": "landscape",
+    "image_count": 1
+  },
+  {
+    "id": "OBJ-16",
+    "title": "Statue eines Falkengottes (Silber)",
+    "room": "Religion",
+    "route_order": 14,
+    "themes": [
+      "Gods & Belief"
+    ],
+    "curator_fact": "Statue eines Falkengottes (Leihgabe 8), Raum 'Religion', aus Silber (664–343 v. Chr.). Metallfiguren wurden in der Antike oft eingeschmolzen, weshalb solche Götterstatuen selten überliefert sind; das importierte Silber galt als besonders wertvoll. Zentrale Götterbilder wurden in Tempelschreinen aufbewahrt, täglich gereinigt, bekleidet und gesalbt – man glaubte, die Gottheit sei im Kultbild anwesend.",
+    "reflection_prompt": "Wo spürst du etwas Größeres als dich selbst?",
+    "image": "OBJ-16.jpg",
+    "image_hi": "OBJ-16@hi.jpg",
+    "orientation": "portrait",
+    "image_count": 6
+  },
+  {
+    "id": "OBJ-17",
+    "title": "Statue der Göttin Isis lactans mit Horuskind",
+    "room": "Nach den Pharaonen",
+    "route_order": 15,
+    "themes": [
+      "Gods & Belief",
+      "Daily Life"
+    ],
+    "curator_fact": "Statue der Göttin Isis lactans (die 'stillende Isis') mit dem Horuskind (Inv. ÄS 4201), Raum 'Nach den Pharaonen', aus Kalkstein, römische Kaiserzeit (um 30 v. Chr.–14 n. Chr.). Dargestellt ist die sitzende Isis, die das Horuskind nährt.",
+    "reflection_prompt": "Wer hat dich getragen, als du es am meisten gebraucht hast?",
+    "image": "OBJ-17.jpg",
+    "image_hi": null,
+    "orientation": "portrait",
+    "image_count": 4
+  },
+  {
+    "id": "OBJ-18",
+    "title": "Stele des Upuautaa, Vorsteher der Priester",
+    "room": "Schrift und Text",
+    "route_order": 16,
+    "themes": [
+      "Writing & Knowledge",
+      "Gods & Belief"
+    ],
+    "curator_fact": "Stele des Upuautaa, Hatia und Vorsteher der Priester (Inv. Gl. WAF 35), Raum 'Schrift und Text'. Unten links steht der Stifter vor einem großen Opfertisch; die übrige Fläche trägt eine 25-zeilige Inschrift, die mit einem Gebet an Osiris beginnt und die in Abydos verehrten Gottheiten aufzählt. Der von rechts nach links zu lesende Text endet mit einem königlichen Empfang, bei dem Upuautaa Ämter und das Recht erhält, im Tempelbezirk Statuen aufzustellen.",
+    "reflection_prompt": "Wenn du eine Botschaft für die Menschen der Zukunft hinterlassen könntest – was stünde darauf?",
+    "image": "OBJ-18.jpg",
+    "image_hi": null,
+    "orientation": "portrait",
+    "image_count": 1
+  },
+  {
+    "id": "OBJ-01",
+    "title": "Fayencefigur eines liegenden Nilpferds",
+    "room": "Kunsthandwerk",
+    "route_order": 17,
+    "themes": [
+      "Death & Afterlife",
+      "Beauty & Body"
+    ],
+    "curator_fact": "Fayencefigur eines liegenden Nilpferds (Inv. ÄS 6040). Solche kunstvoll verzierten Tierfiguren wurden als Grabbeigaben verwendet und sollten die Verstorbenen auf ihrem Weg ins Jenseits begleiten und schützen. Der Körper ist mit Lotosbändern und -blüten dekoriert, die auf den natürlichen Lebensraum des Tieres verweisen.",
+    "reflection_prompt": "Welches Tier würdest du mit auf eine lange Reise nehmen – und warum?",
+    "image": "OBJ-01.jpg",
+    "image_hi": "OBJ-01@hi.jpg",
+    "orientation": "landscape",
+    "image_count": 6
+  },
+  {
+    "id": "OBJ-19",
+    "title": "Schildring mit Widderkopf des Gottes Amun (Schatz der Amanishakheto)",
+    "room": "Nubien und Sudan",
+    "route_order": 18,
+    "themes": [
+      "Beauty & Body",
+      "Kingship & Power"
+    ],
+    "curator_fact": "Schildring mit Widderkopf des Gottes Amun (Inv. Ant. 2446 b), Raum 'Nubien und Sudan'. Er gehört zum Goldschatz der Königin Amanishakheto – dem bedeutendsten erhaltenen Schmuckfund aus dem antiken Sudan, 1. Jh. v. Chr., entdeckt in der Pyramide Beg. N 6 auf dem Nordfriedhof von Meroe. Der Fund umfasst Gold-, Silber- und Bronzeobjekte wie Armreife, Schild- und Siegelringe, Anhänger und Amulette.",
+    "reflection_prompt": "Welches Schmuckstück oder Objekt würdest du für immer behalten wollen?",
+    "image": "OBJ-19.jpg",
+    "image_hi": null,
+    "orientation": "portrait",
+    "image_count": 1
+  },
+  {
+    "id": "OBJ-05",
+    "title": "Relief eines geflügelten Genius aus dem Nordwest-Palast Assurnasirpals II. von Nimrud",
+    "room": "Alter Orient",
+    "route_order": 19,
+    "themes": [
+      "Gods & Belief",
+      "Kingship & Power"
+    ],
+    "curator_fact": "Relief eines geflügelten Genius aus dem Nordwest-Palast Assurnasirpals II. in Nimrud (Inv. Gl. WAF 4), Neuassyrisches Reich, 9. Jh. v. Chr. Die Wände des Palastes waren mit hunderten Steinreliefs geschmückt, die den König im Kult, magische Schutzgötter sowie Jagd- und Kriegsmotive zeigten.",
+    "reflection_prompt": "Vor welcher Tür in deinem Leben würdest du einen Wächter aufstellen?",
+    "image": "OBJ-05.jpg",
+    "image_hi": null,
+    "orientation": "portrait",
+    "image_count": 1
+  },
+  {
+    "id": "OBJ-20",
+    "title": "Glasbecher mit dem Thronnamen Thutmosis III.",
+    "room": "Kunsthandwerk",
+    "route_order": null,
+    "themes": [
+      "Beauty & Body",
+      "Daily Life"
+    ],
+    "curator_fact": "Glasbecher mit dem Thronnamen Thutmosis III. (Inv. ÄS 630), Raum 'Kunsthandwerk'. Das kleine Gefäß aus hellblauem Glas mit dunkelblauen und gelben Glasfäden trägt die Kartusche Thutmosis' III. (um 1479–1425 v. Chr.) und zählt zu den ältesten sicher datierbaren Glasgefäßen Ägyptens. Reste einer schwarzen Substanz deuten darauf hin, dass der Becher wohl kostbare Kosmetik enthielt.",
+    "reflection_prompt": "Was aus deinem Alltag würde in 3000 Jahren als kostbar gelten?",
+    "image": "OBJ-20.jpg",
+    "image_hi": null,
+    "orientation": "portrait",
+    "image_count": 4
+  },
+  {
+    "id": "OBJ-22",
+    "title": "Stele der Königin Amanishakheto",
+    "room": "Nubien und Sudan",
+    "route_order": null,
+    "themes": [
+      "Kingship & Power",
+      "Writing & Knowledge"
+    ],
+    "curator_fact": "Stele der Königin Amanishakheto (Leihgabe 31), Raum 'Nubien und Sudan', aus Sandstein, meroitische Zeit (um 50 v. Chr.–50 n. Chr.). Sie stammt aus dem Sanktuar 104 des Amuntempels von Naga in Obernubien; die Rückseite trägt eine Inschrift in meroitischer Schrift. Leihgabe des National Museum of Sudan, Khartum.",
+    "reflection_prompt": "Was möchtest du hinterlassen, das auch dann noch spricht, wenn niemand mehr deine Sprache versteht?",
+    "image": "OBJ-22.jpg",
+    "image_hi": null,
+    "orientation": "portrait",
+    "image_count": 2
+  }
+]

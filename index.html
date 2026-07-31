@@ -1,0 +1,876 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Museum Wrapped — Capture, drei Richtungen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:oklch(0.10 0.02 55);
+    --fg:oklch(0.96 0.02 85);
+    --card:oklch(0.22 0.04 55);
+    --muted:oklch(0.75 0.04 75);
+    --gold:oklch(0.82 0.15 82);
+    --lapis:oklch(0.42 0.16 265);
+    --ember:oklch(0.62 0.21 35);
+    --line:oklch(0.35 0.05 65 / 40%);
+    --display:"Cormorant Garamond",Georgia,serif;
+    --body:"Inter",system-ui,sans-serif;
+    --night:radial-gradient(ellipse at top,oklch(0.28 0.08 55) 0%,oklch(0.14 0.03 55) 55%,oklch(0.10 0.02 55) 100%);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:oklch(0.08 0.015 55);color:var(--fg);font-family:var(--body);min-height:100vh;padding:28px 20px 60px}
+
+  /* ---------- lab chrome (не часть продукта) ---------- */
+  .lab{max-width:1420px;margin:0 auto}
+  .lab h1{font-family:var(--display);font-weight:300;font-size:30px;letter-spacing:-0.01em}
+  .lab p{color:var(--muted);font-size:13px;margin-top:6px;max-width:70ch;line-height:1.6}
+  .tabs{display:flex;gap:8px;margin:22px 0 26px;flex-wrap:wrap}
+  .tabs button{font:500 11px/1 var(--body);letter-spacing:.16em;text-transform:uppercase;color:var(--muted);
+    background:transparent;border:1px solid var(--line);border-radius:999px;padding:9px 16px;cursor:pointer;transition:.18s}
+  .tabs button:hover{color:var(--fg);border-color:oklch(0.82 0.15 82 / 45%)}
+  .tabs button[aria-pressed="true"]{color:oklch(0.16 0.03 55);background:var(--gold);border-color:var(--gold)}
+  .stage{display:flex;gap:34px;align-items:flex-start;flex-wrap:wrap;justify-content:center}
+  .slot{width:392px}
+  .slot.hidden{display:none}
+  .slot > figcaption{margin-bottom:12px}
+  .slot .name{font-family:var(--display);font-size:22px;font-weight:400}
+  .slot .why{color:var(--muted);font-size:12px;line-height:1.55;margin-top:3px;min-height:34px}
+
+  /* ---------- device ---------- */
+  .device{position:relative;width:392px;height:846px;border-radius:38px;padding:9px;
+    background:linear-gradient(160deg,oklch(0.30 0.02 60),oklch(0.14 0.01 60));
+    box-shadow:0 40px 90px -30px oklch(0 0 0/.85), 0 0 0 1px oklch(0.45 0.04 65/.5) inset}
+  .screen{position:relative;width:100%;height:100%;border-radius:30px;overflow:hidden;background:var(--night);
+    display:flex;flex-direction:column;isolation:isolate}
+  .screen::after{content:"";position:absolute;inset:0;pointer-events:none;border-radius:30px;
+    box-shadow:0 0 0 1px oklch(0.82 0.15 82/.10) inset}
+
+  /* ---------- shared bits ---------- */
+  .topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 20px 12px;flex:0 0 auto}
+  .brand{display:flex;align-items:center;gap:7px;font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--muted)}
+  .brand i{color:var(--gold);font-style:normal}
+  .count{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted)}
+  .count b{color:var(--gold);font-weight:500}
+  .hair{height:1px;background:linear-gradient(90deg,transparent,var(--line),transparent);flex:0 0 auto}
+  .eyebrow{font-size:9.5px;letter-spacing:.28em;text-transform:uppercase;color:var(--gold)}
+  .frage{font-family:var(--display);font-weight:300;line-height:1.2;letter-spacing:-0.005em}
+
+  /* mic */
+  .mic{position:relative;width:74px;height:74px;border-radius:50%;display:grid;place-items:center;cursor:pointer;
+    background:oklch(0.82 0.15 82/.07);border:1px solid oklch(0.82 0.15 82/.45);color:var(--gold);transition:.2s}
+  .mic:hover{background:oklch(0.82 0.15 82/.14)}
+  .mic.rec{background:oklch(0.62 0.21 35/.16);border-color:oklch(0.62 0.21 35/.7);color:oklch(0.80 0.16 40)}
+  .mic.rec::before,.mic.rec::after{content:"";position:absolute;inset:-2px;border-radius:50%;
+    border:1px solid oklch(0.62 0.21 35/.55);animation:ring 2.1s ease-out infinite}
+  .mic.rec::after{animation-delay:1.05s}
+  @keyframes ring{0%{transform:scale(1);opacity:.85}100%{transform:scale(1.55);opacity:0}}
+  .mic.done{background:oklch(0.82 0.15 82/.16);border-color:var(--gold)}
+  .hint{font-size:11px;color:var(--muted);letter-spacing:.02em;text-align:center;min-height:15px}
+  .live{font-family:var(--display);font-style:italic;font-size:15px;line-height:1.35;color:oklch(0.88 0.06 60);
+    text-align:center;min-height:20px}
+  .typed{width:100%;background:oklch(0.22 0.04 55/.6);border:1px solid var(--line);border-radius:14px;color:var(--fg);
+    font:400 13px/1.5 var(--body);padding:11px 13px;resize:none;outline:none}
+  .typed:focus{border-color:oklch(0.82 0.15 82/.5)}
+  .linkish{background:none;border:none;color:var(--muted);font:500 10.5px/1 var(--body);letter-spacing:.14em;
+    text-transform:uppercase;cursor:pointer;padding:6px;text-decoration:underline;text-underline-offset:4px}
+  .linkish:hover{color:var(--gold)}
+
+  .finish{width:100%;display:flex;align-items:center;justify-content:center;gap:8px;border-radius:999px;cursor:pointer;
+    font:500 11px/1 var(--body);letter-spacing:.2em;text-transform:uppercase;padding:14px;
+    background:var(--gold);color:oklch(0.16 0.03 55);border:none;transition:.2s}
+  .finish:disabled{background:transparent;color:oklch(0.55 0.03 65);border:1px solid var(--line);cursor:not-allowed}
+
+  .saved{display:flex;gap:9px;align-items:flex-start;border-left:2px solid var(--gold);padding-left:11px;text-align:left}
+  .saved p{font-family:var(--display);font-style:italic;font-size:15px;line-height:1.4;color:oklch(0.92 0.04 70)}
+
+  /* ---------- A. Vitrine ---------- */
+  .vitrine{flex:1;display:flex;flex-direction:column;padding:0 22px 18px;min-height:0}
+  .case{position:relative;flex:1 1 auto;min-height:0;border-radius:16px;margin-bottom:16px;overflow:hidden;
+    background:linear-gradient(180deg,oklch(0.19 0.035 58),oklch(0.12 0.02 55));
+    border:1px solid oklch(0.82 0.15 82/.14);display:grid;place-items:center}
+  .case::before{content:"";position:absolute;left:50%;top:-32%;width:150%;height:80%;transform:translateX(-50%);
+    background:radial-gradient(ellipse at center,oklch(0.85 0.08 75/.16),transparent 62%);pointer-events:none}
+  .case img{max-width:88%;max-height:88%;object-fit:contain;filter:drop-shadow(0 22px 34px oklch(0 0 0/.75))}
+  .case .plaque{position:absolute;left:14px;bottom:12px;right:14px;display:flex;justify-content:space-between;gap:10px}
+  .case .plaque span{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:oklch(0.78 0.05 70/.75)}
+  .vtitle{font-family:var(--display);font-size:20px;font-weight:400;line-height:1.22;margin:2px 0 12px}
+  .vfrage{font-size:26px;margin-bottom:auto}
+  .vfoot{display:flex;flex-direction:column;align-items:center;gap:9px;padding-top:14px}
+  .dots{display:flex;gap:7px;justify-content:center;padding:12px 0 2px}
+  .dots button{width:7px;height:7px;border-radius:50%;border:1px solid oklch(0.70 0.04 70/.5);background:transparent;
+    cursor:pointer;padding:0;transition:.2s}
+  .dots button.on{background:var(--gold);border-color:var(--gold);transform:scale(1.35)}
+  .dots button.has{background:oklch(0.82 0.15 82/.45);border-color:oklch(0.82 0.15 82/.6)}
+  .nav{position:absolute;top:50%;transform:translateY(-50%);width:34px;height:34px;border-radius:50%;display:grid;
+    place-items:center;background:oklch(0.10 0.02 55/.55);border:1px solid var(--line);color:var(--muted);cursor:pointer;backdrop-filter:blur(6px)}
+  .nav:hover{color:var(--gold);border-color:oklch(0.82 0.15 82/.5)}
+  .nav.l{left:8px} .nav.r{right:8px}
+
+  /* ---------- B. Kartei ---------- */
+  .kartei{flex:1;overflow-y:auto;padding:6px 18px 96px;display:flex;flex-direction:column;gap:11px}
+  .kartei::-webkit-scrollbar{width:0}
+  .khead{font-family:var(--display);font-size:25px;font-weight:300;line-height:1.15;margin:8px 2px 4px}
+  .ksub{color:var(--muted);font-size:11.5px;line-height:1.5;margin:0 2px 10px}
+  .kcard{display:flex;gap:13px;align-items:stretch;text-align:left;cursor:pointer;padding:10px;border-radius:16px;
+    background:oklch(0.22 0.04 55/.45);border:1px solid var(--line);transition:.18s;color:inherit;font:inherit}
+  .kcard:hover{border-color:oklch(0.82 0.15 82/.4);background:oklch(0.24 0.045 55/.6)}
+  .kcard.has{border-color:oklch(0.82 0.15 82/.45);background:oklch(0.82 0.15 82/.06)}
+  .kthumb{width:78px;height:78px;border-radius:11px;flex:0 0 auto;overflow:hidden;background:oklch(0.14 0.02 55);
+    display:grid;place-items:center;border:1px solid oklch(0.82 0.15 82/.12)}
+  .kthumb img{width:100%;height:100%;object-fit:cover}
+  .kbody{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:5px}
+  .kbody h3{font-family:var(--display);font-size:16.5px;font-weight:400;line-height:1.22}
+  .kstate{display:inline-flex;align-items:center;gap:5px;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+  .kcard.has .kstate{color:var(--gold)}
+  .kbar{position:absolute;left:0;right:0;bottom:0;padding:14px 18px 18px;display:flex;flex-direction:column;gap:10px;
+    background:linear-gradient(180deg,transparent,oklch(0.10 0.02 55) 34%)}
+  .sheet{position:absolute;inset:0;z-index:5;display:flex;flex-direction:column;justify-content:flex-end;
+    background:oklch(0.06 0.01 55/.62);backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:.24s}
+  .sheet.open{opacity:1;pointer-events:auto}
+  .sheetbody{background:linear-gradient(180deg,oklch(0.20 0.038 57),oklch(0.12 0.02 55));border-top:1px solid oklch(0.82 0.15 82/.28);
+    border-radius:26px 26px 30px 30px;padding:12px 22px 24px;display:flex;flex-direction:column;gap:12px;
+    transform:translateY(14px);transition:.24s}
+  .sheet.open .sheetbody{transform:none}
+  .grab{width:38px;height:3px;border-radius:2px;background:oklch(0.70 0.04 70/.35);margin:0 auto 4px}
+  .sheethero{display:flex;gap:13px;align-items:center}
+  .sheethero .kthumb{width:64px;height:64px}
+  .sfrage{font-size:23px}
+
+  /* ---------- C. Saal ---------- */
+  .saal{flex:1;display:flex;flex-direction:column;padding:4px 18px 18px;min-height:0}
+  .plan{position:relative;flex:1 1 auto;min-height:0;border-radius:18px;border:1px solid var(--line);overflow:hidden;
+    background:
+      repeating-linear-gradient(0deg,oklch(0.82 0.15 82/.045) 0 1px,transparent 1px 34px),
+      repeating-linear-gradient(90deg,oklch(0.82 0.15 82/.045) 0 1px,transparent 1px 34px),
+      linear-gradient(165deg,oklch(0.17 0.03 58),oklch(0.11 0.018 55))}
+  .room{position:absolute;border:1px solid oklch(0.82 0.15 82/.22);border-radius:10px;
+    background:oklch(0.82 0.15 82/.035)}
+  .room span{position:absolute;left:9px;top:7px;font-size:8.5px;letter-spacing:.2em;text-transform:uppercase;
+    color:oklch(0.78 0.05 70/.6);white-space:nowrap}
+  .pin{position:absolute;width:34px;height:34px;transform:translate(-50%,-50%);border-radius:50%;cursor:pointer;
+    display:grid;place-items:center;background:oklch(0.10 0.02 55/.85);border:1.5px solid oklch(0.70 0.10 75/.55);
+    color:oklch(0.80 0.06 70);transition:.18s;padding:0;font:600 10px/1 var(--body)}
+  .pin:hover{transform:translate(-50%,-50%) scale(1.12);border-color:var(--gold);color:var(--gold)}
+  .pin.on{border-color:var(--gold);color:var(--gold);box-shadow:0 0 0 5px oklch(0.82 0.15 82/.10)}
+  .pin.has{background:var(--gold);border-color:var(--gold);color:oklch(0.16 0.03 55)}
+  .planfoot{display:flex;justify-content:space-between;align-items:center;padding:10px 2px 12px}
+  .legend{display:flex;gap:12px;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+  .legend i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;vertical-align:middle}
+  .detail{border-radius:18px;border:1px solid oklch(0.82 0.15 82/.22);background:oklch(0.20 0.038 57/.85);
+    padding:15px 16px 17px;display:flex;flex-direction:column;gap:11px}
+  .detail .row{display:flex;gap:12px;align-items:center}
+  .detail .kthumb{width:58px;height:58px}
+  .dfrage{font-size:19px}
+
+  /* ---------- D. Führung (Raum für Raum) ---------- */
+  .fuehrung{flex:1;display:flex;flex-direction:column;padding:2px 16px 14px;min-height:0}
+  .roomhead{display:flex;align-items:center;gap:10px;padding:4px 2px 10px}
+  .roomhead .rn{font-family:var(--display);font-size:23px;font-weight:400;line-height:1;flex:1}
+  .roomhead .rc{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+  .rnav{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;flex:0 0 auto;
+    background:transparent;border:1px solid var(--line);color:var(--muted);cursor:pointer}
+  .rnav:hover{color:var(--gold);border-color:oklch(0.82 0.15 82/.5)}
+  .rstage{position:relative;flex:1 1 auto;min-height:0;border-radius:18px;overflow:hidden;
+    border:1px solid oklch(0.82 0.15 82/.20);
+    background:
+      repeating-linear-gradient(0deg,oklch(0.82 0.15 82/.04) 0 1px,transparent 1px 38px),
+      repeating-linear-gradient(90deg,oklch(0.82 0.15 82/.04) 0 1px,transparent 1px 38px),
+      linear-gradient(165deg,oklch(0.18 0.032 58),oklch(0.11 0.018 55));
+    animation:roomin .42s ease}
+  @keyframes roomin{from{opacity:0;transform:scale(.985)}to{opacity:1;transform:none}}
+  .door{position:absolute;left:50%;transform:translateX(-50%);width:66px;height:3px;border-radius:2px;
+    background:oklch(0.82 0.15 82/.30)}
+  .door.top{top:0} .door.bot{bottom:0}
+  .door span{position:absolute;left:50%;transform:translateX(-50%);top:8px;font-size:8px;letter-spacing:.2em;
+    text-transform:uppercase;color:oklch(0.78 0.05 70/.5);white-space:nowrap}
+  .door.bot span{top:auto;bottom:8px}
+
+  .rpin{position:absolute;transform:translate(-50%,-50%);width:66px;height:66px;border-radius:50%;padding:0;
+    overflow:hidden;cursor:pointer;background:oklch(0.14 0.02 55);border:2px solid oklch(0.70 0.08 75/.45);
+    transition:.2s;z-index:2}
+  .rpin img{width:100%;height:100%;object-fit:cover;opacity:.82;transition:.2s}
+  .rpin:hover img{opacity:1}
+  .rpin.near{width:82px;height:82px;border-color:var(--gold);box-shadow:0 0 0 7px oklch(0.82 0.15 82/.13),0 10px 26px oklch(0 0 0/.6)}
+  .rpin.near img{opacity:1}
+  .rpin.has{border-color:var(--gold)}
+  .rpin.has::after{content:"";position:absolute;inset:0;background:oklch(0.82 0.15 82/.18)}
+  .rtick{position:absolute;transform:translate(-50%,0);z-index:3;display:grid;place-items:center;
+    width:20px;height:20px;border-radius:50%;background:var(--gold);color:oklch(0.16 0.03 55);pointer-events:none}
+  .rlabel{position:absolute;transform:translate(-50%,0);z-index:2;font-size:8.5px;letter-spacing:.16em;
+    text-transform:uppercase;color:oklch(0.80 0.05 70/.75);white-space:nowrap;pointer-events:none;
+    background:oklch(0.10 0.02 55/.7);padding:3px 7px;border-radius:999px;backdrop-filter:blur(4px)}
+
+  .me{position:absolute;width:15px;height:15px;border-radius:50%;transform:translate(-50%,-50%);z-index:4;
+    background:oklch(0.82 0.11 235);border:2px solid oklch(0.97 0.02 235);
+    box-shadow:0 0 0 1px oklch(0.45 0.10 235/.6), 0 2px 8px oklch(0 0 0/.7);pointer-events:none;transition:left .14s linear,top .14s linear}
+  .me::after{content:"";position:absolute;inset:-9px;border-radius:50%;background:oklch(0.82 0.11 235/.18);
+    animation:pulse 2.4s ease-out infinite}
+  @keyframes pulse{0%{transform:scale(.6);opacity:.9}100%{transform:scale(2.1);opacity:0}}
+  .cone{position:absolute;width:70px;height:70px;transform-origin:50% 50%;z-index:3;pointer-events:none;
+    background:conic-gradient(from -22deg,oklch(0.82 0.11 235/.28) 0deg,oklch(0.82 0.11 235/.03) 44deg,transparent 45deg);
+    border-radius:50%;transition:left .14s linear,top .14s linear}
+
+  .fbar{display:flex;align-items:center;gap:8px;padding:9px 2px 9px}
+  .chip{display:inline-flex;align-items:center;gap:6px;border-radius:999px;border:1px solid var(--line);
+    background:oklch(0.22 0.04 55/.5);color:var(--muted);cursor:pointer;padding:8px 13px;
+    font:500 9.5px/1 var(--body);letter-spacing:.15em;text-transform:uppercase;transition:.18s}
+  .chip:hover{color:var(--fg);border-color:oklch(0.82 0.15 82/.45)}
+  .chip.on{color:oklch(0.16 0.03 55);background:oklch(0.82 0.11 235);border-color:oklch(0.82 0.11 235)}
+  .dist{margin-left:auto;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);text-align:right}
+  .dist b{color:var(--gold);font-weight:500}
+  .arrived{display:inline-flex;align-items:center;gap:6px;font-size:9.5px;letter-spacing:.18em;
+    text-transform:uppercase;color:oklch(0.82 0.11 235)}
+
+  .tapphoto{position:relative;flex:0 0 auto;padding:0;border:none;background:none;cursor:pointer;border-radius:11px}
+  .tapphoto .kthumb{width:58px;height:58px}
+  .tapphoto .more{position:absolute;right:-4px;bottom:-4px;width:20px;height:20px;border-radius:50%;
+    display:grid;place-items:center;background:var(--gold);color:oklch(0.16 0.03 55);
+    font:600 11px/1 var(--body);box-shadow:0 2px 6px oklch(0 0 0/.6)}
+
+  .strip{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px}
+  .strip::-webkit-scrollbar{height:0}
+  .strip button{flex:0 0 auto;width:56px;height:56px;border-radius:10px;overflow:hidden;padding:0;cursor:pointer;
+    border:1px solid var(--line);background:oklch(0.14 0.02 55)}
+  .strip button.on{border-color:var(--gold)}
+  .strip img{width:100%;height:100%;object-fit:cover}
+  .bigshot{width:100%;height:190px;border-radius:14px;overflow:hidden;background:oklch(0.13 0.02 55);
+    display:grid;place-items:center;border:1px solid oklch(0.82 0.15 82/.14)}
+  .bigshot img{max-width:100%;max-height:100%;object-fit:contain}
+  .beschreibung{font-size:12.5px;line-height:1.62;color:oklch(0.86 0.03 70);max-height:132px;overflow-y:auto}
+  .beschreibung::-webkit-scrollbar{width:0}
+  .audio{display:flex;align-items:center;gap:11px;border-radius:14px;padding:10px 13px;
+    border:1px solid var(--line);background:oklch(0.22 0.04 55/.45)}
+  .audio .play{width:34px;height:34px;border-radius:50%;flex:0 0 auto;display:grid;place-items:center;
+    border:1px solid oklch(0.82 0.15 82/.45);background:oklch(0.82 0.15 82/.08);color:var(--gold)}
+  .wave{flex:1;display:flex;align-items:center;gap:2px;height:22px}
+  .wave i{flex:1;background:oklch(0.78 0.06 70/.35);border-radius:1px}
+  .audio .len{font-size:10px;letter-spacing:.12em;color:var(--muted)}
+  .stub{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:oklch(0.70 0.04 70/.6)}
+</style>
+</head>
+<body>
+<div class="lab">
+  <h1>Capture — vier Richtungen</h1>
+  <p>Konzeptskizzen, kein Produkt. Echte Objekte und echte Fotos aus dem Airtable des SMÄK. Der Besucher sagt frei heraus, was ihm durch den Kopf geht — es gibt keine vorgegebene Frage. Alle vier Skizzen sind bedienbar: Objekt wählen, Mikrofon drücken, auf Deutsch sprechen; ohne Spracherkennung erscheint das Textfeld.</p>
+  <div class="tabs" id="tabs">
+    <button data-slot="all" aria-pressed="true">Alle vier</button>
+    <button data-slot="a" aria-pressed="false">Nur Vitrine</button>
+    <button data-slot="b" aria-pressed="false">Nur Kartei</button>
+    <button data-slot="c" aria-pressed="false">Nur Saal</button>
+    <button data-slot="d" aria-pressed="false">Nur Führung</button>
+  </div>
+
+  <div class="stage" id="stage">
+    <figure class="slot" data-slot="a">
+      <figcaption>
+        <div class="name">A · Vitrine</div>
+        <div class="why">Ein Objekt, ganze Aufmerksamkeit. Das Foto sitzt im Passepartout wie in einer echten Vitrine — querformatige Stücke werden nicht beschnitten.</div>
+      </figcaption>
+      <div class="device"><div class="screen" id="scr-a"></div></div>
+    </figure>
+
+    <figure class="slot" data-slot="b">
+      <figcaption>
+        <div class="name">B · Kartei</div>
+        <div class="why">Die Route auf einen Blick: was gesprochen ist, was noch offen. Antworten passiert im Blatt von unten.</div>
+      </figcaption>
+      <div class="device"><div class="screen" id="scr-b"></div></div>
+    </figure>
+
+    <figure class="slot" data-slot="c">
+      <figcaption>
+        <div class="name">C · Saal</div>
+        <div class="why">Schematischer Grundriss statt 3D — die Geste des bestehenden Guides, nur ruhig. Der Plan ist erfunden, nicht vermessen.</div>
+      </figcaption>
+      <div class="device"><div class="screen" id="scr-c"></div></div>
+    </figure>
+
+    <figure class="slot" data-slot="d">
+      <figcaption>
+        <div class="name">D · Führung</div>
+        <div class="why">Wie im bestehenden Guide: Du siehst dich selbst im Plan, das nächste Objekt meldet sich von allein. Reine Skizze — die Position wird abgespielt oder mit dem Finger gesetzt, es steckt keine Ortung dahinter.</div>
+      </figcaption>
+      <div class="device"><div class="screen" id="scr-d"></div></div>
+    </figure>
+  </div>
+</div>
+
+<script>
+const SPEECH_LANG = "de-DE";
+const IMG = "assets/objects/";
+
+/* Der Besucher sagt, was ihm durch den Kopf geht — keine kuratierte Frage.
+   Die objektbezogenen Fragen liegen weiter in src/data/objects.json
+   (Feld reflection_prompt), falls wir sie später als Anstoss dazulegen wollen. */
+const EINLADUNG = "Was geht dir gerade durch den Kopf?";
+
+const OBJECTS = [
+  { id:"OBJ-14", title:"Oberteil des Sarges der Königstochter Satdjehuti", room:"Jenseits",
+    frage:"Wie möchtest du aussehen, wenn man sich für immer an dein Gesicht erinnert?",
+    epoche:"17. Dynastie", img:"OBJ-14@hi.jpg", plan:{x:26,y:20} },
+  { id:"OBJ-15", title:"Totenbuch des Pajuheru", room:"Jenseits",
+    frage:"Was von deinem Leben würdest du in die Waagschale legen wollen?",
+    epoche:"Spätzeit", img:"OBJ-15@hi.jpg", plan:{x:60,y:16} },
+  { id:"OBJ-07", title:"Sitzgruppe des Sabu, seiner Frau Meretites und des Sohnes Isebwer", room:"Kunst und Form",
+    frage:"Mit wem würdest du für die Ewigkeit zusammen abgebildet sein wollen?",
+    epoche:"5. Dynastie", img:"OBJ-07@hi.jpg", plan:{x:24,y:52} },
+  { id:"OBJ-06", title:"Würfelstatue des Bakenchons, Hohepriester des Amun", room:"Kunst und Form",
+    frage:"Wenn du deinen Lebensweg in wenige Sätze fassen müsstest – was bliebe stehen?",
+    epoche:"19. Dynastie", img:"OBJ-06@hi.jpg", plan:{x:56,y:56} },
+  { id:"OBJ-03", title:"Gesichtsfragment einer Kolossalstatue des Königs Amenophis IV.", room:"Kunst und Zeit",
+    frage:"Was erkennst du in einem Gesicht, von dem nur ein Bruchteil erhalten ist?",
+    epoche:"18. Dynastie", img:"OBJ-03@hi.jpg", plan:{x:30,y:84} },
+  { id:"OBJ-01", title:"Fayencefigur eines liegenden Nilpferds", room:"Kunsthandwerk",
+    frage:"Welches Tier würdest du mit auf eine lange Reise nehmen – und warum?",
+    epoche:"Mittleres Reich", img:"OBJ-01@hi.jpg", plan:{x:70,y:86} },
+];
+
+/* Kuratorentexte und weitere Aufnahmen — beides direkt aus dem Airtable des SMÄK. */
+const FACTS = {
+  "OBJ-14":"Oberteil (Kopfteil) des vergoldeten Sarges der Königstochter und Königsschwester Satdjehuti (Inv. ÄS 7163), vom Übergang der Zweiten Zwischenzeit zum Neuen Reich. Der überlebensgroße anthropoide Holzsarg war mit Blattgold überzogen; die Augen bestehen aus Einlagen aus weißem Marmor und schwarzem Stein. Satdjehuti trägt die Geierhaube, eine den königlichen Frauen vorbehaltene Kopfbedeckung.",
+  "OBJ-15":"Totenbuch des Pajuheru (Leihgabe 2). Der mehrere Meter lange Papyrus enthält Sprüche, die den Verstorbenen auf seinem Weg ins Jenseits begleiten, schützen und versorgen sollen – in hieratischer Schrift, mit rot hervorgehobenen Überschriften und Vignetten. Im Mittelpunkt steht das Totengericht unter Osiris, bei dem Anubis und Horus das Herz gegen die Feder der Maat abwiegen.",
+  "OBJ-07":"Sitzgruppe des Sabu, seiner Frau Meretites und ihres Sohnes Isebwer (Inv. ÄS 7146), 5. Dynastie, Altes Reich (um 2435–2306 v. Chr.), aus bemaltem Kalkstein. Die Statuengruppe zeigt die Familie gemeinsam sitzend.",
+  "OBJ-06":"Würfelstatue des Bakenchons (Inv. Gl. WAF 38), Hohepriester des Amun. Der hockende, in ein enges Gewand gehüllte Körper ist auf einfache geometrische Formen reduziert. Bemerkenswert ist die umfangreiche hieroglyphische Inschrift auf Vorderseite, Rückenpfeiler und Sockel – einer der wichtigsten biographischen Texte des Alten Ägypten, der Bakenchons' Lebensweg vom Schüler bis zum Hohepriester des Amun in Karnak schildert.",
+  "OBJ-03":"Gesichtsfragment einer Kolossalstatue des Königs Amenophis IV. / Echnaton (Inv. ÄS 6290). Es gehörte zu einer überlebensgroßen Statue aus dem frühen Aton-Tempel (Gem-pa-Aton) in Karnak. Die schmalen Züge, vollen Lippen und das vorspringende Kinn sind typisch für den Bildstil seiner ersten Regierungsjahre, in denen er eine tiefgreifende religiöse Umwälzung einleitete.",
+  "OBJ-01":"Fayencefigur eines liegenden Nilpferds (Inv. ÄS 6040). Solche kunstvoll verzierten Tierfiguren wurden als Grabbeigaben verwendet und sollten die Verstorbenen auf ihrem Weg ins Jenseits begleiten und schützen. Der Körper ist mit Lotosbändern und -blüten dekoriert, die auf den natürlichen Lebensraum des Tieres verweisen.",
+};
+const GALERIE = {
+  "OBJ-14":["OBJ-14_1.jpg","OBJ-14_2.jpg"],
+  "OBJ-15":["OBJ-15_1.jpg"],
+  "OBJ-07":["OBJ-07_1.jpg","OBJ-07_2.jpg","OBJ-07_3.jpg","OBJ-07_4.jpg"],
+  "OBJ-06":["OBJ-06_1.jpg","OBJ-06_2.jpg","OBJ-06_3.jpg","OBJ-06_4.jpg"],
+  "OBJ-03":["OBJ-03_1.jpg","OBJ-03_2.jpg","OBJ-03_3.jpg"],
+  "OBJ-01":["OBJ-01_1.jpg","OBJ-01_2.jpg","OBJ-01_3.jpg","OBJ-01_4.jpg"],
+};
+/* Führung: ein Raum füllt den Schirm, beim Durchgehen wechselt er. */
+const ROUTE_ROOMS = [
+  { name:"Jenseits",       spots:[{id:"OBJ-14",x:30,y:33},{id:"OBJ-15",x:69,y:63}] },
+  { name:"Kunst und Form", spots:[{id:"OBJ-07",x:28,y:36},{id:"OBJ-06",x:70,y:61}] },
+  { name:"Kunst und Zeit", spots:[{id:"OBJ-03",x:50,y:45}] },
+  { name:"Kunsthandwerk",  spots:[{id:"OBJ-01",x:50,y:48}] },
+];
+
+const ROOMS = [
+  { name:"Jenseits",       x:10, y:6,  w:78, h:26 },
+  { name:"Kunst und Form", x:10, y:38, w:78, h:26 },
+  { name:"Kunst und Zeit", x:10, y:70, w:38, h:24 },
+  { name:"Kunsthandwerk",  x:52, y:70, w:36, h:24 },
+];
+
+const SVG = {
+  mic:'<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><path d="M12 19v3"/></svg>',
+  stop:'<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><rect x="7" y="7" width="10" height="10" rx="2"/></svg>',
+  check:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l6 6L20 6"/></svg>',
+  arrow:'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>',
+  left:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>',
+  right:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>',
+  play:'<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg>',
+};
+
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+let activeRec = null;
+
+/* Ein Recorder-Kern für alle drei Varianten. Der Austausch gegen eine
+   aufgezeichnete Tonspur wäre später genau eine Änderung: start(). */
+function makeRecorder({ onInterim, onFinal, onState }) {
+  return {
+    toggle(objId) {
+      if (activeRec) { try { activeRec.stop(); } catch(e){} activeRec = null; onState("idle"); return; }
+      if (!SR) { onState("nospeech"); return; }
+      const rec = new SR();
+      rec.lang = SPEECH_LANG; rec.interimResults = true; rec.continuous = false;
+      let finalText = "";
+      rec.onresult = (e) => {
+        let interim = "";
+        for (let i = e.resultIndex; i < e.results.length; i++) {
+          const t = e.results[i][0].transcript;
+          if (e.results[i].isFinal) finalText += t; else interim += t;
+        }
+        onInterim((finalText + " " + interim).trim());
+      };
+      rec.onerror = () => { activeRec = null; onState("idle"); };
+      rec.onend = () => {
+        activeRec = null; onState("idle");
+        if (finalText.trim()) onFinal(objId, finalText.trim());
+      };
+      activeRec = rec; onState("rec"); onInterim("");
+      try { rec.start(); } catch(e) { activeRec = null; onState("idle"); }
+    }
+  };
+}
+
+const el = (html) => { const t = document.createElement("template"); t.innerHTML = html.trim(); return t.content.firstElementChild; };
+const esc = (s) => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+/* ======================= A · VITRINE ======================= */
+function Vitrine(root) {
+  let idx = 0, answers = {}, mode = "idle", live = "";
+  const rec = makeRecorder({
+    onInterim: t => { live = t; render(); },
+    onFinal: (id, t) => { answers[id] = t; live = ""; render(); },
+    onState: s => { mode = s; render(); },
+  });
+
+  function render() {
+    const o = OBJECTS[idx], saved = answers[o.id];
+    root.innerHTML = "";
+    root.append(el(`
+      <div class="topbar">
+        <div class="brand"><i>◆</i> SMÄK</div>
+        <div class="count"><b>${Object.keys(answers).length}</b> / ${OBJECTS.length} erzählt</div>
+      </div>`));
+    root.append(el(`<div class="hair"></div>`));
+
+    const body = el(`
+      <div class="vitrine">
+        <div class="case">
+          <img src="${IMG}${o.img}" alt="${esc(o.title)}" />
+          <div class="plaque"><span>${esc(o.room)}</span><span>${esc(o.epoche)}</span></div>
+          <button class="nav l" aria-label="Zurück">${SVG.left}</button>
+          <button class="nav r" aria-label="Weiter">${SVG.right}</button>
+        </div>
+        <div class="eyebrow">Objekt ${idx + 1} von ${OBJECTS.length}</div>
+        <div class="vtitle">${esc(o.title)}</div>
+        ${saved
+          ? `<div class="saved">${SVG.check}<p>„${esc(saved)}“</p></div>`
+          : `<div class="frage vfrage">${esc(EINLADUNG)}</div>`}
+        <div class="vfoot"></div>
+        <div class="dots"></div>
+      </div>`);
+
+    const foot = body.querySelector(".vfoot");
+    if (mode === "nospeech") {
+      const ta = el(`<textarea class="typed" rows="3" placeholder="Deine Antwort in eigenen Worten …"></textarea>`);
+      const ok = el(`<button class="linkish">Speichern</button>`);
+      ok.onclick = () => { if (ta.value.trim()) { answers[o.id] = ta.value.trim(); } mode = "idle"; render(); };
+      foot.append(ta, ok);
+      setTimeout(() => ta.focus(), 30);
+    } else {
+      foot.append(el(`<div class="live">${mode === "rec" ? esc(live || "…") : ""}</div>`));
+      const mic = el(`<button class="mic ${mode === "rec" ? "rec" : (saved ? "done" : "")}" aria-label="Sprechen">${mode === "rec" ? SVG.stop : SVG.mic}</button>`);
+      mic.onclick = () => rec.toggle(o.id);
+      foot.append(mic);
+      foot.append(el(`<div class="hint">${mode === "rec" ? "Ich höre zu — noch einmal tippen zum Beenden" : (saved ? "Nochmal sprechen und überschreiben" : "Antworte laut, in einem Satz")}</div>`));
+      if (mode !== "rec") {
+        const alt = el(`<button class="linkish">Lieber tippen</button>`);
+        alt.onclick = () => { mode = "nospeech"; render(); };
+        foot.append(alt);
+      }
+    }
+
+    const dots = body.querySelector(".dots");
+    OBJECTS.forEach((oo, i) => {
+      const b = el(`<button class="${i === idx ? "on" : ""} ${answers[oo.id] ? "has" : ""}" aria-label="${esc(oo.title)}"></button>`);
+      b.onclick = () => { idx = i; live = ""; render(); };
+      dots.append(b);
+    });
+    body.querySelector(".nav.l").onclick = () => { idx = (idx - 1 + OBJECTS.length) % OBJECTS.length; live = ""; render(); };
+    body.querySelector(".nav.r").onclick = () => { idx = (idx + 1) % OBJECTS.length; live = ""; render(); };
+    root.append(body);
+
+    const n = Object.keys(answers).length;
+    const bar = el(`<div style="padding:0 22px 20px"><button class="finish" ${n ? "" : "disabled"}>Besuch beenden ${SVG.arrow}</button></div>`);
+    bar.querySelector("button").onclick = () => alert("→ Museum Wrapped (" + n + " Reflexionen)");
+    root.append(bar);
+  }
+  render();
+}
+
+/* ======================= B · KARTEI ======================= */
+function Kartei(root) {
+  let open = null, answers = {}, mode = "idle", live = "";
+  const rec = makeRecorder({
+    onInterim: t => { live = t; render(); },
+    onFinal: (id, t) => { answers[id] = t; live = ""; render(); },
+    onState: s => { mode = s; render(); },
+  });
+
+  function render() {
+    root.innerHTML = "";
+    root.append(el(`
+      <div class="topbar">
+        <div class="brand"><i>◆</i> SMÄK</div>
+        <div class="count"><b>${Object.keys(answers).length}</b> / ${OBJECTS.length} erzählt</div>
+      </div>`));
+    root.append(el(`<div class="hair"></div>`));
+
+    const list = el(`<div class="kartei">
+      <div class="khead">Deine Route<br/>durch die Sammlung</div>
+      <div class="ksub">Sechs Objekte. Zu jedem eine Frage, die nur du beantworten kannst.</div>
+    </div>`);
+    OBJECTS.forEach(o => {
+      const has = !!answers[o.id];
+      const c = el(`
+        <button class="kcard ${has ? "has" : ""}">
+          <div class="kthumb"><img src="${IMG}${o.img}" alt="" /></div>
+          <div class="kbody">
+            <div class="eyebrow">${esc(o.room)}</div>
+            <h3>${esc(o.title)}</h3>
+            <div class="kstate">${has ? SVG.check + " Erzählt" : "Noch offen"}</div>
+          </div>
+        </button>`);
+      c.onclick = () => { open = o.id; live = ""; mode = "idle"; render(); };
+      list.append(c);
+    });
+    root.append(list);
+
+    const n = Object.keys(answers).length;
+    const bar = el(`<div class="kbar">
+      <button class="finish" ${n ? "" : "disabled"}>Besuch beenden ${SVG.arrow}</button>
+    </div>`);
+    bar.querySelector("button").onclick = () => alert("→ Museum Wrapped (" + n + " Reflexionen)");
+    root.append(bar);
+
+    const o = OBJECTS.find(x => x.id === open);
+    const sheet = el(`<div class="sheet ${o ? "open" : ""}"><div class="sheetbody"><div class="grab"></div></div></div>`);
+    sheet.onclick = (e) => { if (e.target === sheet) { open = null; render(); } };
+    if (o) {
+      const sb = sheet.querySelector(".sheetbody");
+      const saved = answers[o.id];
+      sb.append(el(`
+        <div class="sheethero">
+          <div class="kthumb"><img src="${IMG}${o.img}" alt="" /></div>
+          <div><div class="eyebrow">${esc(o.room)} · ${esc(o.epoche)}</div>
+          <div class="vtitle" style="margin:4px 0 0;font-size:17px">${esc(o.title)}</div></div>
+        </div>`));
+      sb.append(el(saved
+        ? `<div class="saved">${SVG.check}<p>„${esc(saved)}“</p></div>`
+        : `<div class="frage sfrage">${esc(EINLADUNG)}</div>`));
+
+      if (mode === "nospeech") {
+        const ta = el(`<textarea class="typed" rows="3" placeholder="Deine Antwort in eigenen Worten …"></textarea>`);
+        const ok = el(`<button class="linkish">Speichern</button>`);
+        ok.onclick = () => { if (ta.value.trim()) answers[o.id] = ta.value.trim(); mode = "idle"; render(); };
+        sb.append(ta, ok);
+        setTimeout(() => ta.focus(), 30);
+      } else {
+        sb.append(el(`<div class="live">${mode === "rec" ? esc(live || "…") : ""}</div>`));
+        const wrap = el(`<div style="display:flex;flex-direction:column;align-items:center;gap:8px"></div>`);
+        const mic = el(`<button class="mic ${mode === "rec" ? "rec" : (saved ? "done" : "")}">${mode === "rec" ? SVG.stop : SVG.mic}</button>`);
+        mic.onclick = () => rec.toggle(o.id);
+        wrap.append(mic, el(`<div class="hint">${mode === "rec" ? "Ich höre zu" : "Antworte laut, in einem Satz"}</div>`));
+        if (mode !== "rec") {
+          const alt = el(`<button class="linkish">Lieber tippen</button>`);
+          alt.onclick = () => { mode = "nospeech"; render(); };
+          wrap.append(alt);
+        }
+        sb.append(wrap);
+      }
+      const close = el(`<button class="linkish" style="align-self:center">Schliessen</button>`);
+      close.onclick = () => { open = null; render(); };
+      sb.append(close);
+    }
+    root.append(sheet);
+  }
+  render();
+}
+
+/* ======================= C · SAAL ======================= */
+function Saal(root) {
+  let sel = 0, answers = {}, mode = "idle", live = "";
+  const rec = makeRecorder({
+    onInterim: t => { live = t; render(); },
+    onFinal: (id, t) => { answers[id] = t; live = ""; render(); },
+    onState: s => { mode = s; render(); },
+  });
+
+  function render() {
+    const o = OBJECTS[sel], saved = answers[o.id];
+    root.innerHTML = "";
+    root.append(el(`
+      <div class="topbar">
+        <div class="brand"><i>◆</i> SMÄK</div>
+        <div class="count"><b>${Object.keys(answers).length}</b> / ${OBJECTS.length} erzählt</div>
+      </div>`));
+    root.append(el(`<div class="hair"></div>`));
+
+    const body = el(`<div class="saal"><div class="plan"></div>
+      <div class="planfoot">
+        <div class="legend"><span><i style="background:var(--gold)"></i>erzählt</span><span><i style="border:1px solid oklch(0.70 0.10 75/.6)"></i>offen</span></div>
+        <div class="eyebrow">Schematischer Plan</div>
+      </div>
+      <div class="detail"></div></div>`);
+
+    const plan = body.querySelector(".plan");
+    ROOMS.forEach(r => plan.append(el(
+      `<div class="room" style="left:${r.x}%;top:${r.y}%;width:${r.w}%;height:${r.h}%"><span>${esc(r.name)}</span></div>`)));
+    OBJECTS.forEach((oo, i) => {
+      const p = el(`<button class="pin ${i === sel ? "on" : ""} ${answers[oo.id] ? "has" : ""}"
+        style="left:${oo.plan.x}%;top:${oo.plan.y}%" aria-label="${esc(oo.title)}">${answers[oo.id] ? SVG.check : (i + 1)}</button>`);
+      p.onclick = () => { sel = i; live = ""; mode = "idle"; render(); };
+      plan.append(p);
+    });
+
+    const d = body.querySelector(".detail");
+    d.append(el(`
+      <div class="row">
+        <div class="kthumb"><img src="${IMG}${o.img}" alt="" /></div>
+        <div><div class="eyebrow">${esc(o.room)}</div>
+        <div class="vtitle" style="margin:4px 0 0;font-size:16px">${esc(o.title)}</div></div>
+      </div>`));
+    d.append(el(saved
+      ? `<div class="saved">${SVG.check}<p>„${esc(saved)}“</p></div>`
+      : `<div class="frage dfrage">${esc(EINLADUNG)}</div>`));
+
+    if (mode === "nospeech") {
+      const ta = el(`<textarea class="typed" rows="2" placeholder="Deine Antwort …"></textarea>`);
+      const ok = el(`<button class="linkish">Speichern</button>`);
+      ok.onclick = () => { if (ta.value.trim()) answers[o.id] = ta.value.trim(); mode = "idle"; render(); };
+      d.append(ta, ok);
+      setTimeout(() => ta.focus(), 30);
+    } else {
+      const row = el(`<div style="display:flex;align-items:center;gap:13px"></div>`);
+      const mic = el(`<button class="mic ${mode === "rec" ? "rec" : (saved ? "done" : "")}" style="width:56px;height:56px;flex:0 0 auto">${mode === "rec" ? SVG.stop : SVG.mic}</button>`);
+      mic.onclick = () => rec.toggle(o.id);
+      row.append(mic);
+      row.append(el(`<div style="flex:1;text-align:left">
+        <div class="live" style="text-align:left">${mode === "rec" ? esc(live || "…") : ""}</div>
+        <div class="hint" style="text-align:left">${mode === "rec" ? "Ich höre zu" : "Antworte laut, in einem Satz"}</div></div>`));
+      d.append(row);
+      if (mode !== "rec") {
+        const alt = el(`<button class="linkish" style="align-self:flex-start;padding-left:0">Lieber tippen</button>`);
+        alt.onclick = () => { mode = "nospeech"; render(); };
+        d.append(alt);
+      }
+    }
+    root.append(body);
+
+    const n = Object.keys(answers).length;
+    const bar = el(`<div style="padding:0 18px 18px"><button class="finish" ${n ? "" : "disabled"}>Besuch beenden ${SVG.arrow}</button></div>`);
+    bar.querySelector("button").onclick = () => alert("→ Museum Wrapped (" + n + " Reflexionen)");
+    root.append(bar);
+  }
+  render();
+}
+
+/* ======================= D · FÜHRUNG (Live-Position) ======================= */
+/* Reine Konzeptskizze. Keine Ortung, keine Sensoren — die Position wird
+   abgespielt oder mit dem Finger gesetzt. Sie zeigt nur die Idee: das nächste
+   Objekt meldet sich von allein, statt dass man es sucht. */
+function Fuehrung(root) {
+  const SCALE_X = 14, SCALE_Y = 20;   // Meter, die ein Raum in der Skizze misst
+  const ARRIVE  = 2.6;                // ab hier gilt "du stehst davor"
+
+  let roomIdx = 0;
+  let me = { x: 50, y: 94 }, heading = -90, wp = 0, t = 0, walking = false;
+  let answers = {}, selId = ROUTE_ROOMS[0].spots[0].id, arrived = false;
+  let mode = "idle", live = "", sheetId = null, shot = 0;
+  let elMe, elCone, elDist, pinEls = [];
+
+  const rec = makeRecorder({
+    onInterim: t2 => { live = t2; render(); },
+    onFinal: (id, t2) => { answers[id] = t2; live = ""; render(); },
+    onState: s => { mode = s; render(); },
+  });
+
+  const room = () => ROUTE_ROOMS[roomIdx];
+  const obj = (id) => OBJECTS.find(o => o.id === id);
+  const path = () => [{ x: 50, y: 94 }].concat(room().spots.map(s => ({ x: s.x, y: s.y })), [{ x: 50, y: 6 }]);
+  const distM = (a, b) => Math.hypot((a.x - b.x) * SCALE_X / 100, (a.y - b.y) * SCALE_Y / 100);
+
+  function nearest() {
+    let best = null, bd = Infinity;
+    room().spots.forEach(s => { const d = distM(me, s); if (d < bd) { bd = d; best = s; } });
+    return { spot: best, d: bd };
+  }
+
+  /* Raumwechsel: dir 1 = weiter, dir -1 = zurück */
+  function enterRoom(i, dir) {
+    roomIdx = (i + ROUTE_ROOMS.length) % ROUTE_ROOMS.length;
+    me = { x: 50, y: dir < 0 ? 6 : 94 };
+    wp = 0; t = 0; heading = dir < 0 ? 90 : -90;
+    selId = room().spots[0].id; mode = "idle"; live = ""; sheetId = null;
+    render();
+  }
+
+  function tick() {
+    if (!walking || sheetId) return;
+    const P = path();
+    if (wp >= P.length - 1) { enterRoom(roomIdx + 1, 1); return; }
+    const a = P[wp], b = P[wp + 1];
+    const len = Math.hypot(b.x - a.x, b.y - a.y) || 1;
+    t += 1.2 / len;
+    if (t >= 1) { t = 0; wp++; if (wp >= P.length - 1) { enterRoom(roomIdx + 1, 1); return; } }
+    const A = P[wp], B = P[wp + 1] || P[wp];
+    me = { x: A.x + (B.x - A.x) * t, y: A.y + (B.y - A.y) * t };
+    heading = Math.atan2(B.y - A.y, B.x - A.x) * 180 / Math.PI;
+    paint();
+  }
+  setInterval(tick, 80);
+
+  function paint() {
+    if (!elMe) return;
+    elMe.style.left = me.x + "%"; elMe.style.top = me.y + "%";
+    elCone.style.left = me.x + "%"; elCone.style.top = me.y + "%";
+    elCone.style.transform = `translate(-50%,-50%) rotate(${heading}deg)`;
+    const n = nearest(), now = !!(n.spot && n.d < ARRIVE);
+    pinEls.forEach(p => p.classList.toggle("near", now && p.dataset.id === n.spot.id));
+    elDist.innerHTML = now
+      ? `<span class="arrived">${SVG.check} Du stehst davor</span>`
+      : `Nächstes · <b>${Math.max(1, Math.round(n.d))} m</b>`;
+    if (now && selId !== n.spot.id) { selId = n.spot.id; arrived = true; mode = "idle"; live = ""; render(); return; }
+    arrived = now;
+  }
+
+  function render() {
+    const o = obj(selId), saved = answers[selId], R = room();
+    root.innerHTML = ""; pinEls = [];
+    root.append(el(`
+      <div class="topbar">
+        <div class="brand"><i>◆</i> SMÄK</div>
+        <div class="count"><b>${Object.keys(answers).length}</b> / ${OBJECTS.length} erzählt</div>
+      </div>`));
+    root.append(el(`<div class="hair"></div>`));
+
+    const body = el(`<div class="fuehrung">
+      <div class="roomhead"></div>
+      <div class="rstage"></div>
+      <div class="fbar"></div>
+      <div class="detail"></div></div>`);
+
+    /* Kopf: welcher Raum, mit Handsteuerung für die Bühne */
+    const head = body.querySelector(".roomhead");
+    const prev = el(`<button class="rnav" aria-label="Vorheriger Raum">${SVG.left}</button>`);
+    const next = el(`<button class="rnav" aria-label="Nächster Raum">${SVG.right}</button>`);
+    prev.onclick = () => enterRoom(roomIdx - 1, -1);
+    next.onclick = () => enterRoom(roomIdx + 1, 1);
+    head.append(prev, el(`<div class="rn">${esc(R.name)}</div>`),
+      el(`<div class="rc">Raum ${roomIdx + 1} / ${ROUTE_ROOMS.length}</div>`), next);
+
+    /* Bühne: ein Raum füllt den Schirm */
+    const st = body.querySelector(".rstage");
+    st.append(el(`<div class="door top"><span>${esc(ROUTE_ROOMS[(roomIdx + 1) % ROUTE_ROOMS.length].name)}</span></div>`));
+    st.append(el(`<div class="door bot"><span>${esc(ROUTE_ROOMS[(roomIdx - 1 + ROUTE_ROOMS.length) % ROUTE_ROOMS.length].name)}</span></div>`));
+    R.spots.forEach(s => {
+      const oo = obj(s.id), has = !!answers[s.id];
+      const p = el(`<button class="rpin ${has ? "has" : ""}" data-id="${s.id}"
+        style="left:${s.x}%;top:${s.y}%" aria-label="${esc(oo.title)}"><img src="${IMG}${oo.img}" alt="" /></button>`);
+      p.onclick = (e) => { e.stopPropagation(); selId = s.id; mode = "idle"; live = ""; render(); };
+      st.append(p); pinEls.push(p);
+      if (has) st.append(el(`<div class="rtick" style="left:calc(${s.x}% + 24px);top:calc(${s.y}% + 14px)">${SVG.check}</div>`));
+      st.append(el(`<div class="rlabel" style="left:${s.x}%;top:calc(${s.y}% + 44px)">${esc(oo.epoche)}</div>`));
+    });
+    elCone = el(`<div class="cone"></div>`); st.append(elCone);
+    elMe = el(`<div class="me"></div>`); st.append(elMe);
+    st.onclick = (e) => {
+      const r = st.getBoundingClientRect();
+      const nx = (e.clientX - r.left) / r.width * 100, ny = (e.clientY - r.top) / r.height * 100;
+      heading = Math.atan2(ny - me.y, nx - me.x) * 180 / Math.PI;
+      me = { x: nx, y: ny }; walking = false; paint();
+    };
+
+    const bar = body.querySelector(".fbar");
+    const go = el(`<button class="chip ${walking ? "on" : ""}">${walking ? "Pause" : "Rundgang"}</button>`);
+    go.onclick = () => { walking = !walking; render(); };
+    elDist = el(`<div class="dist"></div>`);
+    bar.append(go, el(`<span class="stub">Skizze</span>`), elDist);
+
+    /* Panel: Foto antippen öffnet das Objektblatt */
+    const d = body.querySelector(".detail");
+    const row = el(`<div class="row"></div>`);
+    const tap = el(`<button class="tapphoto" aria-label="Mehr zu diesem Objekt">
+      <div class="kthumb"><img src="${IMG}${o.img}" alt="" /></div><span class="more">+</span></button>`);
+    tap.onclick = () => { sheetId = selId; shot = 0; render(); };
+    row.append(tap, el(`<div><div class="eyebrow">${esc(o.room)} · ${esc(o.epoche)}</div>
+      <div class="vtitle" style="margin:4px 0 0;font-size:16px">${esc(o.title)}</div></div>`));
+    d.append(row);
+    d.append(el(saved
+      ? `<div class="saved">${SVG.check}<p>„${esc(saved)}“</p></div>`
+      : `<div class="frage dfrage">${esc(EINLADUNG)}</div>`));
+
+    if (mode === "nospeech") {
+      const ta = el(`<textarea class="typed" rows="2" placeholder="Deine Antwort …"></textarea>`);
+      const ok = el(`<button class="linkish">Speichern</button>`);
+      ok.onclick = () => { if (ta.value.trim()) answers[selId] = ta.value.trim(); mode = "idle"; render(); };
+      d.append(ta, ok);
+      setTimeout(() => ta.focus(), 30);
+    } else {
+      const mrow = el(`<div style="display:flex;align-items:center;gap:13px"></div>`);
+      const mic = el(`<button class="mic ${mode === "rec" ? "rec" : (saved ? "done" : "")}" style="width:56px;height:56px;flex:0 0 auto">${mode === "rec" ? SVG.stop : SVG.mic}</button>`);
+      mic.onclick = () => rec.toggle(selId);
+      mrow.append(mic);
+      mrow.append(el(`<div style="flex:1;text-align:left">
+        <div class="live" style="text-align:left">${mode === "rec" ? esc(live || "…") : ""}</div>
+        <div class="hint" style="text-align:left">${mode === "rec" ? "Ich höre zu" : (arrived ? "Du stehst davor — sag es einfach laut" : "Sag, was dir dazu einfällt")}</div></div>`));
+      d.append(mrow);
+      if (mode !== "rec") {
+        const alt = el(`<button class="linkish" style="align-self:flex-start;padding-left:0">Lieber tippen</button>`);
+        alt.onclick = () => { mode = "nospeech"; render(); };
+        d.append(alt);
+      }
+    }
+    root.append(body);
+
+    const n = Object.keys(answers).length;
+    const fin = el(`<div style="padding:0 16px 16px"><button class="finish" ${n ? "" : "disabled"}>Besuch beenden ${SVG.arrow}</button></div>`);
+    fin.querySelector("button").onclick = () => alert("→ Museum Wrapped (" + n + " Reflexionen)");
+    root.append(fin);
+
+    root.append(objektblatt());
+    paint();
+  }
+
+  /* Objektblatt: Beschreibung, weitere Aufnahmen, Audioguide (Platzhalter) */
+  function objektblatt() {
+    const sheet = el(`<div class="sheet ${sheetId ? "open" : ""}"><div class="sheetbody"><div class="grab"></div></div></div>`);
+    sheet.onclick = (e) => { if (e.target === sheet) { sheetId = null; render(); } };
+    if (!sheetId) return sheet;
+    const o = obj(sheetId), gal = GALERIE[sheetId] || [];
+    const big = gal[shot] || o.img;
+    const sb = sheet.querySelector(".sheetbody");
+
+    sb.append(el(`<div class="bigshot"><img src="${IMG}${big}" alt="${esc(o.title)}" /></div>`));
+
+    if (gal.length > 1) {
+      const strip = el(`<div class="strip"></div>`);
+      gal.forEach((g, i) => {
+        const b = el(`<button class="${i === shot ? "on" : ""}"><img src="${IMG}${g}" alt="" /></button>`);
+        b.onclick = () => { shot = i; render(); };
+        strip.append(b);
+      });
+      sb.append(strip);
+    }
+
+    sb.append(el(`<div>
+      <div class="eyebrow">${esc(o.room)} · ${esc(o.epoche)} · ${gal.length || 1} Aufnahme${(gal.length || 1) > 1 ? "n" : ""}</div>
+      <div class="vtitle" style="margin:5px 0 0;font-size:18px">${esc(o.title)}</div></div>`));
+    sb.append(el(`<div class="beschreibung">${esc(FACTS[sheetId] || "")}</div>`));
+
+    const bars = Array.from({ length: 34 }, (_, i) =>
+      `<i style="height:${20 + Math.round(70 * Math.abs(Math.sin(i * 1.7)))}%"></i>`).join("");
+    sb.append(el(`<div>
+      <div class="audio">
+        <div class="play">${SVG.play}</div>
+        <div class="wave">${bars}</div>
+        <div class="len">2:14</div>
+      </div>
+      <div class="stub" style="margin-top:7px">Audioguide des Museums · Platzhalter</div>
+    </div>`));
+
+    const close = el(`<button class="linkish" style="align-self:center">Schliessen</button>`);
+    close.onclick = () => { sheetId = null; render(); };
+    sb.append(close);
+    return sheet;
+  }
+
+  render();
+}
+
+Vitrine(document.getElementById("scr-a"));
+Kartei(document.getElementById("scr-b"));
+Saal(document.getElementById("scr-c"));
+Fuehrung(document.getElementById("scr-d"));
+
+document.getElementById("tabs").addEventListener("click", (e) => {
+  const b = e.target.closest("button"); if (!b) return;
+  const want = b.dataset.slot;
+  document.querySelectorAll("#tabs button").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+  document.querySelectorAll(".slot").forEach(s => s.classList.toggle("hidden", want !== "all" && s.dataset.slot !== want));
+});
+</script>
+</body>
+</html>
