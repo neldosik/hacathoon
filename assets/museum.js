@@ -418,6 +418,9 @@ const OBJECTS = [
       fact:"Faience figure of a reclining hippopotamus (inv. ÄS 6040). Such richly decorated animal figures were placed in tombs and were meant to accompany and protect the dead on the way into the afterlife. The body is decorated with lotus stems and blossoms, a reference to the animal's natural habitat." } },
 ];
 const loc = (o) => o[LANG];
+/* Fuer Vorschauen reicht die 512er Fassung. Vorher zog der Plan die
+   @hi-Dateien - ein 1,5-MB-Foto in einem 62-Pixel-Feld. */
+const thumbOf = (o) => IMG + o.id + ".jpg";
 const obj = (id) => OBJECTS.find(o => o.id === id);
 
 const GALERIE = {
@@ -678,7 +681,7 @@ function renderStory(layer, w, onRestart) {
   words.forEach(m => {
     const o = obj(m.object_id);
     frames.push(() => `
-      ${o ? `<div class="wshot"><img src="${IMG}${o.img}" alt="${esc(loc(o).title)}" /></div>
+      ${o ? `<div class="wshot"><img src="${thumbOf(o)}" alt="${esc(loc(o).title)}" /></div>
       <div class="credit">${esc(creditOf(m.object_id))}</div>` : ""}
       <div class="eyebrow">${esc(T.wWordsHead)}</div>
       <div class="wquote">„${esc(m.quote)}“</div>
@@ -808,7 +811,7 @@ function renderFaden(layer, w, onRestart) {
   words.forEach(m => {
     const o = obj(m.object_id), d = o ? loc(o) : null;
     th.append(el(`<div class="node">
-      <div class="nt">${o ? `<div class="kthumb"><img src="${IMG}${o.img}" alt="" /></div>` : ""}
+      <div class="nt">${o ? `<div class="kthumb"><img src="${thumbOf(o)}" alt="" /></div>` : ""}
         <div class="nm">${esc(d ? d.room : "")}<br/>${esc(d ? d.title : m.object_title)}</div></div>
       <div class="nq">„${esc(m.quote)}“</div>
       ${m.echo ? `<div class="ne">${esc(m.echo)}</div>` : ""}</div>`));
@@ -1119,7 +1122,7 @@ function Kartei(root) {
     OBJECTS.forEach(o => {
       const d = loc(o), has = !!answers[o.id];
       const c = el(`<button class="kcard ${has ? "has" : ""}">
-        <div class="kthumb"><img src="${IMG}${o.img}" alt="" /></div>
+        <div class="kthumb"><img src="${thumbOf(o)}" alt="" /></div>
         <div class="kbody"><div class="eyebrow">${esc(d.room)}</div>
         <h3>${esc(d.title)}</h3>
         <div class="kstate">${has ? SVG.check + " " + esc(T.told) : esc(T.open)}</div></div></button>`);
@@ -1144,7 +1147,7 @@ function Kartei(root) {
     if (o) {
       const d = loc(o), sb = sheet.querySelector(".sheetbody"), saved = answers[o.id];
       sb.append(el(`<div class="sheethero">
-        <div class="kthumb"><img src="${IMG}${o.img}" alt="" /></div>
+        <div class="kthumb"><img src="${thumbOf(o)}" alt="" /></div>
         <div><div class="eyebrow">${esc(d.room)} · ${esc(d.epoche)}</div>
         <div class="vtitle" style="margin:4px 0 0;font-size:17px">${esc(d.title)}</div></div></div>`));
       sb.append(el(saved ? `<div class="saved">${SVG.check}<p>„${esc(saved)}“</p></div>`
@@ -1212,7 +1215,7 @@ function Saal(root) {
 
     const det = body.querySelector(".detail");
     det.append(el(`<div class="row">
-      <div class="kthumb"><img src="${IMG}${o.img}" alt="" /></div>
+      <div class="kthumb"><img src="${thumbOf(o)}" alt="" /></div>
       <div><div class="eyebrow">${esc(d.room)}</div>
       <div class="vtitle" style="margin:4px 0 0;font-size:16px">${esc(d.title)}</div></div></div>`));
     det.append(el(saved ? `<div class="saved">${SVG.check}<p>„${esc(saved)}“</p></div>`
@@ -1368,7 +1371,7 @@ function Fuehrung(root) {
       st.append(el(`<div class="vbar ${isNear ? "on" : ""}" style="${wall};top:calc(${sp.y}% - 5px)"></div>`));
       const p = el(`<button class="rpin ${isNear ? "near" : ""} ${has ? "has" : ""}" data-id="${sp.id}"
         style="${card};top:calc(${sp.y}% + 11px)" aria-label="${esc(od.title)}">
-        <span class="shot"><img src="${IMG}${oo.img}" alt="" /></span>
+        <span class="shot"><img src="${thumbOf(oo)}" alt="" /></span>
         <span class="cap">${esc(T.vitrine(sp.nr))}</span></button>`);
       p.onclick = (e) => { e.stopPropagation(); selId = sp.id; mode = "idle"; live = ""; render(); };
       st.append(p); pinEls.push(p);
@@ -1404,7 +1407,7 @@ function Fuehrung(root) {
     const det = body.querySelector(".detail");
     const row = el(`<div class="row"></div>`);
     const tap = el(`<button class="tapphoto"><span class="kthumb" style="width:56px;height:56px;border-radius:12px">
-      <img src="${IMG}${o.img}" alt="" /></span></button>`);
+      <img src="${thumbOf(o)}" alt="" /></span></button>`);
     tap.onclick = () => { sheetId = selId; shot = 0; render(); };
     row.append(tap, el(`<div style="flex:1;min-width:0">
       <div class="eyebrow">${esc(d.room)} · ${esc(d.epoche)}</div>
@@ -1559,7 +1562,7 @@ function Fuehrung(root) {
 
     const o = obj(pending.objId), d = loc(o), sb = sheet.querySelector(".sheetbody");
     sb.append(el(`<div class="sheethero">
-      <div class="kthumb" style="width:52px;height:52px"><img src="${IMG}${o.img}" alt="" /></div>
+      <div class="kthumb" style="width:52px;height:52px"><img src="${thumbOf(o)}" alt="" /></div>
       <div><div class="eyebrow">${esc(d.room)} · ${esc(d.epoche)}</div>
       <div class="vtitle" style="margin:4px 0 0;font-size:17px">${esc(d.title)}</div></div></div>`));
 
@@ -1601,7 +1604,7 @@ function Fuehrung(root) {
       told.forEach(id => {
         const oo = obj(id); if (!oo) return;
         const rowEl = el(`<div class="toldrow">
-          <div class="kthumb" style="width:44px;height:44px"><img src="${IMG}${oo.img}" alt="" /></div>
+          <div class="kthumb" style="width:44px;height:44px"><img src="${thumbOf(oo)}" alt="" /></div>
           <div style="flex:1;min-width:0">
             <div class="toldquote">„${esc(answers[id])}“</div>
             <div class="toldtitle">${esc(loc(oo).title)}</div></div></div>`);
@@ -1623,7 +1626,7 @@ function Fuehrung(root) {
     if (!sheetId) return sheet;
 
     const o = obj(sheetId), d = loc(o), gal = GALERIE[sheetId] || [];
-    const big = gal[shot] || o.img;
+    const big = gal[shot] || o.img;   // hier darf es gross sein
     const sb = sheet.querySelector(".sheetbody");
 
     sb.append(el(`<div class="bigshot"><img src="${IMG}${big}" alt="${esc(d.title)}" /></div>`));
