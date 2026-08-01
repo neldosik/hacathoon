@@ -400,12 +400,25 @@ const likesOf = (id) => {
   for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) % 997;
   return 40 + (h % 260);
 };
-const myLikes = {};
+/* Gemerkte Objekte ueberleben ein Neuladen, aber nur innerhalb der Sitzung:
+   sessionStorage endet mit dem Tab, und ein neuer Besuch loescht ihn ohnehin.
+   Nichts davon verlaesst das Geraet. */
+const LIKE_KEY = "mw-likes";
+const myLikes = (function () {
+  try { return JSON.parse(sessionStorage.getItem(LIKE_KEY) || "{}"); } catch (e) { return {}; }
+})();
+function saveLikes() {
+  try { sessionStorage.setItem(LIKE_KEY, JSON.stringify(myLikes)); } catch (e) {}
+}
+function clearLikes() {
+  Object.keys(myLikes).forEach(function (k) { delete myLikes[k]; });
+  try { sessionStorage.removeItem(LIKE_KEY); } catch (e) {}
+}
 const likeBtn = (id, onChange) => {
   const mine = !!myLikes[id];
   const b = el(`<button class="likebtn ${mine ? "on" : ""}" aria-label="${esc(t().likeLabel)}">
     ${mine ? SVG.heartOn : SVG.heart}<span>${likesOf(id) + (mine ? 1 : 0)}</span></button>`);
-  b.onclick = (e) => { e.stopPropagation(); myLikes[id] = !mine; onChange(); };
+  b.onclick = (e) => { e.stopPropagation(); myLikes[id] = !mine; saveLikes(); onChange(); };
   return b;
 };
 
@@ -1259,6 +1272,7 @@ function Fuehrung(root) {
     wipe.onclick = () => {
       Object.keys(answers).forEach(k => delete answers[k]);
       pending = null; editing = false;
+      clearLikes();
       try { sessionStorage.removeItem("mw-consent"); } catch (e) {}
       startedAt = Date.now(); render();
       const live = root.querySelector(".srlive"); if (live) live.textContent = T.wipeDone;
@@ -1402,6 +1416,7 @@ function Fuehrung(root) {
         // gilt nicht weiter, das Geraet wandert schliesslich von Hand zu Hand.
         Object.keys(answers).forEach(k => delete answers[k]);
         try { sessionStorage.removeItem("mw-consent"); } catch (e) {}
+        clearLikes();
         inWrapped = false; roomIdx = 0; lastRoom = -1; startedAt = Date.now();
         pending = null; editing = false; sheetId = null; speechCode = null;
         me = { x: 50, y: 94 }; heading = -90; wp = 0; seg = 0; walking = false;
