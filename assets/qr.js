@@ -372,17 +372,30 @@ const QR = (function () {
     let mitte = "";
     if (o.marke) {
       /* Ein gefasstes Feld in derselben Sprache wie die Sucherquadrate:
-         weiche Ecken, ein ruhiger Rand, das Zeichen des Hauses darin.
-         Es deckt Kästchen zu, und das darf es — der Code verschränkt seine
-         Wörter über alle Blöcke, ein Feld in der Mitte trifft daher jeden
-         Block ein wenig statt einen ganz. */
+         weiche Ecken, ruhiger Rand, das Zeichen des Hauses darin. Es deckt
+         Kästchen zu, und das darf es — der Code verschränkt seine Wörter
+         über alle Blöcke, ein Feld in der Mitte trifft daher jeden Block
+         ein wenig statt einen ganz. Nachgerechnet kostet es bei fünfzehn
+         Prozent Breite etwa ein Siebtel dessen, was die Korrektur trägt. */
       const b = Math.round(q.n * 0.15), m = (q.n + rand * 2 - b) / 2;
-      const eck = b * 0.3, s2 = b * 0.21, mm = m + b / 2;
-      mitte = `
-        <rect x="${m}" y="${m}" width="${b}" height="${b}" rx="${eck}"
-          fill="${hell}" stroke="${o.markeRand || dunkel}" stroke-width="${b * 0.07}"/>
-        <path d="M${mm} ${mm - s2}L${mm + s2} ${mm}L${mm} ${mm + s2}L${mm - s2} ${mm}Z"
-          fill="${o.markeFarbe || dunkel}"/>`;
+      const eck = b * 0.28, mm = m + b / 2, id = "mk" + Math.random().toString(36).slice(2, 8);
+      const fassung = `<rect x="${m}" y="${m}" width="${b}" height="${b}" rx="${eck}"
+          fill="${hell}" stroke="${o.markeRand || dunkel}" stroke-width="${b * 0.06}"/>`;
+      if (o.markeBild) {
+        // Das Zeichen als Bild, im Feld eingefasst
+        const luft = b * 0.11;
+        mitte = `<defs><clipPath id="${id}"><rect x="${m + luft}" y="${m + luft}"
+            width="${b - luft * 2}" height="${b - luft * 2}" rx="${eck * 0.75}"/></clipPath></defs>
+          ${fassung}
+          <image href="${o.markeBild}" x="${m + luft}" y="${m + luft}"
+            width="${b - luft * 2}" height="${b - luft * 2}"
+            preserveAspectRatio="xMidYMid slice" clip-path="url(#${id})"/>`;
+      } else {
+        const s2 = b * 0.2;
+        mitte = `${fassung}
+          <path d="M${mm} ${mm - s2}L${mm + s2} ${mm}L${mm} ${mm + s2}L${mm - s2} ${mm}Z"
+            fill="${o.markeFarbe || dunkel}"/>`;
+      }
     }
 
     let augen = "";

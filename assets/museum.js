@@ -1097,6 +1097,19 @@ function keepSheet(host, w) {
 /* Der Code selbst. Dunkel auf hell, immer — ein umgekehrter Code wird von
    manchen Kameras nicht erkannt, und ein Code, den niemand scannt, ist
    kein Code. Die Gestaltung sitzt drumherum, nicht darin. */
+/* Liegt ein Zeichen des Hauses im Verzeichnis, kommt es in die Mitte;
+   sonst die Raute. Einmal nachgefragt, dann gemerkt. */
+let markeBild = null;
+async function markeSuchen() {
+  if (markeBild !== null) return markeBild;
+  try {
+    const pfad = "assets/marke.png";
+    const a = await fetch(pfad, { method: "HEAD" });
+    markeBild = a.ok ? pfad : "";
+  } catch (e) { markeBild = ""; }
+  return markeBild;
+}
+
 async function zeigeCode(host, w, form) {
   const T = t();
   const blatt = el(`<div class="sheet open codeblatt"><div class="sheetbody">
@@ -1122,10 +1135,11 @@ async function zeigeCode(host, w, form) {
        stehen mit 12:1 auf dem Pergament, die Sucherquadrate noch dunkler —
        an ihnen findet die Kamera den Code ueberhaupt erst. Gold bleibt dem
        Zeichen und dem Rahmen. */
+    const bild = await markeSuchen();
     feld.innerHTML = QR.svg(inhalt, {
       rund: true, dunkel: "#3d2a0c", auge: "#2e2008", hell: "#f7f2e7", rand: 4,
       marke: true, markeFarbe: "#a8791a", markeRand: "#3d2a0c",
-      alt: T.keepQr,
+      markeBild: bild || null, alt: T.keepQr,
     });
     note.textContent = form === "plain" ? T.keepScanPlain : T.keepScan;
   } catch (e) {
