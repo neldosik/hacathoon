@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1" />
+<meta name="theme-color" content="#16100b" />
+<title>Versuch · Saal von oben</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --fg:oklch(0.96 0.02 85); --muted:oklch(0.75 0.04 75); --gold:oklch(0.82 0.15 82);
+    --line:oklch(0.35 0.05 65/45%); --panel:oklch(0.19 0.03 57);
+    --you:oklch(0.82 0.11 235); --you-ring:oklch(0.98 0.01 235);
+    --boden:oklch(0.20 0.022 58); --wand:oklch(0.33 0.028 60);
+    --display:"Cormorant Garamond",Georgia,serif; --body:"Inter",system-ui,sans-serif;
+    color-scheme:dark;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{background-color:oklch(0.09 0.015 55)}
+  body{font-family:var(--body);color:var(--fg);overflow:hidden;
+    background:radial-gradient(ellipse at top,oklch(0.24 0.05 55) 0%,oklch(0.12 0.022 55) 60%,oklch(0.09 0.015 55) 100%)}
+
+  .screen{position:fixed;inset:0;display:flex;flex-direction:column;
+    padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}
+  .topbar{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;
+    padding:14px 18px 8px;z-index:8}
+  .brand{display:flex;align-items:center;gap:8px;font-size:10.5px;letter-spacing:.3em;
+    text-transform:uppercase;color:var(--muted)}
+  .brand i{color:var(--gold);font-style:normal}
+  .versuch{font-size:9.5px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;
+    color:oklch(0.16 0.03 55);background:var(--gold);padding:5px 9px;border-radius:999px}
+
+  /* ==========================================================================
+     Der Saal liegt flach und wird gekippt — dadurch schaut man von schräg
+     oben hinein, wie im Guide des Museums. Alles, was gelesen werden soll,
+     wird um denselben Winkel zurückgedreht und steht damit aufrecht.
+     ========================================================================== */
+  .scene{position:relative;flex:1;min-height:0;overflow:hidden;
+    perspective:900px;perspective-origin:50% 24%}
+  .world{position:absolute;left:50%;top:0;transform-style:preserve-3d;
+    transform:translateX(-50%) translateY(84px) rotateX(62deg)}
+  .raum{position:relative;width:340px;height:1500px;transform-style:preserve-3d;
+    transition:transform .6s cubic-bezier(.22,.61,.36,1);
+    background:
+      repeating-linear-gradient(90deg, oklch(0.30 0.02 60/.4) 0 1px, transparent 1px 68px),
+      repeating-linear-gradient(0deg,  oklch(0.30 0.02 60/.4) 0 1px, transparent 1px 68px),
+      var(--boden);
+    border-left:10px solid var(--wand); border-right:10px solid var(--wand);
+    box-shadow:0 0 90px oklch(0 0 0/.7) inset}
+  .quer{position:absolute;left:-10px;right:-10px;height:10px;background:var(--wand)}
+
+  /* --- Vitrine: Grundfläche liegt, das Objekt steht darauf --- */
+  .vit{position:absolute;transform-style:preserve-3d;background:none;border:none;
+    padding:0;cursor:pointer}
+  .platte{width:78px;height:30px;margin-left:-39px;border-radius:5px;
+    background:linear-gradient(180deg, oklch(0.32 0.03 60), oklch(0.20 0.02 58));
+    border:1px solid oklch(0.45 0.03 62/.7);
+    box-shadow:0 0 0 1px oklch(0 0 0/.4), 0 14px 22px oklch(0 0 0/.55)}
+  .vit.aktiv .platte{border-color:var(--gold);box-shadow:0 0 0 4px oklch(0.82 0.15 82/.18)}
+  .aufrecht{position:absolute;left:0;bottom:8px;transform-origin:bottom center;
+    transform:translateX(-50%) rotateX(-62deg);transform-style:preserve-3d;
+    display:flex;flex-direction:column;align-items:center}
+  .kasten{width:78px;height:96px;border-radius:7px;overflow:hidden;
+    background:linear-gradient(165deg, oklch(0.24 0.03 58), oklch(0.14 0.02 56));
+    border:1.5px solid oklch(0.70 0.08 78/.5);
+    box-shadow:0 10px 26px oklch(0 0 0/.6);transition:.25s}
+  .vit.aktiv .kasten{width:92px;height:114px;border:2px solid var(--gold);
+    box-shadow:0 0 0 6px oklch(0.82 0.15 82/.14), 0 12px 30px oklch(0 0 0/.6)}
+  .kasten img{width:100%;height:100%;object-fit:contain;padding:5px}
+  .vit.leer .kasten{width:66px;height:80px;
+    background:linear-gradient(165deg, oklch(0.20 0.02 58/.75), oklch(0.13 0.015 56/.75));
+    border-color:oklch(0.55 0.03 62/.4)}
+  .schild{margin-top:5px;font-size:9.5px;letter-spacing:.1em;color:oklch(0.86 0.04 78);
+    background:oklch(0.10 0.02 55/.85);padding:3px 7px;border-radius:999px;white-space:nowrap}
+  .marke{position:relative;width:44px;height:50px;display:grid;place-items:center;margin-bottom:5px}
+  .marke svg.blase{position:absolute;inset:0;width:100%;height:100%}
+  .marke i{position:relative;font-style:normal;margin-top:-7px;color:oklch(0.16 0.03 55);display:grid}
+
+  /* --- Wo der Besucher steht --- */
+  .ich{position:absolute;left:50%;transform-style:preserve-3d;
+    transition:top .6s cubic-bezier(.22,.61,.36,1)}
+  .ring{position:absolute;left:-60px;top:-60px;width:120px;height:120px;border-radius:50%;
+    border:1px dashed oklch(0.82 0.11 235/.5)}
+  .halo{position:absolute;left:-26px;top:-26px;width:52px;height:52px;border-radius:50%;
+    background:oklch(0.82 0.11 235/.18);animation:puls 2.4s ease-out infinite}
+  @keyframes puls{0%{transform:scale(.6);opacity:.9}100%{transform:scale(2.2);opacity:0}}
+  .punkt{position:absolute;left:-13px;top:-13px;width:26px;height:26px;border-radius:50%;
+    background:var(--you);border:3px solid var(--you-ring);box-shadow:0 6px 16px oklch(0 0 0/.7);
+    display:grid;place-items:center;color:oklch(0.20 0.06 235)}
+  .ichschild{position:absolute;left:0;top:22px;transform-origin:top center;
+    transform:translateX(-50%) rotateX(-62deg);font-size:11px;font-weight:600;letter-spacing:.1em;
+    color:oklch(0.90 0.05 235);background:oklch(0.10 0.02 55/.85);padding:4px 9px;
+    border-radius:999px;white-space:nowrap}
+
+  .nebel{position:absolute;inset:0;pointer-events:none;z-index:5;
+    background:linear-gradient(180deg, oklch(0.10 0.018 55) 0%, oklch(0.10 0.018 55/.5) 14%,
+      transparent 36%, transparent 74%, oklch(0.10 0.018 55/.92) 100%)}
+  .saalname{position:absolute;left:0;right:0;top:6px;text-align:center;z-index:6;
+    font-family:var(--display);font-size:22px;color:oklch(0.94 0.03 80);
+    text-shadow:0 2px 14px oklch(0 0 0/.9)}
+  .saalname em{display:block;font-style:normal;font-family:var(--body);font-size:10px;
+    letter-spacing:.24em;text-transform:uppercase;color:oklch(0.80 0.04 75);margin-top:5px}
+
+  .steuer{position:absolute;left:0;right:0;bottom:12px;z-index:7;display:flex;
+    justify-content:center;align-items:center;gap:10px;padding:0 16px}
+  .kn{min-height:46px;min-width:52px;padding:0 16px;border-radius:999px;cursor:pointer;
+    background:oklch(0.19 0.03 57/.9);border:1px solid var(--line);color:var(--fg);
+    font:600 13px/1 var(--body);backdrop-filter:blur(6px)}
+  .kn:disabled{opacity:.35;cursor:not-allowed}
+  .kn.gold{background:var(--gold);border-color:var(--gold);color:oklch(0.16 0.03 55)}
+  .hinweis{position:absolute;left:16px;right:16px;bottom:70px;z-index:6;text-align:center;
+    font-size:12px;line-height:1.5;color:oklch(0.84 0.04 74);text-shadow:0 2px 10px oklch(0 0 0/.9)}
+
+  .panel{position:absolute;left:0;right:0;bottom:0;z-index:9;transform:translateY(102%);
+    transition:transform .3s cubic-bezier(.22,.61,.36,1);background:var(--panel);
+    border-top:1px solid oklch(0.82 0.15 82/.3);border-radius:22px 22px 0 0;
+    padding:14px 18px calc(18px + env(safe-area-inset-bottom));
+    display:flex;flex-direction:column;gap:10px}
+  .panel.auf{transform:none}
+  .griff{width:38px;height:4px;border-radius:2px;background:oklch(0.70 0.04 70/.35);margin:0 auto 2px}
+  .eyebrow{font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--gold)}
+  .titel{font-family:var(--display);font-size:19px;line-height:1.2}
+  .frage{font-family:var(--display);font-weight:300;font-size:19px;line-height:1.25}
+  .credit{font-size:10.5px;line-height:1.45;color:oklch(0.74 0.03 74)}
+  .zu{align-self:center;background:none;border:none;color:var(--muted);cursor:pointer;
+    font:500 11px/1 var(--body);letter-spacing:.14em;text-transform:uppercase;
+    text-decoration:underline;text-underline-offset:4px;min-height:44px}
+</style>
+</head>
+<body>
+<div class="screen">
+  <div class="topbar">
+    <div class="brand"><i>◆</i> SMÄK</div>
+    <span class="versuch">Versuch</span>
+  </div>
+
+  <div class="scene" id="scene">
+    <div class="world"><div class="raum" id="raum"></div></div>
+    <div class="nebel"></div>
+    <div class="saalname">Saal Jenseits<em>Frei bewegen</em></div>
+    <div class="hinweis" id="hinweis"></div>
+    <div class="steuer">
+      <button class="kn" id="zurueck">↓</button>
+      <button class="kn gold" id="vor">Weitergehen ↑</button>
+    </div>
+  </div>
+
+  <div class="panel" id="panel">
+    <div class="griff"></div>
+    <div class="eyebrow" id="pEyebrow"></div>
+    <div class="titel" id="pTitel"></div>
+    <div class="credit" id="pCredit"></div>
+    <div class="frage" id="pFrage"></div>
+    <button class="zu" id="pZu">Schliessen</button>
+  </div>
+</div>
+
+<script>
+/* ==========================================================================
+   Versuch: der Saal von schräg oben, wie im Medienguide des Museums.
+   Kein Modell des Hauses — die Maße sind geschätzt, die Vitrinennummern
+   erfunden. Es geht nur um die Frage, ob sich der Raum so besser liest
+   als der flache Grundriss.
+   ========================================================================== */
+const IMG = "assets/objects/";
+const LAENGE = 1500;
+const SCHRITT = 210;
+
+const STUECKE = [
+  { id:"OBJ-14", x:66, y:1150, nr:3, marke:"play",
+    titel:"Oberteil des Sarges der Königstochter Satdjehuti",
+    raum:"Jenseits · 17. Dynastie · Vitrine 3",
+    frage:"Wie möchtest du aussehen, wenn man sich für immer an dein Gesicht erinnert?",
+    credit:"© SMÄK, Foto: Marianne Franke (2010) / CC BY-NC-ND 4.0" },
+  { id:"OBJ-15", x:264, y:780, nr:7, marke:"check",
+    titel:"Totenbuch des Pajuheru",
+    raum:"Jenseits · Spätzeit · Vitrine 7",
+    frage:"Was von deinem Leben würdest du in die Waagschale legen wollen?",
+    credit:"© SMÄK, Foto: Marianne Franke (2012) / CC BY-NC-ND 4.0" },
+];
+/* Leere Vitrinen geben dem Saal Tiefe. Sie tragen keine Daten und sind nicht
+   anklickbar — wir tun nicht so, als kennten wir sie. */
+const LEER = [
+  { x:264, y:1300 }, { x:66, y:930 }, { x:264, y:520 },
+  { x:66,  y:590  }, { x:264, y:260 }, { x:66,  y:230 },
+];
+
+const BLASE = '<path d="M3 3 H41 V33 H26 L22 44 L18 33 H3 Z"/>';
+const IKON = {
+  play:  '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg>',
+  check: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l6 6L20 6"/></svg>',
+};
+
+const el = (html) => { const t = document.createElement("template"); t.innerHTML = html.trim(); return t.content.firstElementChild; };
+const raum = document.getElementById("raum");
+const panel = document.getElementById("panel");
+let ich = 1380;
+
+function bauen() {
+  raum.append(el(`<div class="quer" style="top:0"></div>`));
+  raum.append(el(`<div class="quer" style="bottom:0"></div>`));
+  LEER.forEach(s => raum.append(vitrine(s, true)));
+  STUECKE.forEach(s => raum.append(vitrine(s, false)));
+  raum.append(el(`<div class="ich" id="ich">
+    <div class="ring"></div><div class="halo"></div>
+    <div class="punkt"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3l7 17-7-4-7 4z"/></svg></div>
+    <div class="ichschild">Du bist hier</div></div>`));
+}
+
+function vitrine(s, leer) {
+  const v = document.createElement(leer ? "div" : "button");
+  v.className = "vit" + (leer ? " leer" : "");
+  v.style.left = s.x + "px";
+  v.style.top = s.y + "px";
+  v.innerHTML = `
+    <div class="platte"></div>
+    <div class="aufrecht">
+      ${leer ? "" : `<div class="marke">
+        <svg class="blase" viewBox="0 0 44 50" fill="var(--gold)" stroke="var(--gold)" stroke-width="2.4" stroke-linejoin="round">${BLASE}</svg>
+        <i>${IKON[s.marke]}</i></div>`}
+      <div class="kasten">${leer ? "" : `<img src="${IMG}${s.id}.jpg" alt="${s.titel}" />`}</div>
+      ${leer ? "" : `<div class="schild">Vitrine ${s.nr}</div>`}
+    </div>`;
+  if (!leer) { v.setAttribute("aria-label", s.titel); v.onclick = () => oeffnen(s, v); }
+  return v;
+}
+
+function oeffnen(s, v) {
+  document.querySelectorAll(".vit").forEach(x => x.classList.remove("aktiv"));
+  v.classList.add("aktiv");
+  document.getElementById("pEyebrow").textContent = s.raum;
+  document.getElementById("pTitel").textContent = s.titel;
+  document.getElementById("pCredit").textContent = s.credit;
+  document.getElementById("pFrage").textContent = s.frage;
+  panel.classList.add("auf");
+}
+document.getElementById("pZu").onclick = () => {
+  panel.classList.remove("auf");
+  document.querySelectorAll(".vit").forEach(x => x.classList.remove("aktiv"));
+};
+
+function gehen(d) {
+  ich = Math.max(150, Math.min(LAENGE - 110, ich + d * SCHRITT));
+  zeichnen();
+}
+
+function zeichnen() {
+  document.getElementById("ich").style.top = ich + "px";
+  // Der Saal schiebt sich unter dem Besucher durch; er bleibt im unteren Drittel
+  raum.style.transform = `translateY(${-(ich - 430)}px)`;
+  document.getElementById("vor").disabled = ich <= 150;
+  document.getElementById("zurueck").disabled = ich >= LAENGE - 110;
+
+  const naechste = STUECKE.map(s => ({ s, d: Math.abs(s.y - ich) })).sort((a, b) => a.d - b.d)[0];
+  document.getElementById("hinweis").textContent = naechste.d < 130
+    ? "Du stehst vor: " + naechste.s.titel
+    : "Vor dir: " + naechste.s.titel + " · " + Math.max(1, Math.round(naechste.d / 55)) + " Schritte";
+}
+
+document.getElementById("vor").onclick = () => gehen(-1);
+document.getElementById("zurueck").onclick = () => gehen(1);
+
+let y0 = null;
+const scene = document.getElementById("scene");
+scene.addEventListener("touchstart", e => { y0 = e.touches[0].clientY; }, { passive: true });
+scene.addEventListener("touchend", e => {
+  if (y0 === null) return;
+  const dy = e.changedTouches[0].clientY - y0;
+  if (Math.abs(dy) > 40) gehen(dy > 0 ? 1 : -1);
+  y0 = null;
+}, { passive: true });
+
+bauen();
+zeichnen();
+</script>
+</body>
+</html>
