@@ -269,6 +269,7 @@ const L = {
     keepScan: "Halte die Kamera darauf. Der Code trägt deinen Rückblick selbst — er liegt auf keinem Server.",
     keepScanPlain: "Halte die Kamera darauf. Der Code enthält den Text deines Rückblicks.",
     keepTooLong: "Der Text ist für einen Code zu lang. Nimm die schöne Fassung oder die E-Mail.",
+    keepCodeFehler: "Der Code liess sich nicht erzeugen. Die E-Mail geht trotzdem.",
     keepCopied: "Kopiert.",
     settings: "Einstellungen", setLang: "Sprache", setSource: "Text", setFont: "Schrift",
     likeLabel: "Merken", likeHint: "Andere Besucher haben hier gehalten",
@@ -402,6 +403,7 @@ const L = {
     keepScan: "Point your camera at it. The code carries your recap itself — it sits on no server.",
     keepScanPlain: "Point your camera at it. The code contains the text of your recap.",
     keepTooLong: "The text is too long for a code. Take the pretty version or the e-mail.",
+    keepCodeFehler: "The code could not be built. The e-mail still works.",
     keep: "Keep", keepTitle: "Keep your visit",
     keepNote: "None of this sits on a server — the text travels with you, not a link to it.",
     keepRights: RIGHTS,
@@ -943,7 +945,10 @@ function renderFaden(layer, w, onRestart) {
 
 /* Der Besuch zum Mitnehmen. Es gibt keinen Server, der ihn aufhebt — also
    geht der Text mit, nicht ein Link darauf. */
-function wrappedAsText(w) {
+/* knapp = nur der persoenliche Kern. Der ganze Text passt in eine Mail,
+   aber nicht mehr in einen Code, den jemand vom Display abliest: er
+   braeuchte die groesste Version, und die trennt keine Kamera mehr. */
+function wrappedAsText(w, knapp) {
   const T = t(), L = [];
   L.push("MUSEUM WRAPPED · SMÄK München", "");
   if (w.greeting) L.push(w.greeting, "");
@@ -958,6 +963,11 @@ function wrappedAsText(w) {
     });
   }
   if (w.reflective_question) L.push(T.wQuestion.toUpperCase(), w.reflective_question, "");
+  if (knapp) {
+    if (w.closing) L.push(w.closing);
+    L.push("", RIGHTS);
+    return L.join(String.fromCharCode(10));
+  }
   const recs = Array.isArray(w.recommendations) ? w.recommendations : [];
   if (recs.length) {
     L.push(T.recsHead.toUpperCase());
@@ -1103,15 +1113,19 @@ async function zeigeCode(host, w, form) {
 
   const feld = blatt.querySelector(".codefeld"), note = blatt.querySelector(".codenote");
   try {
-    const inhalt = form === "plain" ? wrappedAsText(w) : await keepsakeUrl(w);
+    const inhalt = form === "plain" ? wrappedAsText(w, true) : await keepsakeUrl(w);
     feld.innerHTML = QR.svg(inhalt, {
       rund: true, dunkel: "#241a10", hell: "#f7f2e7", karteEck: 6,
       alt: T.keepQr, rand: 3,
     });
     note.textContent = form === "plain" ? T.keepScanPlain : T.keepScan;
   } catch (e) {
+    /* Zu lang ist zu lang — alles andere ist ein Fehler und soll auch so
+       heissen. Eine Meldung, die jede Ursache gleich nennt, schickt beim
+       Suchen in die falsche Richtung. */
     feld.innerHTML = "";
-    note.textContent = T.keepTooLong;
+    note.textContent = /zu lang/.test(e.message) ? T.keepTooLong : T.keepCodeFehler;
+    if (!/zu lang/.test(e.message)) console.error("QR:", e);
   }
 }
 
