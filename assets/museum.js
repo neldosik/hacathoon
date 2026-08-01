@@ -1102,7 +1102,11 @@ async function zeigeCode(host, w, form) {
   const blatt = el(`<div class="sheet open codeblatt"><div class="sheetbody">
     <div class="grab"></div>
     <div class="vtitle" style="margin:0;font-size:20px">${esc(T.keepQr)}</div>
-    <div class="codefeld"><div class="codelade"></div></div>
+    <div class="codekarte">
+      <div class="codekopf"><i>◆</i> SMÄK</div>
+      <div class="codefeld"><div class="codelade"></div></div>
+      <div class="codefuss">Museum Wrapped</div>
+    </div>
     <div class="sethint codenote" style="margin:0;text-align:center"></div>
   </div></div>`);
   blatt.onclick = (e) => { if (e.target === blatt) blatt.remove(); };
@@ -1114,9 +1118,14 @@ async function zeigeCode(host, w, form) {
   const feld = blatt.querySelector(".codefeld"), note = blatt.querySelector(".codenote");
   try {
     const inhalt = form === "plain" ? wrappedAsText(w, true) : await keepsakeUrl(w);
+    /* Unsere Farben, aber nicht auf Kosten des Kontrasts: die Punkte
+       stehen mit 12:1 auf dem Pergament, die Sucherquadrate noch dunkler —
+       an ihnen findet die Kamera den Code ueberhaupt erst. Gold bleibt dem
+       Zeichen und dem Rahmen. */
     feld.innerHTML = QR.svg(inhalt, {
-      rund: true, dunkel: "#241a10", hell: "#f7f2e7", karteEck: 6,
-      alt: T.keepQr, rand: 3,
+      rund: true, dunkel: "#3d2a0c", auge: "#2e2008", hell: "#f7f2e7", rand: 2,
+      marke: true, markeFarbe: "#a8791a", markeRand: "#3d2a0c",
+      alt: T.keepQr,
     });
     note.textContent = form === "plain" ? T.keepScanPlain : T.keepScan;
   } catch (e) {

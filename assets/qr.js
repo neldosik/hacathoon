@@ -316,8 +316,15 @@ const QR = (function () {
     // Die drei Sucherquadrate zeichnen wir eigens — sie tragen die Form.
     const istSucher = (r, c) => (r < 7 && c < 7) || (r < 7 && c >= q.n - 7) || (r >= q.n - 7 && c < 7);
 
+    /* Runde Punkte kosten Farbe: ein einzeln stehendes Kästchen wird zum
+       Kreis und verliert ein Fünftel seiner Fläche. Bei wenigen, großen
+       Kästchen fällt das nicht ins Gewicht — bei einem dichten Code, wo
+       ein Kästchen auf dem Display kaum zwei Pixel breit ist, schon.
+       Deshalb entscheidet die Größe über die Form, nicht der Geschmack. */
+    const rund = o.rund && q.version <= 21;
+
     let d = "";
-    if (o.rund) {
+    if (rund) {
       for (let r = 0; r < q.n; r++) for (let c = 0; c < q.n; c++) {
         if (!q.feld[r][c] || istSucher(r, c)) continue;
         // Ein Punkt mit weichem Rand; die Nachbarn schließen die Lücken.
@@ -336,16 +343,35 @@ const QR = (function () {
              `v${-(1 - ul - ol)}` + (ol ? `a.5.5 0 0 1 .5 -.5` : ``) + `z`;
       }
     } else {
+      const eigene = o.eigeneSucher || o.rund;
       for (let r = 0; r < q.n; r++) {
         let c = 0;
         while (c < q.n) {
-          if (!q.feld[r][c] || (o.eigeneSucher && istSucher(r, c))) { c++; continue; }
+          if (!q.feld[r][c] || (eigene && istSucher(r, c))) { c++; continue; }
           let bis = c;
-          while (bis + 1 < q.n && q.feld[r][bis + 1] && !(o.eigeneSucher && istSucher(r, bis + 1))) bis++;
+          while (bis + 1 < q.n && q.feld[r][bis + 1] && !(eigene && istSucher(r, bis + 1))) bis++;
           d += `M${c + R} ${r + R}h${bis - c + 1}v1h${-(bis - c + 1)}z`;
           c = bis + 1;
         }
       }
+    }
+
+    /* Ein Zeichen in der Mitte. Es deckt Kästchen zu, und das ist erlaubt:
+       der Code verschränkt seine Wörter über alle Blöcke, ein rundes Feld
+       in der Mitte trifft daher jeden Block ein wenig statt einen ganz.
+       Bei dreizehn Prozent Breite verbraucht es rund ein Siebtel dessen,
+       was die Fehlerkorrektur tragen kann — der Rest bleibt für Reflexe,
+       schiefe Winkel und müde Kameras. */
+    let mitte = "";
+    if (o.marke) {
+      const m = (q.n + rand * 2) / 2, r = q.n * 0.068;
+      const s2 = r * 0.46;
+      mitte = `
+        <circle cx="${m}" cy="${m}" r="${r}" fill="${hell}"/>
+        <circle cx="${m}" cy="${m}" r="${r - .55}" fill="none"
+          stroke="${o.markeRand || dunkel}" stroke-width=".5" opacity=".35"/>
+        <path d="M${m} ${m - s2}L${m + s2} ${m}L${m} ${m + s2}L${m - s2} ${m}Z"
+          fill="${o.markeFarbe || dunkel}"/>`;
     }
 
     let augen = "";
@@ -361,10 +387,10 @@ const QR = (function () {
 
     const ecke = o.karteEck == null ? 0 : o.karteEck;
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${seite} ${seite}"
-      shape-rendering="${o.rund ? "geometricPrecision" : "crispEdges"}"
+      shape-rendering="${rund ? "geometricPrecision" : "crispEdges"}"
       role="img" aria-label="${(o.alt || "QR-Code").replace(/"/g, "")}">
       <rect width="${seite}" height="${seite}" rx="${ecke}" fill="${hell}"/>
-      <path d="${d}" fill="${dunkel}"/>${augen}</svg>`;
+      <path d="${d}" fill="${dunkel}"/>${augen}${mitte}</svg>`;
   }
 
   return { kodiere: kodiere, svg: svg, datenZeichen: datenZeichen, alignPos: alignPos, BLOECKE: BLOECKE };
