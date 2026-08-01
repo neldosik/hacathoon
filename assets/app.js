@@ -16,6 +16,7 @@
   if (q.get("lang") === "en") LANG = "en";
   if (q.get("live") === "1") liveMode = true;
   if (q.get("font")) setFont(q.get("font"));
+  raum3d = q.get("raum") === "3d";   // Versuchsfassung des Saals
 
   wrappedPeer = true;        // Story und Faden verweisen aufeinander
   introEnabled = q.get("intro") !== "0";   // ?intro=0 überspringt die Erklärung beim Testen
@@ -29,7 +30,8 @@
 
   function openSettings() {
     const T = t();
-    const sheet = el(`<div class="sheet open" style="position:fixed"><div class="sheetbody"><div class="grab"></div></div></div>`);
+    // Im Tablet-Rahmen gehoert das Blatt in den Rahmen, nicht ins Fenster
+    const sheet = el(`<div class="sheet open"><div class="sheetbody"><div class="grab"></div></div></div>`);
     sheet.onclick = (e) => { if (e.target === sheet) sheet.remove(); };
     const sb = sheet.querySelector(".sheetbody");
     sb.append(el(`<div class="vtitle" style="margin:0">${esc(T.settings)}</div>`));
@@ -54,12 +56,20 @@
     }));
     sb.append(el(`<div class="sethint">${esc(T.srcNote)}</div>`));
 
+    /* Loeschen gehoert hierher und nicht in den Saal: dort stand es im Weg,
+       erreichbar bleiben muss es trotzdem. */
+    if (app.wipe) {
+      const w = el(`<button class="wipe" style="width:100%;min-height:46px">${esc(T.wipe)}</button>`);
+      w.onclick = () => { app.wipe(); sheet.remove(); };
+      sb.append(w);
+    }
+
     sb.append(el(legalRow()));
 
     const close = el(`<button class="btn" style="min-height:52px;margin-top:4px">${esc(T.close)}</button>`);
     close.onclick = () => sheet.remove();
     sb.append(close);
-    document.body.append(sheet);
+    root.append(sheet);
   }
 
   /* Die Führung zeichnet ihren Kopf bei jedem Schritt neu, also hängen wir

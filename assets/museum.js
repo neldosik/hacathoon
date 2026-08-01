@@ -162,6 +162,8 @@ const L = {
     einladung: "Was geht dir gerade durch den Kopf?",
     erzaehlt: "erzählt", room: "Raum",
     walk: "Rundgang", pause: "Pause", sketch: "Position simuliert",
+    zoomOpen: "Foto vergroessern", zoomHint: "Ziehen zum Bewegen · Doppeltippen zum Zoomen",
+    photoPrev: "Voriges Foto", photoNext: "Nächstes Foto",
     next: "Nächstes", here: "Du stehst davor",
     listening: "Ich höre zu", listenStop: "Ich höre zu — noch einmal tippen zum Beenden",
     sayHere: "Du stehst davor — flüster es einfach", sayAny: "Flüster es einfach, ganz leise",
@@ -276,6 +278,8 @@ const L = {
     einladung: "What's going through your mind?",
     erzaehlt: "shared", room: "Room",
     walk: "Walk", pause: "Pause", sketch: "Simulated position",
+    zoomOpen: "Enlarge photo", zoomHint: "Drag to move · double-tap to zoom",
+    photoPrev: "Previous photo", photoNext: "Next photo",
     next: "Next", here: "You're right here",
     listening: "Listening", listenStop: "Listening — tap again to stop",
     sayHere: "You're here — just whisper it", sayAny: "Whisper it, quietly is enough",
@@ -423,6 +427,20 @@ const loc = (o) => o[LANG];
 const thumbOf = (o) => IMG + o.id + ".jpg";
 const obj = (id) => OBJECTS.find(o => o.id === id);
 
+/* Von einigen Objekten liegt eine grosse Fassung bereit. Sie wird nur in der
+   Lupe geladen, nicht in der Liste — dort waeren es Megabyte fuer nichts.
+   Die Zuordnung ist ueber die Pruefsumme der Dateien belegt: bei OBJ-06 ist
+   nicht das erste, sondern das zweite Galeriebild das Hauptfoto. */
+const HIRES = {
+  "OBJ-01.jpg":"OBJ-01@hi.jpg", "OBJ-01_1.jpg":"OBJ-01@hi.jpg",
+  "OBJ-03.jpg":"OBJ-03@hi.jpg", "OBJ-03_1.jpg":"OBJ-03@hi.jpg",
+  "OBJ-06.jpg":"OBJ-06@hi.jpg", "OBJ-06_2.jpg":"OBJ-06@hi.jpg",
+  "OBJ-07.jpg":"OBJ-07@hi.jpg", "OBJ-07_1.jpg":"OBJ-07@hi.jpg",
+  "OBJ-14.jpg":"OBJ-14@hi.jpg", "OBJ-14_1.jpg":"OBJ-14@hi.jpg",
+  "OBJ-15.jpg":"OBJ-15@hi.jpg", "OBJ-15_1.jpg":"OBJ-15@hi.jpg",
+  "OBJ-16.jpg":"OBJ-16@hi.jpg",
+};
+
 const GALERIE = {
   "OBJ-14":["OBJ-14_1.jpg","OBJ-14_2.jpg"],
   "OBJ-15":["OBJ-15_1.jpg"],
@@ -518,15 +536,23 @@ const likeBtn = (id, onChange) => {
   return b;
 };
 
+/* Jeder Saal hat eigene Maße — ein langer Gang liest sich anders als ein
+   breiter Raum. "deko" sind weitere Vitrinen des Hauses: sie geben dem Saal
+   Tiefe, tragen aber keine Daten und lassen sich nicht antippen. Wir tun
+   nicht so, als kennten wir ihren Inhalt. */
 const ROUTE_ROOMS = [
-  { de:"Jenseits",       en:"Afterlife",       spots:[
-      {id:"OBJ-14",x:30,y:26,side:"left", nr:3},{id:"OBJ-15",x:70,y:66,side:"right",nr:7}] },
-  { de:"Kunst und Form", en:"Art and Form",    spots:[
-      {id:"OBJ-07",x:30,y:28,side:"left", nr:1},{id:"OBJ-06",x:70,y:64,side:"right",nr:4}] },
-  { de:"Kunst und Zeit", en:"Art and Time",    spots:[
-      {id:"OBJ-03",x:30,y:42,side:"left", nr:2}] },
-  { de:"Kunsthandwerk",  en:"Decorative Arts", spots:[
-      {id:"OBJ-01",x:70,y:44,side:"right",nr:9}] },
+  { de:"Jenseits", en:"Afterlife", w:320, l:1200,
+    spots:[{id:"OBJ-14",x:26,y:26,side:"left", nr:3},{id:"OBJ-15",x:74,y:66,side:"right",nr:7}],
+    deko:[{x:74,y:16},{x:26,y:50},{x:74,y:88},{x:26,y:78}] },
+  { de:"Kunst und Form", en:"Art and Form", w:430, l:780,
+    spots:[{id:"OBJ-07",x:24,y:28,side:"left", nr:1},{id:"OBJ-06",x:76,y:64,side:"right",nr:4}],
+    deko:[{x:50,y:12},{x:76,y:34},{x:24,y:58},{x:50,y:86},{x:76,y:88}] },
+  { de:"Kunst und Zeit", en:"Art and Time", w:300, l:980,
+    spots:[{id:"OBJ-03",x:28,y:42,side:"left", nr:2}],
+    deko:[{x:72,y:22},{x:72,y:62},{x:28,y:80},{x:72,y:92}] },
+  { de:"Kunsthandwerk", en:"Decorative Arts", w:400, l:620,
+    spots:[{id:"OBJ-01",x:72,y:44,side:"right",nr:9}],
+    deko:[{x:28,y:20},{x:50,y:70},{x:28,y:56},{x:72,y:84}] },
 ];
 const ROOMS = [
   { de:"Jenseits",       en:"Afterlife",       x:10, y:6,  w:78, h:26 },
@@ -546,6 +572,9 @@ const SVG = {
   heart:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 20s-7-4.4-7-9.3A4.1 4.1 0 0 1 12 7.8a4.1 4.1 0 0 1 7 2.9C19 15.6 12 20 12 20z"/></svg>',
   heartOn:'<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 20s-7-4.4-7-9.3A4.1 4.1 0 0 1 12 7.8a4.1 4.1 0 0 1 7 2.9C19 15.6 12 20 12 20z"/></svg>',
   spark:'<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.9 5.6L19.5 9l-5.6 1.4L12 16l-1.9-5.6L4.5 9l5.6-1.4z"/></svg>',
+  pfeilL:'<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>',
+  pfeilR:'<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>',
+  lupe:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6M11 8.4v5.2M8.4 11h5.2"/></svg>',
   heading:'<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3l7 17-7-4-7 4z"/></svg>',
   shield:'<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5.5c0 4.3-2.9 7.7-7 8.5-4.1-.8-7-4.2-7-8.5V6z"/><path d="M9 12l2.2 2.2L15.5 10"/></svg>',
   redo:'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>',
@@ -653,6 +682,7 @@ const restartBtn = (onRestart, layer) => {
    die andere zum Behalten. Auf der Auswahlseite bleibt das aus. */
 let wrappedPeer = false;
 let introEnabled = false;   // nur die App zeigt den Willkommen-Schirm
+let raum3d = false;         // Versuchsfassung: der Saal von schraeg oben
 const peerBtn = (layer, w, onRestart, to) => {
   if (!wrappedPeer) return null;
   const b = el(`<button class="linkish">${esc(t()[to === "faden" ? "toThread" : "toStory"])}</button>`);
@@ -1260,7 +1290,11 @@ function Fuehrung(root) {
   let mode = "idle", live = "", speechCode = null, sheetId = null, shot = 0, startedAt = Date.now();
   let intro = introEnabled, inputPref = "voice";
   let pending = null, editing = false;
-  let elMe, elRange, elLabel, pinEls = [], inWrapped = false, lastRoom = -1;
+  let elMe, elRange, elLabel, elRaum, elMarken, pinEls = [], inWrapped = false, lastRoom = -1;
+  const raumL = () => room().l || 1100;   // Laenge des aktuellen Saals
+  const raumB = () => room().w || 330;    // Breite des aktuellen Saals
+  const ANKER = 40;                    // welche Saalstelle beim Standpunkt liegt;
+                                       // kleiner heisst: das Objekt vor dir sitzt hoeher
 
   const rec = makeRecorder({
     onInterim: s => { live = s; render(); },
@@ -1269,7 +1303,34 @@ function Fuehrung(root) {
   });
 
   const room = () => ROUTE_ROOMS[roomIdx];
-  const path = () => [{ x: 50, y: 94 }].concat(room().spots.map(s => ({ x: s.x, y: s.y })), [{ x: 50, y: 6 }]);
+  /* Ein Mensch geht nicht auf einer Linie. Der Weg bekommt Zwischenpunkte mit
+     seitlichem Versatz — fest aus Saal und Schritt errechnet, damit er sich
+     bei jedem Neuzeichnen gleich verhaelt. */
+  const versatz = (i) => {
+    const h = Math.sin((roomIdx + 1) * 12.9898 + i * 78.233) * 43758.5453;
+    return (h - Math.floor(h)) * 34 - 17;         // -17 … +17 Prozent
+  };
+  /* Der Weg, den das Haus vorschlaegt: vom Eingang der Reihe nach zu den
+     Objekten und weiter zum naechsten Saal. Ohne Umwege — die gehoeren zum
+     eigenen Gang, nicht zur Empfehlung. */
+  // Vom Eingang unten zum Ausgang oben — also nach abnehmendem y, sonst
+  // laeuft der Weg an einer Vitrine vorbei und wieder zurueck.
+  const inGehrichtung = () => room().spots.slice().sort((a, b) => b.y - a.y);
+  const route = () => [{ x: 50, y: 94 }]
+    .concat(inGehrichtung().map(s => ({ x: s.x, y: s.y })), [{ x: 50, y: 6 }]);
+
+  const path = () => {
+    const sp = inGehrichtung();
+    const pts = [{ x: 50, y: 94 }];
+    sp.forEach((s, i) => {
+      const vor = pts[pts.length - 1];
+      pts.push({ x: 50 + versatz(i), y: (vor.y + s.y) / 2 });   // Umweg dazwischen
+      pts.push({ x: s.x, y: s.y });                              // an die Vitrine
+    });
+    pts.push({ x: 50 + versatz(9), y: 30 });
+    pts.push({ x: 50, y: 6 });
+    return pts;
+  };
   const distM = (a, b) => Math.hypot((a.x - b.x) * SCALE_X / 100, (a.y - b.y) * SCALE_Y / 100);
 
   function nearest() {
@@ -1304,11 +1365,30 @@ function Fuehrung(root) {
   function paint() {
     if (!elMe || !elMe.isConnected) return;
     const T = t();
-    elMe.style.left = me.x + "%"; elMe.style.top = me.y + "%";
-    elRange.style.left = me.x + "%"; elRange.style.top = me.y + "%";
-    elLabel.style.left = me.x + "%"; elLabel.style.top = `calc(${me.y}% + 34px)`;
+    if (raum3d) {
+      const py = me.y / 100 * raumL(), px = me.x / 100 * raumB();
+      // Auch seitlich: wer im Saal ausschert, sieht den Raum mitwandern.
+      if (elRaum) elRaum.style.transform =
+        `translate(${-(px - raumB() / 2)}px, ${-(py - ANKER)}px)`;
+      // Der Standpunkt sitzt knapp ueber dem Aufnahmefeld — dessen Hoehe
+      // haengt vom Zustand ab, also wird sie gemessen statt geraten.
+      const feld = root.querySelector(".detail");
+      const leiste = root.querySelector(".fbar");
+      const feldH = feld ? feld.getBoundingClientRect().height : 300;
+      if (leiste) leiste.style.bottom = (feldH + 10) + "px";
+      const leisteH = leiste ? leiste.getBoundingClientRect().height : 44;
+      const stand = feldH + leisteH + 60;
+      elMe.style.bottom = stand + "px";
+      elRange.style.bottom = stand + "px";
+      elLabel.style.bottom = (stand - 34) + "px";
+      setzeMarken(feld, leiste);
+    } else {
+      elMe.style.left = me.x + "%"; elMe.style.top = me.y + "%";
+      elRange.style.left = me.x + "%"; elRange.style.top = me.y + "%";
+      elLabel.style.left = me.x + "%"; elLabel.style.top = `calc(${me.y}% + 34px)`;
+    }
     const tri = elMe.querySelector("svg");
-    if (tri) tri.style.transform = `rotate(${heading + 90}deg)`;
+    if (tri && !raum3d) tri.style.transform = `rotate(${heading + 90}deg)`;
 
     const n = nearest(), now = !!(n.spot && n.d < ARRIVE);
     pinEls.forEach(p => p.classList.toggle("near", now && p.dataset.id === n.spot.id));
@@ -1347,6 +1427,13 @@ function Fuehrung(root) {
     /* Der Saal: Wände, Durchgänge, Vitrinen */
     const st = body.querySelector(".rstage");
     if (lastRoom !== roomIdx) { st.classList.add("fresh"); lastRoom = roomIdx; }
+    if (raum3d) {
+      body.classList.add("raeumlich");
+      baueRaum3d(st, R, T);
+      baueUnten(body, T, o, d, saved);
+      root.append(body); root.append(objektblatt()); root.append(deineWorte());
+      paint(); return;
+    }
     st.append(el(`<div class="walls"></div>`));
     /* Durch den Proeben geht man weiter — auch mit dem Finger, nicht nur im Rundgang */
     const nextRoom = ROUTE_ROOMS[(roomIdx + 1) % ROUTE_ROOMS.length][LANG];
@@ -1383,25 +1470,26 @@ function Fuehrung(root) {
     elMe = el(`<div class="me"><i>${SVG.heading}</i></div>`); st.append(elMe);
     elLabel = el(`<div class="melabel">${esc(T.youAreHere)}</div>`); st.append(elLabel);
     st.onclick = (e) => {
+      if (raum3d) return;               // im gekippten Saal waere das nur Raten
       const r = st.getBoundingClientRect();
       const nx = (e.clientX - r.left) / r.width * 100, ny = (e.clientY - r.top) / r.height * 100;
       heading = Math.atan2(ny - me.y, nx - me.x) * 180 / Math.PI;
       me = { x: nx, y: ny }; walking = false; paint();
     };
 
+    baueUnten(body, T, o, d, saved);
+    root.append(body);
+    root.append(objektblatt());
+    root.append(deineWorte());
+    paint();
+  }
+
+  /* Gehleiste und Aufnahmefeld — in beiden Saalfassungen dasselbe */
+  function baueUnten(body, T, o, d, saved) {
     const bar = body.querySelector(".fbar");
     const go = el(`<button class="chip ${walking ? "on" : ""}">${esc(walking ? T.walkRunning : T.walk)}</button>`);
     go.onclick = () => { walking = !walking; render(); };
-    const wipe = el(`<button class="wipe">${esc(T.wipe)}</button>`);
-    wipe.onclick = () => {
-      Object.keys(answers).forEach(k => delete answers[k]);
-      pending = null; editing = false;
-      clearLikes();
-      try { sessionStorage.removeItem("mw-consent"); } catch (e) {}
-      startedAt = Date.now(); render();
-      const live = root.querySelector(".srlive"); if (live) live.textContent = T.wipeDone;
-    };
-    bar.append(go, el(`<span class="stub">${esc(T.sketch)}</span>`), wipe);
+    bar.append(go);
 
     /* Aufnahmefeld */
     const det = body.querySelector(".detail");
@@ -1465,10 +1553,71 @@ function Fuehrung(root) {
       acts.append(finishButton());
       det.append(acts);
     }
-    root.append(body);
-    root.append(objektblatt());
-    root.append(deineWorte());
-    paint();
+  }
+
+  /* ------------------------------------------------------------------
+     Versuchsfassung: derselbe Saal, aber der Boden liegt flach und wird
+     gekippt. Alles Lesbare dreht sich um denselben Winkel zurueck.
+     Zustand, Wege und Ankunft bleiben unveraendert - nur die Darstellung
+     ist eine andere.
+     ------------------------------------------------------------------ */
+  function baueRaum3d(st, R, T) {
+    st.classList.add("dreid");
+    const welt = el(`<div class="welt"><div class="raum"></div></div>`);
+    elRaum = welt.querySelector(".raum");
+    const B = raumB(), L = raumL();
+    elRaum.style.width = B + "px";
+    elRaum.style.height = L + "px";
+
+    const nextRoom = ROUTE_ROOMS[(roomIdx + 1) % ROUTE_ROOMS.length][LANG];
+    const prevName = roomIdx === 0 ? T.toEntrance : ROUTE_ROOMS[roomIdx - 1][LANG];
+    elRaum.append(el(`<div class="quer o"></div>`), el(`<div class="quer u"></div>`));
+
+    (R.deko || []).forEach(dk => {
+      elRaum.append(el(`<div class="vit deko" style="left:${dk.x / 100 * B}px;top:${dk.y / 100 * L}px">
+        <span class="platte"></span>
+        <span class="aufrecht"><span class="kasten"></span></span></div>`));
+    });
+
+    R.spots.forEach(sp => {
+      const oo = obj(sp.id), od = loc(oo), has = !!answers[sp.id];
+      const v = el(`<button class="vit ${has ? "has" : ""}" data-id="${sp.id}"
+        style="left:${sp.x / 100 * B}px;top:${sp.y / 100 * L}px"
+        aria-label="${esc(od.title)}">
+        <span class="platte"></span>
+        <span class="aufrecht">
+          <span class="kasten"><img src="${IMG}${oo.id}.jpg" alt="" /></span>
+        </span></button>`);
+      v.onclick = (e) => { e.stopPropagation(); selId = sp.id; mode = "idle"; live = ""; render(); };
+      elRaum.append(v); pinEls.push(v);
+    });
+
+    st.append(welt);
+
+    /* Alles Lesbare liegt ueber dem Saal und behaelt seine Groesse. Im Raum
+       selbst zieht die Perspektive es auf wenige Pixel zusammen. */
+    const weiter = el(`<button class="tuerchip o">→ ${esc(nextRoom)}</button>`);
+    weiter.onclick = (e) => { e.stopPropagation(); walking = false; enterRoom(roomIdx + 1, 1); };
+    st.append(weiter);
+    if (roomIdx !== 0) {
+      const zurueck = el(`<button class="tuerchip u">← ${esc(prevName)}</button>`);
+      zurueck.onclick = (e) => { e.stopPropagation(); walking = false; enterRoom(roomIdx - 1, -1); };
+      st.append(zurueck);
+    }
+    // Der empfohlene Weg des Hauses, leise auf den Boden gelegt
+    const pts = route().map(q => `${(q.x / 100 * B).toFixed(1)},${(q.y / 100 * L).toFixed(1)}`).join(" ");
+    elRaum.append(el(`<svg class="weg" viewBox="0 0 ${B} ${L}" preserveAspectRatio="none"
+      width="${B}" height="${L}"><polyline points="${pts}" /></svg>`));
+
+    elMarken = el(`<div class="marken"></div>`);
+    st.append(elMarken);
+
+    // Fester Standpunkt ueber dem Aufnahmefeld: der Saal zieht darunter durch,
+    // wie im Guide des Museums.
+    elRange = el(`<div class="range3"></div>`);
+    elMe = el(`<div class="me3"><i>${SVG.heading}</i></div>`);
+    elLabel = el(`<div class="melabel3">${esc(T.youAreHere)}</div>`);
+    st.append(elRange, elMe, elLabel);
   }
 
   /* 1 · Willkommen: worum es geht, bevor der erste Saal kommt */
@@ -1532,6 +1681,55 @@ function Fuehrung(root) {
     root.append(v);
   }
 
+  /* Die Marken schweben ueber dem Saal: gleiche Groesse, egal wie weit das
+     Objekt entfernt steht — wie im Guide des Museums. */
+  function setzeMarken(feld, leiste) {
+    if (!elMarken) return;
+    const stEl = elMarken.parentElement;
+    const st = stEl.getBoundingClientRect();
+    const unterkante = leiste || feld;
+    const grenze = unterkante ? unterkante.getBoundingClientRect().top - st.top : st.height;
+    // Der Wegweiser oben hat Vorrang; eine Marke darunter wuerde ihn verdecken.
+    const chip = stEl.querySelector(".tuerchip.o");
+    const chipUnten = chip ? chip.getBoundingClientRect().bottom - st.top + 6 : 0;
+    const chipL = chip ? chip.getBoundingClientRect().left - st.left - 6 : 0;
+    const chipR = chip ? chip.getBoundingClientRect().right - st.left + 6 : 0;
+    elMarken.innerHTML = "";
+    pinEls.forEach(v => {
+      const k = v.querySelector(".kasten");
+      if (!k) return;
+      const b = k.getBoundingClientRect();
+      const x = b.left + b.width / 2 - st.left;
+      const y = b.top - st.top - 12;
+      // Unten das Aufnahmefeld, oben der Wegweiser — nur echte Ueberdeckung zaehlt
+      if (y > grenze - 14 || y < 20) return;
+      if (y - 38 < chipUnten && x + 24 > chipL && x - 24 < chipR) return;
+      const id = v.dataset.id, has = !!answers[id], nah = v.classList.contains("near");
+      const m = el(`<button class="mark ${has ? "has" : ""} ${nah ? "nah" : ""}"
+        style="left:${x}px;top:${y}px" aria-label="${esc(loc(obj(id)).title)}">
+        ${has ? SVG.check : SVG.mic}</button>`);
+      m.onclick = (e) => { e.stopPropagation(); selId = id; mode = "idle"; live = ""; render(); };
+      elMarken.append(m);
+    });
+  }
+
+  /* Loeschen der Sitzung. Frueher stand der Knopf im Saal und war dort im
+     Weg; erreichbar bleiben muss er trotzdem — die Einwilligung soll sich so
+     leicht zurueckziehen lassen, wie sie gegeben wurde. */
+  function wipeSession(sagen) {
+    Object.keys(answers).forEach(k => delete answers[k]);
+    try { sessionStorage.removeItem("mw-consent"); } catch (e) {}
+    clearLikes();
+    inWrapped = false; roomIdx = 0; lastRoom = -1; startedAt = Date.now();
+    pending = null; editing = false; sheetId = null; speechCode = null;
+    me = { x: 50, y: 94 }; heading = -90; wp = 0; seg = 0; walking = false;
+    selId = ROUTE_ROOMS[0].spots[0].id;
+    intro = introEnabled; mode = "idle"; inputPref = "voice";
+    render();
+    const live = root.querySelector(".srlive");
+    if (live && sagen !== false) live.textContent = t().wipeDone;
+  }
+
   function finishButton() {
     const b = el(`<button class="btn gold">${esc(t().finishShort)}</button>`);
     b.onclick = () => {
@@ -1539,15 +1737,7 @@ function Fuehrung(root) {
       startWrapped(root, answers, startedAt, () => {
         // Ein neuer Besuch ist ein neuer Mensch: die Einwilligung des vorigen
         // gilt nicht weiter, das Geraet wandert schliesslich von Hand zu Hand.
-        Object.keys(answers).forEach(k => delete answers[k]);
-        try { sessionStorage.removeItem("mw-consent"); } catch (e) {}
-        clearLikes();
-        inWrapped = false; roomIdx = 0; lastRoom = -1; startedAt = Date.now();
-        pending = null; editing = false; sheetId = null; speechCode = null;
-        me = { x: 50, y: 94 }; heading = -90; wp = 0; seg = 0; walking = false;
-        selId = ROUTE_ROOMS[0].spots[0].id;
-        intro = introEnabled; mode = "idle"; inputPref = "voice";
-        render();
+        wipeSession(false);
       });
     };
     return b;
@@ -1619,6 +1809,121 @@ function Fuehrung(root) {
   }
 
   /* Objektblatt: Beschreibung, weitere Aufnahmen, Audioguide (Platzhalter) */
+  /* Das Foto gross ansehen. Zwei Finger zoomen, ein Finger schiebt,
+     Doppeltippen springt zwischen ganz und nah. Der Nachweis des Fotografen
+     bleibt sichtbar — er gehoert zum Bild, nicht zur Bildunterschrift. */
+  function bildLupe(gal, i, alt, credit) {
+    const T = t(), mehr = gal.length > 1;
+    const box = el(`<div class="lupe" role="dialog" aria-modal="true" aria-label="${esc(alt)}">
+      <div class="lupebuehne"><img src="${IMG}${HIRES[gal[i]] || gal[i]}" alt="${esc(alt)}" draggable="false" /></div>
+      <div class="lupefuss"><span>${esc(credit)}</span><em>${esc(T.zoomHint)}</em></div>
+      <button class="lupezu" aria-label="${esc(T.close)}">✕</button></div>`);
+    const img = box.querySelector("img");
+    // Fehlt die grosse Fassung, tut es die kleine — nur einmal versuchen.
+    img.onerror = () => { img.onerror = null; img.src = IMG + gal[i]; };
+
+    if (mehr) {
+      const zaehler = el(`<div class="lupezahl">${i + 1} / ${gal.length}</div>`);
+      const vor = el(`<button class="lupepfeil l" aria-label="${esc(T.photoPrev)}">${SVG.pfeilL}</button>`);
+      const nach = el(`<button class="lupepfeil r" aria-label="${esc(T.photoNext)}">${SVG.pfeilR}</button>`);
+      const geheZu = (k) => {
+        i = (k + gal.length) % gal.length;
+        img.src = IMG + (HIRES[gal[i]] || gal[i]);
+        zaehler.textContent = (i + 1) + " / " + gal.length;
+        z = 1; ox = 0; oy = 0; zeige();          // jedes Foto faengt wieder ganz an
+        shot = i;                                // das Blatt zieht beim Schliessen nach
+      };
+      vor.onclick = (e) => { e.stopPropagation(); geheZu(i - 1); };
+      nach.onclick = (e) => { e.stopPropagation(); geheZu(i + 1); };
+      box.append(vor, nach, zaehler);
+      box.blaettern = geheZu;
+      box.stand = () => i;
+    }
+    const beginn = i;
+    const zu = () => { box.remove(); if (i !== beginn) render(); };
+    box.querySelector(".lupezu").onclick = zu;
+    box.onclick = (e) => { if (e.target === box) zu(); };
+    box.tabIndex = -1;
+    box.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") zu();
+      if (box.blaettern && e.key === "ArrowLeft") box.blaettern(box.stand() - 1);
+      if (box.blaettern && e.key === "ArrowRight") box.blaettern(box.stand() + 1);
+    });
+    setTimeout(() => box.focus(), 0);
+
+    let z = 1, ox = 0, oy = 0;
+    /* Wie gross das Foto in der Buehne wirklich liegt. Nicht ueber die Box
+       rechnen: bei object-fit bleibt daneben Luft, und die waere kein Bild. */
+    const buehne = () => box.querySelector(".lupebuehne").getBoundingClientRect();
+    const fotoMass = () => {
+      const r = buehne();
+      if (!img.naturalWidth) return { w: r.width, h: r.height };
+      const k = Math.min(r.width / img.naturalWidth, r.height / img.naturalHeight);
+      return { w: img.naturalWidth * k, h: img.naturalHeight * k };
+    };
+    const halten = () => {
+      // Nie ueber den Rand hinaus: sonst schiebt man das Bild aus dem Bild.
+      const r = buehne(), f = fotoMass();
+      const mx = Math.max(0, (f.w * z - r.width) / 2), my = Math.max(0, (f.h * z - r.height) / 2);
+      ox = Math.min(mx, Math.max(-mx, ox)); oy = Math.min(my, Math.max(-my, oy));
+    };
+    const zeige = () => {
+      halten();
+      img.style.transform = `translate(${ox.toFixed(1)}px,${oy.toFixed(1)}px) scale(${z.toFixed(3)})`;
+      box.classList.toggle("nah", z > 1.02);
+    };
+    const setz = (nz, cx, cy) => {
+      // Um den Punkt zoomen, den der Finger haelt — sonst rutscht das Motiv weg.
+      const r = buehne();
+      const px = (cx - r.left - r.width / 2 - ox) / z, py = (cy - r.top - r.height / 2 - oy) / z;
+      const alt2 = z; z = Math.min(4, Math.max(1, nz));
+      ox += px * (alt2 - z); oy += py * (alt2 - z);
+      if (z <= 1.001) { ox = 0; oy = 0; }
+      zeige();
+    };
+
+    const finger = new Map();
+    let startAbst = 0, startZ = 1, letzte = 0;
+    img.addEventListener("pointerdown", (e) => {
+      try { img.setPointerCapture(e.pointerId); } catch (err) {}
+      finger.set(e.pointerId, { x: e.clientX, y: e.clientY, weg: 0, start: e.clientX });
+      if (finger.size === 2) {
+        const [a, b] = [...finger.values()];
+        startAbst = Math.hypot(a.x - b.x, a.y - b.y); startZ = z;
+      }
+    });
+    img.addEventListener("pointermove", (e) => {
+      const f = finger.get(e.pointerId); if (!f) return;
+      const dx = e.clientX - f.x, dy = e.clientY - f.y;
+      finger.set(e.pointerId, { x: e.clientX, y: e.clientY, weg: f.weg + Math.hypot(dx, dy), start: f.start });
+      if (finger.size === 2 && startAbst) {
+        const [a, b] = [...finger.values()];
+        setz(startZ * (Math.hypot(a.x - b.x, a.y - b.y) / startAbst), (a.x + b.x) / 2, (a.y + b.y) / 2);
+      } else if (z > 1.001) { ox += dx; oy += dy; zeige(); }
+      else if (box.blaettern && f.weg > 46 && Math.abs(e.clientX - f.start) > 46) {
+        // Bei voller Ansicht wischt man von Foto zu Foto
+        box.blaettern(box.stand() + (e.clientX < f.start ? 1 : -1));
+        finger.delete(e.pointerId);
+      }
+    });
+    const los = (e) => { finger.delete(e.pointerId); if (finger.size < 2) startAbst = 0; };
+    img.addEventListener("pointerup", (e) => {
+      // Ein Zug ist kein Tipp: sonst springt der Zoom nach jedem Schieben zurueck.
+      const f = finger.get(e.pointerId);
+      const getippt = finger.size === 1 && f && f.weg < 12;
+      const jetzt = Date.now();
+      if (getippt) {
+        if (jetzt - letzte < 300) { setz(z > 1.2 ? 1 : 2.4, e.clientX, e.clientY); letzte = 0; }
+        else letzte = jetzt;
+      }
+      los(e);
+    });
+    img.addEventListener("pointercancel", los);
+    // Am Rechner zoomt das Rad — der Rahmen wird auch am Laptop geoeffnet.
+    box.addEventListener("wheel", (e) => { e.preventDefault(); setz(z * (e.deltaY < 0 ? 1.12 : 0.89), e.clientX, e.clientY); }, { passive: false });
+    return box;
+  }
+
   function objektblatt() {
     const T = t();
     const sheet = el(`<div class="sheet ${sheetId ? "open" : ""}"><div class="sheetbody"><div class="grab"></div></div></div>`);
@@ -1629,7 +1934,23 @@ function Fuehrung(root) {
     const big = gal[shot] || o.img;   // hier darf es gross sein
     const sb = sheet.querySelector(".sheetbody");
 
-    sb.append(el(`<div class="bigshot"><img src="${IMG}${big}" alt="${esc(d.title)}" /></div>`));
+    const fotos = gal.length ? gal : [o.img];
+    const jetzt = gal.length ? Math.min(shot, gal.length - 1) : 0;
+    const rahmen = el(`<div class="fotorahmen"></div>`);
+    const gross = el(`<button class="bigshot" aria-label="${esc(T.zoomOpen)}">
+      <img src="${IMG}${big}" alt="${esc(d.title)}" /><span class="lupezeichen">${SVG.lupe}</span></button>`);
+    gross.onclick = () => root.append(bildLupe(fotos, jetzt, d.title, creditOf(sheetId)));
+    rahmen.append(gross);
+    if (fotos.length > 1) {
+      // Auch ohne Lupe soll man durch die Fotos kommen
+      const geh = (k) => { shot = (k + fotos.length) % fotos.length; render(); };
+      const v = el(`<button class="fotopfeil l" aria-label="${esc(T.photoPrev)}">${SVG.pfeilL}</button>`);
+      const w = el(`<button class="fotopfeil r" aria-label="${esc(T.photoNext)}">${SVG.pfeilR}</button>`);
+      v.onclick = (e) => { e.stopPropagation(); geh(jetzt - 1); };
+      w.onclick = (e) => { e.stopPropagation(); geh(jetzt + 1); };
+      rahmen.append(v, w, el(`<div class="fotozahl">${jetzt + 1} / ${fotos.length}</div>`));
+    }
+    sb.append(rahmen);
     sb.append(el(`<div class="credit">${esc(creditOf(sheetId))}</div>`));
     if (gal.length > 1) {
       const strip = el(`<div class="strip"></div>`);
@@ -1671,7 +1992,7 @@ function Fuehrung(root) {
   }
 
   render();
-  return { relang: render };
+  return { relang: render, wipe: wipeSession };
 }
 
 /* ======================= Werkbank ======================= */

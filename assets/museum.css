@@ -745,3 +745,235 @@ html{background-color:oklch(0.10 0.02 55)}
 .tolivetext b{font-family:var(--display);font-size:22px;font-weight:400;color:var(--fg)}
 .tolivetext em{font-style:normal;font-size:13px;color:var(--muted)}
 .tolivearrow{font-size:22px;color:var(--gold);flex:0 0 auto}
+
+/* ==========================================================================
+   Versuchsfassung: der Saal von schräg oben (?raum=3d).
+   Der Boden liegt flach und wird gekippt; alles Lesbare dreht sich um
+   denselben Winkel zurück und steht damit aufrecht im Raum.
+   ========================================================================== */
+.rstage.dreid{background:none;border:none;padding:0;perspective:900px;perspective-origin:50% 22%}
+.rstage.dreid .welt{position:absolute;left:50%;top:0;transform-style:preserve-3d;
+  transform:translateX(-50%) translateY(70px) rotateX(62deg)}
+.rstage.dreid .raum{position:relative;transform-style:preserve-3d;
+  transition:transform .6s cubic-bezier(.22,.61,.36,1);
+  background:
+    repeating-linear-gradient(90deg, oklch(0.30 0.02 60/.38) 0 1px, transparent 1px 68px),
+    repeating-linear-gradient(0deg,  oklch(0.30 0.02 60/.38) 0 1px, transparent 1px 68px),
+    oklch(0.20 0.022 58);
+  border-left:10px solid var(--plan-wall);border-right:10px solid var(--plan-wall);
+  box-shadow:0 0 90px oklch(0 0 0/.7) inset}
+
+.rstage.dreid .quer{position:absolute;left:-10px;right:-10px;height:12px;padding:0;cursor:pointer;
+  background:var(--plan-wall);border:none;border-top:2px solid oklch(0.82 0.15 82/.5);
+  border-bottom:2px solid oklch(0.82 0.15 82/.5)}
+.rstage.dreid .quer.o{top:0} .rstage.dreid .quer.u{bottom:0}
+.rstage.dreid .quer:disabled{cursor:default;opacity:.6}
+.rstage.dreid .quer span{position:absolute;left:50%;transform-origin:center;
+  transform:translateX(-50%) rotateX(-62deg);white-space:nowrap;
+  font:600 10px/1 var(--body);letter-spacing:.14em;text-transform:uppercase;
+  color:oklch(0.84 0.05 72);background:oklch(0.10 0.02 55/.85);padding:5px 9px;border-radius:999px}
+.rstage.dreid .quer.o span{top:14px} .rstage.dreid .quer.u span{bottom:14px}
+
+.rstage.dreid .vit{position:absolute;transform-style:preserve-3d;background:none;border:none;
+  padding:0;cursor:pointer}
+.rstage.dreid .platte{display:block;width:76px;height:28px;margin-left:-38px;border-radius:5px;
+  background:linear-gradient(180deg, oklch(0.32 0.03 60), oklch(0.20 0.02 58));
+  border:1px solid oklch(0.45 0.03 62/.7);box-shadow:0 12px 20px oklch(0 0 0/.5)}
+.rstage.dreid .vit.near .platte{border-color:var(--gold);box-shadow:0 0 0 4px oklch(0.82 0.15 82/.18)}
+.rstage.dreid .aufrecht{position:absolute;left:0;bottom:8px;transform-origin:bottom center;
+  transform:translateX(-50%) rotateX(-62deg);display:flex;flex-direction:column;align-items:center}
+.rstage.dreid .marke{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;
+  margin-bottom:5px;background:oklch(0.10 0.02 55/.85);border:1.5px solid oklch(0.82 0.15 82/.6);
+  color:var(--gold)}
+.rstage.dreid .vit.has .marke{background:var(--gold);color:oklch(0.16 0.03 55);border-color:var(--gold)}
+.rstage.dreid .marke svg{width:15px;height:15px}
+.rstage.dreid .kasten{display:block;width:76px;height:94px;border-radius:7px;overflow:hidden;
+  background:linear-gradient(165deg, oklch(0.24 0.03 58), oklch(0.14 0.02 56));
+  border:1.5px solid oklch(0.70 0.08 78/.5);box-shadow:0 10px 24px oklch(0 0 0/.6);transition:.25s}
+.rstage.dreid .vit.near .kasten{width:90px;height:112px;border:2px solid var(--gold);
+  box-shadow:0 0 0 6px oklch(0.82 0.15 82/.14)}
+.rstage.dreid .vit.has .kasten{border-color:var(--gold)}
+.rstage.dreid .kasten img{width:100%;height:100%;object-fit:contain;padding:5px}
+.rstage.dreid .schild{margin-top:5px;font-size:9.5px;letter-spacing:.1em;color:oklch(0.86 0.04 78);
+  background:oklch(0.10 0.02 55/.85);padding:3px 7px;border-radius:999px;white-space:nowrap}
+
+.rstage.dreid .range3{position:absolute;width:120px;height:120px;margin:-60px 0 0 -60px;
+  border-radius:50%;border:1px dashed oklch(0.82 0.11 235/.5)}
+.rstage.dreid .me3{position:absolute;width:26px;height:26px;margin:-13px 0 0 -13px;border-radius:50%;
+  background:var(--you);border:3px solid var(--you-ring);box-shadow:0 6px 16px oklch(0 0 0/.7);
+  display:grid;place-items:center;color:oklch(0.20 0.06 235)}
+.rstage.dreid .me3::before{content:"";position:absolute;width:52px;height:52px;border-radius:50%;
+  background:oklch(0.82 0.11 235/.18);animation:pulse 2.4s ease-out infinite}
+.rstage.dreid .melabel3{position:absolute;transform-origin:top center;
+  transform:translateX(-50%) rotateX(-62deg);white-space:nowrap;
+  font:600 11px/1 var(--body);letter-spacing:.1em;color:oklch(0.90 0.05 235);
+  background:oklch(0.10 0.02 55/.85);padding:4px 9px;border-radius:999px}
+
+/* Der gekippte Saal braucht mehr Hoehe als der flache Grundriss */
+.rstage.dreid{min-height:300px}
+@media (max-height:820px){ .rstage.dreid{min-height:250px} }
+
+/* Im gekippten Saal schwebt das Aufnahmefeld über dem Raum — sonst bleibt
+   dem Saal zu wenig Höhe und der eigene Standpunkt rutscht aus dem Bild. */
+.fuehrung.raeumlich{position:relative}
+.fuehrung.raeumlich .planwrap{flex:1;min-height:0;padding-bottom:0}
+.fuehrung.raeumlich .rstage{min-height:0}
+.fuehrung.raeumlich .fbar{position:absolute;left:16px;right:16px;bottom:calc(100% - 100%);
+  z-index:6;padding:0}
+.fuehrung.raeumlich .detail{position:absolute;left:0;right:0;bottom:0;z-index:5;
+  margin:0;border-radius:20px 20px 0 0;border-left:none;border-right:none;border-bottom:none;
+  background:oklch(0.19 0.03 57/.96);backdrop-filter:blur(10px)}
+.fuehrung.raeumlich .fbar{position:absolute;left:16px;right:16px;top:0;bottom:auto;z-index:6}
+
+/* Der Standpunkt liegt fest über dem Aufnahmefeld, der Saal zieht darunter durch */
+.rstage.dreid .me3{position:absolute;left:50%;bottom:112px;top:auto;margin:0;
+  transform:translate(-50%,50%);z-index:7}
+.rstage.dreid .range3{position:absolute;left:50%;bottom:112px;top:auto;margin:0;
+  width:132px;height:56px;transform:translate(-50%,50%);border-radius:50%;z-index:6}
+.rstage.dreid .melabel3{position:absolute;left:50%;bottom:78px;top:auto;
+  transform:translateX(-50%);z-index:7}
+
+/* Die Türbeschriftung war flachgedrückt: ohne preserve-3d verliert der
+   Gegen-Kipp seine Wirkung und der Text kollabiert auf ein paar Pixel. */
+.rstage.dreid .quer{transform-style:preserve-3d}
+.rstage.dreid .quer span{z-index:2}
+
+/* Weitere Vitrinen des Hauses — Tiefe ohne Anspruch auf Inhalt */
+.rstage.dreid .vit.deko{pointer-events:none}
+.rstage.dreid .vit.deko .platte{width:60px;margin-left:-30px;height:22px;
+  background:linear-gradient(180deg, oklch(0.27 0.025 60), oklch(0.18 0.018 58));
+  border-color:oklch(0.40 0.025 62/.55);box-shadow:0 8px 14px oklch(0 0 0/.45)}
+.rstage.dreid .vit.deko .kasten{width:58px;height:70px;border-color:oklch(0.55 0.03 62/.35);
+  background:linear-gradient(165deg, oklch(0.21 0.02 58/.8), oklch(0.13 0.015 56/.8));
+  box-shadow:0 6px 16px oklch(0 0 0/.45)}
+
+/* Der eigene Standpunkt liegt über allem, damit sein Schild nichts überdeckt */
+.rstage.dreid .me3,.rstage.dreid .melabel3{z-index:8}
+
+/* Türbeschriftung als eigenes Element im Saal — im Knopf wurde sie platt */
+.rstage.dreid .tuertext{position:absolute;left:50%;transform-origin:center;
+  transform:translateX(-50%) rotateX(-62deg);white-space:nowrap;z-index:3;
+  font:600 10px/1.4 var(--body);letter-spacing:.14em;text-transform:uppercase;
+  color:oklch(0.86 0.05 72);background:oklch(0.10 0.02 55/.88);padding:6px 10px;border-radius:999px}
+.rstage.dreid .tuertext.o{top:20px}
+.rstage.dreid .tuertext.u{bottom:20px}
+.rstage.dreid .quer span{display:none}
+
+/* ==========================================================================
+   Alles Lesbare liegt über dem gekippten Saal und behält seine Größe.
+   Im Raum selbst zog die Perspektive Schrift auf 7 Pixel zusammen — davon
+   kam der Eindruck, der Text überlagere sich.
+   ========================================================================== */
+.rstage.dreid .schild,.rstage.dreid .tuertext,.rstage.dreid .quer span{display:none}
+.rstage.dreid .quer{height:10px;background:var(--plan-wall);border:none;
+  border-top:2px solid oklch(0.82 0.15 82/.45);border-bottom:2px solid oklch(0.82 0.15 82/.45)}
+
+/* Wegweiser oben und unten, feste Größe, echtes Tippziel */
+.tuerchip{position:absolute;left:50%;transform:translateX(-50%);z-index:7;
+  min-height:38px;padding:0 15px;border-radius:999px;cursor:pointer;white-space:nowrap;
+  background:oklch(0.13 0.024 55/.92);border:1px solid oklch(0.82 0.15 82/.45);
+  color:oklch(0.90 0.05 78);font:600 12px/1 var(--body);letter-spacing:.06em;
+  backdrop-filter:blur(8px);max-width:calc(100% - 32px);overflow:hidden;text-overflow:ellipsis}
+.tuerchip:hover{border-color:var(--gold);color:var(--gold)}
+.tuerchip.o{top:10px}
+.tuerchip.u{bottom:10px}
+
+/* Marken über den Vitrinen — gleiche Größe, egal wie weit entfernt */
+.marken{position:absolute;inset:0;pointer-events:none;z-index:6}
+.mark{position:absolute;transform:translate(-50%,-100%);pointer-events:auto;cursor:pointer;
+  width:38px;height:38px;border-radius:50%;display:grid;place-items:center;
+  background:oklch(0.11 0.02 55/.9);border:1.5px solid oklch(0.82 0.15 82/.65);
+  color:var(--gold);box-shadow:0 4px 14px oklch(0 0 0/.6);transition:.18s}
+.mark svg{width:16px;height:16px}
+.mark.has{background:var(--gold);border-color:var(--gold);color:oklch(0.16 0.03 55)}
+.mark.nah{width:46px;height:46px;border-color:var(--gold);
+  box-shadow:0 0 0 6px oklch(0.82 0.15 82/.14),0 6px 18px oklch(0 0 0/.6)}
+.mark.nah svg{width:19px;height:19px}
+.mark::after{content:"";position:absolute;left:50%;top:100%;transform:translateX(-50%);
+  border:5px solid transparent;border-top-color:oklch(0.82 0.15 82/.65)}
+.mark.has::after{border-top-color:var(--gold)}
+
+/* ==========================================================================
+   Am Rechner: die App steht als Tablet mitten im Fenster, nicht randlos.
+   So sieht man beim Zeigen dasselbe Bild wie auf dem Geraet im Saal.
+   ========================================================================== */
+@media (min-width:900px){
+  body.app{padding:0;display:grid;place-items:center;overflow:auto;
+    background:radial-gradient(ellipse at top,oklch(0.16 0.03 55) 0%,oklch(0.08 0.015 55) 70%)}
+  body.app .screen{position:relative;inset:auto;margin:26px auto;
+    width:min(820px, 92vw);height:min(1120px, calc(100vh - 52px));
+    border-radius:34px;padding:0;
+    box-shadow:0 50px 110px -30px oklch(0 0 0/.9), 0 0 0 10px oklch(0.22 0.015 60),
+      0 0 0 11px oklch(0.42 0.02 62/.6)}
+  body.app .screen::after{display:block;border-radius:34px}
+  /* Die Blätter bleiben im Rahmen, nicht im Fenster */
+  body.app .sheet{position:absolute}
+  /* Auf der breiten Fläche darf alles wieder atmen */
+  body.app .detail{margin:14px 22px 22px}
+  body.app .fuehrung.raeumlich .detail{margin:0}
+}
+
+/* Die Gehleiste stand über der Saal-Überschrift — jetzt sitzt sie über dem
+   Aufnahmefeld, wo sie hingehört. */
+.fuehrung.raeumlich .fbar{position:absolute;left:16px;right:16px;top:auto;bottom:0;z-index:6;
+  padding:0;background:none}
+.fuehrung.raeumlich .fbar .chip,.fuehrung.raeumlich .fbar .wipe{
+  background:oklch(0.13 0.024 55/.92);backdrop-filter:blur(8px)}
+.fuehrung.raeumlich .fbar .stub{background:oklch(0.13 0.024 55/.88);padding:5px 9px;
+  border-radius:999px;backdrop-filter:blur(8px)}
+
+/* Der Weg durch den Saal: leise, auf dem Boden liegend */
+.rstage.dreid .weg{position:absolute;left:0;top:0;pointer-events:none;z-index:1;overflow:visible}
+.rstage.dreid .weg polyline{fill:none;stroke:oklch(0.82 0.15 82/.30);stroke-width:3;
+  stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:10 14}
+
+/* Der Rundgang-Knopf war im gekippten Saal fast unsichtbar: der milchige
+   Hintergrund der Leiste hat die Fuellung des aktiven Zustands ueberschrieben. */
+.fuehrung.raeumlich .fbar .chip.on{background:var(--you);border-color:var(--you);
+  color:oklch(0.16 0.03 55);backdrop-filter:none}
+
+/* Der Saal ist eine eigene Ebene. Sonst ragen Gehleiste, Marken und
+   Türschilder über die Blätter — die liegen im Fenster, nicht im Saal. */
+.fuehrung{isolation:isolate}
+
+/* --- Das Foto gross ------------------------------------------------------ */
+.bigshot{position:relative;padding:0;border:none;background:oklch(0.16 0.02 55);
+  width:100%;display:block;cursor:zoom-in;overflow:hidden}
+.lupezeichen{position:absolute;right:9px;bottom:9px;width:28px;height:28px;border-radius:9px;
+  display:grid;place-items:center;background:oklch(0.12 0.02 55/.72);color:oklch(0.93 0.02 80);
+  backdrop-filter:blur(6px);pointer-events:none}
+.lupe{position:absolute;inset:0;z-index:20;display:flex;flex-direction:column;
+  background:oklch(0.07 0.01 55);animation:auf .18s ease-out}
+.lupebuehne{flex:1;min-height:0;display:grid;place-items:center;overflow:hidden;touch-action:none}
+.lupe img{width:100%;height:100%;object-fit:contain;
+  transform-origin:center;cursor:grab;user-select:none;-webkit-user-drag:none}
+.lupe.nah img{cursor:grab}
+.lupefuss{flex:0 0 auto;display:flex;flex-direction:column;gap:3px;padding:12px 18px 18px;
+  font-size:11px;line-height:1.45;color:oklch(0.72 0.02 80)}
+.lupefuss em{font-style:normal;color:oklch(0.58 0.02 80)}
+.lupezu{position:absolute;top:12px;right:12px;width:38px;height:38px;border-radius:50%;
+  display:grid;place-items:center;font-size:15px;border:1px solid oklch(1 0 0/.16);
+  background:oklch(0.16 0.02 55/.8);color:oklch(0.93 0.02 80);cursor:pointer}
+@keyframes auf{from{opacity:0}to{opacity:1}}
+
+/* Blättern durch die Fotos eines Objekts */
+.fotorahmen{position:relative}
+.fotopfeil,.lupepfeil{position:absolute;top:50%;transform:translateY(-50%);width:38px;height:38px;
+  border-radius:50%;display:grid;place-items:center;cursor:pointer;
+  border:1px solid oklch(1 0 0/.16);background:oklch(0.12 0.02 55/.62);
+  color:oklch(0.95 0.02 80);backdrop-filter:blur(7px)}
+.fotopfeil.l,.lupepfeil.l{left:9px}
+.fotopfeil.r,.lupepfeil.r{right:9px}
+.lupepfeil{width:44px;height:44px}
+.fotozahl,.lupezahl{position:absolute;left:50%;transform:translateX(-50%);
+  padding:3px 10px;border-radius:999px;font-size:11px;font-variant-numeric:tabular-nums;
+  background:oklch(0.12 0.02 55/.66);color:oklch(0.88 0.02 80);backdrop-filter:blur(7px);
+  pointer-events:none}
+.fotozahl{bottom:9px}
+.lupezahl{top:16px}
+.lupe.nah .lupepfeil,.lupe.nah .lupezahl{opacity:0;pointer-events:none;transition:opacity .15s}
+
+/* Das Blatt ist eine Spalte mit Höchstmaß. Ohne diese Zeile schrumpfen die
+   Kinder statt zu scrollen — Foto, Streifen und Beschreibung wurden
+   abgeschnitten. */
+.sheetbody > *{flex:0 0 auto}

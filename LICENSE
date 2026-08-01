@@ -1,0 +1,53 @@
+MIT License
+
+Copyright (c) 2026 Azra Ocak, Elly Hou, Oleksandr Savluk, Yijia Wang
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+--------------------------------------------------------------------------------
+
+NOT COVERED BY THIS LICENSE
+
+The MIT terms above apply to the source code of this project only — the HTML,
+CSS and JavaScript written by the project team.
+
+They do NOT apply to the museum material contained in this repository:
+
+  * The photographs in assets/objects/ (all files OBJ-*.jpg)
+  * The object titles, room names and curator texts in data/ and in the
+    OBJECTS, TITLES, CREDITS and FACTS tables in assets/museum.js
+
+That material belongs to the Staatliches Museum Ägyptischer Kunst, München,
+is published in its Sammlung Online under Creative Commons
+Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0),
+and is used here with the museum's kind permission.
+
+CC BY-NC-ND 4.0 means, for that material specifically:
+
+  * BY   — each photograph must carry its individual photographer credit.
+           The credits are listed in the CREDITS table in assets/museum.js.
+  * NC   — no commercial use.
+  * ND   — no cropping, filters or colour overlays on the photographs.
+
+Anyone reusing this project under the MIT terms must therefore either obtain
+their own permission from the museum, or replace the museum material with
+their own.
+
+The full text of CC BY-NC-ND 4.0:
+https://creativecommons.org/licenses/by-nc-nd/4.0/
