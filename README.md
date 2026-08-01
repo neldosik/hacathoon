@@ -67,11 +67,11 @@ Barrierefreiheit (BayBGG Art. 14 / BITV 2.0 ~ WCAG 2.1 AA).
   wird, wie lange, dass die Spracherkennung ueber den Browser-Anbieter laeuft
   und dass eine KI den Rueckblick schreibt. Nichts ist vorgewaehlt; das
   Mikrofon wird erst nach einem Druck auf einen der beiden Knoepfe angefasst.
-  Die Wahl liegt in  unter .
+  Die Wahl liegt in `sessionStorage` unter `mw-consent`.
 - **KI-Hinweis** steht ueber dem erzeugten Inhalt und bleibt in jedem Kader
   sichtbar, nicht im Fuss.
 - **Sprechen und Tippen sind gleichwertig** — zwei gleiche Knoepfe
-  nebeneinander. Beide Wege erzeugen dieselbe Reaktion mit ;
+  nebeneinander. Beide Wege erzeugen dieselbe Reaktion mit `input_type: "text"`;
   die Nutzlast des Webhooks ist unveraendert.
 - **Keine Zusage ueber geloeschtes Audio.** Bei Web Speech geht die Aufnahme an
   den Browser-Anbieter; eine solche Zusage waere unzutreffend. Der Wortlaut
@@ -79,9 +79,9 @@ Barrierefreiheit (BayBGG Art. 14 / BITV 2.0 ~ WCAG 2.1 AA).
 - **Bildrechte.** Alle Objektfotos stehen unter CC BY-NC-ND 4.0, aber von
   verschiedenen Fotografen — darum traegt jedes grosse Bild seinen eigenen
   Nachweis, dazu eine Sammelzeile im Fuss. ND heisst: kein Beschnitt, keine
-  Filter, keine Farbschleier ueber den Fotos ( ueberall).
+  Filter, keine Farbschleier ueber den Fotos (`object-fit: contain` ueberall).
 - **Barrierefreiheit.** Kein Text unter 11 px, Tippziele ab 44 px, sichtbarer
-  Fokus,  fuer den Aufnahmestatus, sprechende Alternativtexte,
-  Zustaende nie nur ueber Farbe, und  schaltet
+  Fokus, `aria-live` fuer den Aufnahmestatus, sprechende Alternativtexte,
+  Zustaende nie nur ueber Farbe, und `prefers-reduced-motion` schaltet
   Pulsieren und Einblendungen ab.
 - **Sitzung loeschen** ist im Aufnahme-Schirm jederzeit erreichbar.
