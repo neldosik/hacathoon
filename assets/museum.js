@@ -601,7 +601,7 @@ function renderStory(layer, w, onRestart) {
   let i = 0;
   (function paint() {
     layer.innerHTML = "";
-    layer.append(el(`<div class="aibanner">${SVG.spark} ${esc(T.aiBanner)}</div>`));
+    layer.append(aiBanner(layer.dataset.demo === "1"));
     layer.append(el(`<div class="wbars">${frames.map((_, k) => `<i class="${k <= i ? "on" : ""}"></i>`).join("")}</div>`));
     layer.append(el(`<div class="wframe">${frames[i]()}</div>`));
     const foot = el(`<div class="wfoot"></div>`);
@@ -807,16 +807,22 @@ const WSTYLES = [
   { key:"story", fn:renderStory }, { key:"blatt", fn:renderBlatt },
   { key:"karte", fn:renderKarte }, { key:"faden", fn:renderFaden },
 ];
+/* AI Act Art. 50: der Hinweis steht ueber dem erzeugten Inhalt, nicht im Fuss,
+   und bleibt in jedem Kader sichtbar. Die Beispiel-Marke sitzt in derselben
+   Zeile, damit sie den Text nicht verdeckt. */
+function aiBanner(demo) {
+  const T = t();
+  return el(`<div class="aibanner">${SVG.spark}
+    <span>${esc(T.aiBanner)}</span>
+    ${demo ? `<span class="demotag">${esc(T.demoBadge)}</span>` : ""}</div>`);
+}
+
 function showWrapped(layer, w, onRestart, style) {
   layer.innerHTML = "";
-  // AI Act Art. 50: der Hinweis steht ueber dem erzeugten Inhalt, nicht im Fuss,
-  // und bleibt in jedem Kader sichtbar.
-  layer.append(el(`<div class="aibanner">${SVG.spark} ${esc(t().aiBanner)}</div>`));
+  // Erst die Marke setzen: die Story zeichnet ihre Kader sofort und liest sie ab.
+  layer.dataset.demo = (!liveMode && onRestart) ? "1" : "";
+  layer.append(aiBanner(layer.dataset.demo === "1"));
   (WSTYLES.find(s => s.key === (style || wrappedStyle)) || WSTYLES[0]).fn(layer, w, onRestart);
-  // Im Beispielmodus muss sichtbar bleiben, dass das nicht der eigene Besuch ist.
-  // Als Attribut, damit die Marke das Neuzeichnen der Kader ueberlebt.
-  if (!liveMode && onRestart) layer.dataset.demo = t().demoBadge;
-  else delete layer.dataset.demo;
 }
 
 function showLoading(layer, autoMs, then) {
@@ -1336,7 +1342,7 @@ function Fuehrung(root) {
         <div class="brand"><i>◆</i> SMÄK</div>
         <div class="langpills"></div>
       </div>
-      <div class="introbody">
+      <div class="introbody"><div class="introinner">
         <div>
           <div class="introeyebrow">Museum Wrapped</div>
           <div class="introhead">${esc(T.introTitle)}</div>
@@ -1349,7 +1355,7 @@ function Fuehrung(root) {
           <p class="voluntary">${esc(T.consentVoluntary)}</p>
         </div>
         <div class="rights">${esc(T.rights)}</div>
-      </div>
+      </div></div>
       <div class="introfoot"></div></div>`);
 
     const pills = v.querySelector(".langpills");

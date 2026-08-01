@@ -686,3 +686,32 @@ body.app .screen{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-ar
 /* Sprechen und Tippen sind einander gleich — Gold bleibt dem Abschluss */
 .btn.way{border-color:oklch(0.82 0.15 82/.45);color:oklch(0.92 0.03 80);background:oklch(0.82 0.15 82/.07)}
 .btn.way:hover{background:oklch(0.82 0.15 82/.13)}
+
+/* ==========================================================================
+   Korrekturen vom Geraet
+   ========================================================================== */
+
+/* 2 · Die Leiste unten war weiss: Chrome faerbt die Systemleisten nach der
+   Hintergrundfarbe des Dokuments, und ein Verlauf allein reicht ihm nicht. */
+:root{color-scheme:dark}
+html{background-color:oklch(0.10 0.02 55)}
+
+/* 1 · Zentrierter Flex-Inhalt liess sich nach oben nicht scrollen, sobald er
+   hoeher als der Schirm war — der Anfang blieb unerreichbar. Auto-Raender
+   zentrieren, wenn Platz ist, und geben ihn frei, wenn keiner da ist. */
+.introbody{justify-content:flex-start}
+.introinner{margin:auto 0;display:flex;flex-direction:column;gap:26px;width:100%}
+@media (max-height:820px){ .introinner{gap:18px} }
+
+/* 3 · Die Beispiel-Marke sitzt jetzt in der Hinweiszeile statt darueber */
+.wrap[data-demo]::after{content:none}
+.aibanner{align-items:flex-start}
+.aibanner > span:first-of-type{flex:1;min-width:0}
+.demotag{flex:0 0 auto;align-self:center;font:600 8.5px/1 var(--body);letter-spacing:.18em;
+  text-transform:uppercase;color:oklch(0.16 0.03 55);background:var(--gold);
+  padding:5px 8px;border-radius:999px;white-space:nowrap}
+
+/* 4 · "Tippen blättert" verschwand hinter der Gestenleiste */
+.wfoot{padding-bottom:calc(20px + env(safe-area-inset-bottom));align-items:center}
+.taphint{font-size:12.5px;color:oklch(0.82 0.03 78)}
+.wtap{bottom:76px}
