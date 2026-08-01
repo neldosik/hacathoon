@@ -175,7 +175,7 @@ const L = {
     told: "Erzählt", open: "Noch offen",
     objectOf: (i, n) => `Objekt ${i} von ${n}`,
     shots: (n) => `${n} Aufnahme${n > 1 ? "n" : ""}`,
-    audioStub: "Audioguide des Museums · Platzhalter",
+    audioStub: "Audioguide des Museums",
     legendTold: "erzählt", legendOpen: "offen", schematic: "Schematischer Plan",
     /* Wrapped */
     loading: ["Deine Worte werden gelesen …", "Die Fäden deines Besuchs werden gesucht …", "Dein Wrapped entsteht …"],
@@ -291,7 +291,7 @@ const L = {
     told: "Shared", open: "Still open",
     objectOf: (i, n) => `Object ${i} of ${n}`,
     shots: (n) => `${n} photograph${n > 1 ? "s" : ""}`,
-    audioStub: "Museum audio guide · placeholder",
+    audioStub: "Museum audio guide",
     legendTold: "shared", legendOpen: "open", schematic: "Schematic plan",
     loading: ["Reading your words …", "Looking for the thread of your visit …", "Weaving your Wrapped …"],
     loadNote: "This takes a moment — the AI is reading along",
