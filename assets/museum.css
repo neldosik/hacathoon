@@ -900,8 +900,12 @@ html{background-color:oklch(0.10 0.02 55)}
 @media (min-width:900px){
   body.app{padding:0;display:grid;place-items:center;overflow:auto;
     background:radial-gradient(ellipse at top,oklch(0.16 0.03 55) 0%,oklch(0.08 0.015 55) 70%)}
-  body.app .screen{position:relative;inset:auto;margin:26px auto;
-    width:min(820px, 92vw);height:min(1120px, calc(100vh - 52px));
+  /* Ein Geraet auf einer Buehne, kein Fenster im Fenster: schmaler als
+     zuvor und mit Luft oben und unten. Die Hoehe bleibt grosszuegig — die
+     uebrigen Regeln haengen an der Fensterhoehe, nicht an der Rahmenhoehe,
+     ein zu kurzer Rahmen wuerde den Inhalt also abschneiden. */
+  body.app .screen{position:relative;inset:auto;margin:auto;
+    width:min(560px, 50vh);height:min(1040px, calc(100vh - 72px));
     border-radius:34px;padding:0;
     box-shadow:0 50px 110px -30px oklch(0 0 0/.9), 0 0 0 10px oklch(0.22 0.015 60),
       0 0 0 11px oklch(0.42 0.02 62/.6)}
