@@ -721,3 +721,17 @@ html{background-color:oklch(0.10 0.02 55)}
 .legal a{font-size:12.5px;color:oklch(0.84 0.03 78);text-decoration:underline;
   text-underline-offset:3px;min-height:44px;display:inline-flex;align-items:center}
 .legal a:hover{color:var(--gold)}
+
+/* „Neu" auf dem Willkommen-Schirm — es ist ein Zusatz zum Guide, kein Teil davon */
+.neu{display:inline-block;vertical-align:2px;margin-right:9px;padding:4px 8px;border-radius:999px;
+  background:var(--gold);color:oklch(0.16 0.03 55);font:600 10px/1 var(--body);letter-spacing:.16em}
+
+/* Nachbarn im Kunstareal */
+.nbbruecke{font-size:13.5px;line-height:1.6;color:oklch(0.86 0.02 78);margin-top:9px}
+.nblist{display:flex;flex-direction:column;gap:11px;margin-top:12px}
+.nb{padding:11px 12px;border-radius:14px;background:var(--panel-2);border:1px solid var(--line)}
+.nbname{font-family:var(--display);font-size:17px;line-height:1.2}
+.nbtext{font-size:12.5px;line-height:1.55;color:oklch(0.80 0.03 76);margin-top:4px}
+.nbfoot{font-size:12px;line-height:1.5;color:oklch(0.76 0.03 74);margin-top:11px}
+.nbfoot a{color:oklch(0.86 0.05 82);text-decoration:underline;text-underline-offset:3px}
+.wframe .nblist{margin-top:14px}

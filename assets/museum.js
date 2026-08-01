@@ -34,6 +34,83 @@ const CREDITS = {
   "OBJ-21": "SMÄK, Foto: Roy Hessing (2024)",
   "OBJ-22": "SMÄK, Foto: Marianne Franke (2013)",
 };
+
+/* Nachbarn im Kunstareal. Die Beschreibungen sind nachgeschlagen, nicht
+   erfunden; das Thema des Besuchs entscheidet nur, wen wir zeigen, und
+   begruendet nichts ueber fremde Sammlungen. Die Neue Pinakothek fehlt
+   absichtlich - sie ist wegen Sanierung geschlossen. */
+const NACHBARN = {
+  glyptothek: {
+    de: { name: "Glyptothek", text: "Antike Skulptur in klassizistischen Sälen — Münchens ältestes öffentliches Museum." },
+    en: { name: "Glyptothek", text: "Ancient sculpture in neoclassical halls — Munich's oldest public museum." },
+  },
+  antiken: {
+    de: { name: "Staatliche Antikensammlungen", text: "Griechische, römische und etruskische Vasen, Goldschmiedearbeiten und Kleinkunst." },
+    en: { name: "Staatliche Antikensammlungen", text: "Greek, Roman and Etruscan vases, goldwork and small-scale art." },
+  },
+  alte: {
+    de: { name: "Alte Pinakothek", text: "Alte Meister aus sechs Jahrhunderten europäischer Malerei." },
+    en: { name: "Alte Pinakothek", text: "Old Masters from six centuries of European painting." },
+  },
+  lenbach: {
+    de: { name: "Lenbachhaus", text: "Der Blaue Reiter: Kandinsky, Franz Marc, Gabriele Münter." },
+    en: { name: "Lenbachhaus", text: "The Blue Rider: Kandinsky, Franz Marc, Gabriele Münter." },
+  },
+  moderne: {
+    de: { name: "Pinakothek der Moderne", text: "Kunst, Grafik, Architektur und Design des 20. und 21. Jahrhunderts." },
+    en: { name: "Pinakothek der Moderne", text: "Art, works on paper, architecture and design of the 20th and 21st centuries." },
+  },
+  palaeo: {
+    de: { name: "Paläontologisches Museum", text: "Fossilien und Skelette aus der Erdgeschichte, im selben Viertel." },
+    en: { name: "Paläontologisches Museum", text: "Fossils and skeletons from the history of the earth, in the same quarter." },
+  },
+};
+/* Welche Nachbarn zu welchem Schwerpunkt passen — je zwei, bewusst knapp. */
+const NACHBAR_THEMA = {
+  "Death & Afterlife": ["glyptothek", "alte"],
+  "Gods & Belief": ["glyptothek", "antiken"],
+  "Kingship & Power": ["glyptothek", "alte"],
+  "Daily Life": ["antiken", "lenbach"],
+  "Writing & Knowledge": ["alte", "antiken"],
+  "Beauty & Body": ["glyptothek", "moderne"],
+};
+const KUNSTAREAL_URL = "https://kunstareal.de/haeuser-und-institutionen";
+
+/* Die Bruecke spricht ueber den Besucher, nicht ueber fremde Sammlungen —
+   so behauptet sie nichts, was wir nicht nachgeschlagen haben. */
+const NACHBAR_BRUECKE = {
+  "Death & Afterlife": {
+    de: "Du hast dich lange bei dem aufgehalten, was nach dem Leben kommt. Nebenan wird dieselbe Frage anders gestellt.",
+    en: "You spent your time with what comes after this life. Next door the same question is asked differently." },
+  "Gods & Belief": {
+    de: "Dich hat beschäftigt, woran die Menschen damals glaubten. Zwei Häuser weiter stehen andere Götter.",
+    en: "You kept circling what these people believed in. Two houses on stand other gods." },
+  "Kingship & Power": {
+    de: "Dich hat beschäftigt, wer die Macht hatte und wie er sie zeigte. In Stein setzen liessen sich Herrscher nicht nur in Ägypten.",
+    en: "You kept circling who held power and how they showed it. Rulers had themselves carved in stone well beyond Egypt." },
+  "Daily Life": {
+    de: "Dich hat das ganz gewöhnliche Leben interessiert. Davon erzählen die Nachbarn auch.",
+    en: "It was ordinary everyday life that caught you. The neighbours tell of it too." },
+  "Writing & Knowledge": {
+    de: "Dich hat interessiert, was aufgeschrieben und bewahrt wurde. Nebenan wird weiter bewahrt.",
+    en: "You were drawn to what was written down and kept. The keeping goes on next door." },
+  "Beauty & Body": {
+    de: "Dich hat beschäftigt, wie man aussehen wollte. Auch nebenan formen Menschen Körper.",
+    en: "You kept circling how people wanted to look. Next door people shape bodies too." },
+};
+
+function nachbarnFuer(w) {
+  const themes = Array.isArray(w.themes) ? w.themes : [];
+  const top = (themes[0] && themes[0].theme)
+    || (w.recommendations && w.recommendations[0] && w.recommendations[0].theme) || "";
+  const keys = NACHBAR_THEMA[top] || ["glyptothek", "antiken"];
+  const br = NACHBAR_BRUECKE[top];
+  return {
+    bruecke: br ? (br[LANG] || br.de) : "",
+    haeuser: keys.map(k => NACHBARN[k][LANG] || NACHBARN[k].de),
+  };
+}
+
 const legalRow = () => `<div class="legal">` + LEGAL_LINKS.map(l =>
   `<a href="${l.url}" target="_blank" rel="noopener noreferrer">${esc(l[LANG] || l.de)}</a>`
 ).join("") + `</div>`;
@@ -161,6 +238,9 @@ const L = {
     rights: RIGHTS,
     introVoice: "Ich erzähle mit der Stimme", introType: "Lieber schreiben",
     introSwitch: "Du kannst jederzeit wechseln.",
+    neu: "Neu",
+    nachbarnHead: "Nebenan im Kunstareal",
+    nachbarnFoot: "Ein paar Minuten zu Fuß von hier. Mehr Häuser: ",
     keep: "Behalten", keepTitle: "Deinen Besuch behalten",
     keepNote: "Nichts davon liegt auf einem Server — der Text geht mit, nicht ein Link darauf.",
     keepRights: RIGHTS,
@@ -271,6 +351,9 @@ const L = {
     rights: RIGHTS,
     introVoice: "I'll speak", introType: "I'd rather write",
     introSwitch: "You can switch at any time.",
+    neu: "New",
+    nachbarnHead: "Next door in the Kunstareal",
+    nachbarnFoot: "A few minutes on foot from here. More houses: ",
     keep: "Keep", keepTitle: "Keep your visit",
     keepNote: "None of this sits on a server — the text travels with you, not a link to it.",
     keepRights: RIGHTS,
@@ -618,6 +701,16 @@ function renderStory(layer, w, onRestart) {
     <div class="wshot"><img src="${IMG}${w.missed.object_id}.jpg" alt="" /></div>
     <div class="wmid">${esc(titleOf(w.missed.object_id, w.missed.title))}</div>
     <div class="wsub">${esc(w.missed.reason)}</div>`);
+  frames.push(() => {
+    const nb = nachbarnFuer(w);
+    return `<div class="eyebrow">${esc(T.nachbarnHead)}</div>
+      ${nb.bruecke ? `<div class="nbbruecke">${esc(nb.bruecke)}</div>` : ""}
+      <div class="nblist">${nb.haeuser.map(m => `
+        <div class="nb"><div class="nbname">${esc(m.name)}</div>
+        <div class="nbtext">${esc(m.text)}</div></div>`).join("")}</div>
+      <div class="nbfoot">${esc(T.nachbarnFoot)}</div>`;
+  });
+
   frames.push(() => `<div class="wmid">${esc(w.closing)}</div>
     <div class="wnote">SMÄK · Museum Wrapped</div>`);
 
@@ -735,6 +828,16 @@ function renderFaden(layer, w, onRestart) {
         <div><div class="rectitle">${esc(titleOf(r.object_id, r.title))}</div>
         <div class="recwhy">${esc(r.reason)}</div></div>
       </div>`).join("")}</div></div>`));
+  const nb = nachbarnFuer(w);
+  end.append(el(`<div class="fpanel">
+    <div class="blabel">${esc(T.nachbarnHead)}</div>
+    ${nb.bruecke ? `<div class="nbbruecke">${esc(nb.bruecke)}</div>` : ""}
+    <div class="nblist">${nb.haeuser.map(m => `
+      <div class="nb"><div class="nbname">${esc(m.name)}</div>
+      <div class="nbtext">${esc(m.text)}</div></div>`).join("")}</div>
+    <div class="nbfoot">${esc(T.nachbarnFoot)}
+      <a href="${KUNSTAREAL_URL}" target="_blank" rel="noopener noreferrer">kunstareal.de</a></div></div>`));
+
   if (w.missed && w.missed.title) end.append(el(`<div class="missed">
     <div class="blabel">${esc(T.missedHead)}</div>
     <div class="rec" style="margin-top:9px">
@@ -785,6 +888,13 @@ function wrappedAsText(w) {
     L.push("");
   }
   if (w.missed) L.push(T.missedHead.toUpperCase(), "· " + titleOf(w.missed.object_id, w.missed.title), "");
+  const nb = nachbarnFuer(w);
+  if (nb.haeuser.length) {
+    L.push(T.nachbarnHead.toUpperCase());
+    if (nb.bruecke) L.push(nb.bruecke);
+    nb.haeuser.forEach(m => L.push("· " + m.name + " — " + m.text));
+    L.push("");
+  }
   if (w.closing) L.push(w.closing);
   L.push("", RIGHTS);
   return L.join(String.fromCharCode(10));
@@ -1369,7 +1479,7 @@ function Fuehrung(root) {
       </div>
       <div class="introbody"><div class="introinner">
         <div>
-          <div class="introeyebrow">Museum Wrapped</div>
+          <div class="introeyebrow"><span class="neu">${esc(T.neu)}</span> Museum Wrapped</div>
           <div class="introhead">${esc(T.introTitle)}</div>
         </div>
         <div class="steps"></div>
