@@ -1974,9 +1974,13 @@ function Fuehrung(root) {
   function finishButton() {
     const b = el(`<button class="btn gold">${esc(t().finishShort)}</button>`);
     b.onclick = () => {
-      /* Nichts erzaehlt, nichts zusammenzufassen. Kein Aufruf des Modells,
-         kein erfundener Rueckblick — nur ein Dank und ein Weg zurueck. */
-      if (!Object.keys(answers).length) { dank = true; walking = false; sheetId = null; render(); return; }
+      /* Nichts erzaehlt, nichts zusammenzufassen — aber nur dort, wo sonst
+         wirklich das Modell gefragt wuerde. Der Beispieltext liegt fertig
+         da und darf auch ohne ein Wort gezeigt werden; genau dafuer ist er
+         beim Vorfuehren gedacht. */
+      if (liveMode && !Object.keys(answers).length) {
+        dank = true; walking = false; sheetId = null; render(); return;
+      }
       inWrapped = true; walking = false;
       startWrapped(root, answers, startedAt, () => {
         // Ein neuer Besuch ist ein neuer Mensch: die Einwilligung des vorigen
