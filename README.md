@@ -71,8 +71,10 @@ Barrierefreiheit (BayBGG Art. 14 / BITV 2.0 ~ WCAG 2.1 AA).
 - **KI-Hinweis** steht ueber dem erzeugten Inhalt und bleibt in jedem Kader
   sichtbar, nicht im Fuss.
 - **Sprechen und Tippen sind gleichwertig** — zwei gleiche Knoepfe
-  nebeneinander. Beide Wege erzeugen dieselbe Reaktion mit `input_type: "text"`;
-  die Nutzlast des Webhooks ist unveraendert.
+  nebeneinander, ohne Deckel auf der Laenge: wer sprechen kann, wird nicht
+  begrenzt, also darf es der Schreibweg auch nicht sein. Der Zaehler bleibt
+  als Rueckmeldung. Beide Wege erzeugen dieselbe Reaktion mit
+  `input_type: "text"`; die Nutzlast des Webhooks ist unveraendert.
 - **Keine Zusage ueber geloeschtes Audio.** Bei Web Speech geht die Aufnahme an
   den Browser-Anbieter; eine solche Zusage waere unzutreffend. Der Wortlaut
   steht auf dem Einwilligungsschirm.

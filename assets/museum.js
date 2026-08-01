@@ -147,7 +147,7 @@ const L = {
     consentNo: "Ohne Aufnahme fortfahren",
     aiBanner: "Von KI erstellt — aus deinen eigenen Worten und geprüften Museumstexten.",
     micWarn: "Sprich leise — das Mikrofon kann auch andere Besucher aufnehmen.",
-    speak: "Sprechen", type: "Tippen", charsLeft: (n) => n + " Zeichen frei",
+    speak: "Sprechen", type: "Tippen", chars: (n) => n + " Zeichen",
     wipe: "Sitzung löschen", wipeDone: "Sitzung gelöscht.",
     rights: RIGHTS,
     introVoice: "Ich erzähle mit der Stimme", introType: "Lieber schreiben",
@@ -256,7 +256,7 @@ const L = {
     consentNo: "Continue without recording",
     aiBanner: "Made by AI — from your own words and checked museum texts.",
     micWarn: "Speak quietly — the microphone can pick up other visitors too.",
-    speak: "Speak", type: "Type", charsLeft: (n) => n + " characters left",
+    speak: "Speak", type: "Type", chars: (n) => n + " characters",
     wipe: "Delete session", wipeDone: "Session deleted.",
     rights: RIGHTS,
     introVoice: "I'll speak", introType: "I'd rather write",
@@ -400,7 +400,6 @@ const likesOf = (id) => {
   for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) % 997;
   return 40 + (h % 260);
 };
-const MAXCHARS = 300;   // wie in der Rechtsvorgabe; der Zaehler zeigt den Rest
 const myLikes = {};
 const likeBtn = (id, onChange) => {
   const mine = !!myLikes[id];
@@ -1118,7 +1117,7 @@ function Fuehrung(root) {
   let mode = "idle", live = "", speechCode = null, sheetId = null, shot = 0, startedAt = Date.now();
   let intro = introEnabled, inputPref = "voice";
   let pending = null, editing = false;
-  let elMe, elRange, elLabel, elRail, pinEls = [], inWrapped = false, lastRoom = -1;
+  let elMe, elRange, elLabel, pinEls = [], inWrapped = false, lastRoom = -1;
 
   const rec = makeRecorder({
     onInterim: s => { live = s; render(); },
@@ -1171,14 +1170,6 @@ function Fuehrung(root) {
     const n = nearest(), now = !!(n.spot && n.d < ARRIVE);
     pinEls.forEach(p => p.classList.toggle("near", now && p.dataset.id === n.spot.id));
 
-    // Die Schiene zeigt mit, wie weit es noch ist
-    if (elRail && n.spot) {
-      const oo = obj(n.spot.id);
-      elRail.querySelector(".raillabel").textContent = now ? T.here : T.steps(Math.max(1, Math.round(n.d / 0.7)));
-      elRail.querySelector(".railtitle").textContent = loc(oo).title;
-      const im = elRail.querySelector("img");
-      if (im && !im.src.endsWith(oo.img)) im.src = IMG + oo.img;
-    }
     if (now && selId !== n.spot.id) { selId = n.spot.id; arrived = true; mode = "idle"; live = ""; render(); return; }
     arrived = now;
   }
@@ -1189,7 +1180,7 @@ function Fuehrung(root) {
     if (inWrapped) return;
     if (intro) return renderIntro();
     const T = t(), o = obj(selId), d = loc(o), saved = answers[selId], R = room();
-    const near = nearest();
+    const near = nearest();          // welche Vitrine gerade vor dir steht
     root.innerHTML = ""; pinEls = [];
 
     root.append(el(`<div class="topbar">
@@ -1201,22 +1192,10 @@ function Fuehrung(root) {
       mode === "rec" ? T.listening : (saved ? T.told : ""))}</div>`));
 
     const body = el(`<div class="fuehrung">
-      <div class="rail"></div>
       <div class="planwrap">
         <div class="roomhead"></div><div class="rstage"></div><div class="fbar"></div>
       </div>
       <div class="detail"></div></div>`);
-
-    /* Schiene: was als Nächstes kommt und wie weit es noch ist */
-    const nearObj = near.spot ? obj(near.spot.id) : o;
-    const schritte = arrived ? T.here : T.steps(Math.max(1, Math.round(near.d / 0.7)));
-    elRail = el(`<div class="railbox">
-      <span class="railthumb"><img src="${IMG}${nearObj.img}" alt="${esc(loc(nearObj).title)}" /></span>
-      <div style="min-width:0">
-        <div class="raillabel">${esc(schritte)}</div>
-        <div class="railtitle">${esc(loc(nearObj).title)}</div>
-      </div></div>`);
-    body.querySelector(".rail").append(elRail);
 
     const head = body.querySelector(".roomhead");
     head.append(el(`<div class="rn">${esc(T.saal)} ${esc(R[LANG])}</div>`),
@@ -1301,9 +1280,11 @@ function Fuehrung(root) {
         const p = speechProblem(speechCode);
         det.append(el(`<div class="speecherr">${esc(p.text)}<span>${esc(p.code)}</span></div>`));
       }
-      const ta = el(`<textarea class="typed" rows="2" maxlength="${MAXCHARS}" placeholder="${esc(T.placeholder)}"></textarea>`);
-      const counter = el(`<div class="chars" aria-live="polite">${esc(T.charsLeft(MAXCHARS))}</div>`);
-      ta.oninput = () => { counter.textContent = T.charsLeft(MAXCHARS - ta.value.length); };
+      // Kein Deckel: wer sprechen kann, wird nicht begrenzt — wer tippen muss,
+      // darf es auch nicht sein. Der Zaehler bleibt als Rueckmeldung.
+      const ta = el(`<textarea class="typed" rows="2" placeholder="${esc(T.placeholder)}"></textarea>`);
+      const counter = el(`<div class="chars" aria-live="polite">${esc(T.chars(0))}</div>`);
+      ta.oninput = () => { counter.textContent = T.chars(ta.value.length); };
       det.append(ta, counter);
       setTimeout(() => ta.focus(), 30);
       const acts = el(`<div class="actions"></div>`);

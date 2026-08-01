@@ -169,15 +169,6 @@
   /* ---------- D. Führung: Saalplan wie auf Papier ---------- */
   .fuehrung{flex:1;display:flex;flex-direction:column;min-height:0}
 
-  /* Schiene „Vor dir" — was als Nächstes kommt */
-  .rail{padding:0 16px;flex:0 0 auto}
-  .railbox{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:16px;
-    background:oklch(0.82 0.11 235/.10);border:1px solid oklch(0.82 0.11 235/.45)}
-  .railthumb{width:36px;height:36px;border-radius:10px;flex:0 0 auto;overflow:hidden;background:oklch(0.13 0.02 55)}
-  .railthumb img{width:100%;height:100%;object-fit:contain;padding:3px}
-  .raillabel{font-size:11.5px;font-weight:600;text-transform:uppercase;color:var(--you)}
-  .railtitle{font-size:13px;color:oklch(0.90 0.02 80);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-
   .planwrap{flex:1;min-height:0;display:flex;flex-direction:column;padding:12px 16px 0}
   .roomhead{display:flex;align-items:baseline;gap:10px;padding:0 2px 10px;flex:0 0 auto}
   .roomhead .rn{font-family:var(--display);font-size:24px;font-weight:400;line-height:1;flex:1}
@@ -457,12 +448,6 @@ body.app .screen{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-ar
 
 @media (max-height:820px){
   .topbar{padding:11px 18px 8px}
-  .rail{padding:0 14px}
-  .railbox{padding:7px 10px;gap:9px}
-  .railthumb{width:30px;height:30px}
-  .raillabel{font-size:11px}
-  .railtitle{font-size:12.5px}
-
   .planwrap{padding:9px 14px 0}
   .roomhead{padding:0 2px 6px}
   .roomhead .rn{font-size:19px}
@@ -492,7 +477,6 @@ body.app .screen{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-ar
 
 /* Sehr kurze Geräte: der Plan darf schrumpfen, aber die Karte bleibt lesbar */
 @media (max-height:660px){
-  .rail{display:none}                 /* die Entfernung steht auch im Panel */
   .rstage{min-height:190px}
   .dfrage{font-size:16px;max-height:2.7em}
 }
