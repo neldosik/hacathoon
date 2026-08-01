@@ -735,3 +735,13 @@ html{background-color:oklch(0.10 0.02 55)}
 .nbfoot{font-size:12px;line-height:1.5;color:oklch(0.76 0.03 74);margin-top:11px}
 .nbfoot a{color:oklch(0.86 0.05 82);text-decoration:underline;text-underline-offset:3px}
 .wframe .nblist{margin-top:14px}
+
+/* Der nackte Projektlink zeigt die Werkbank — von hier muss man die App finden */
+.tolive{display:flex;align-items:center;gap:16px;margin-bottom:28px;padding:16px 20px;
+  border-radius:18px;text-decoration:none;background:oklch(0.82 0.15 82/.10);
+  border:1px solid oklch(0.82 0.15 82/.5);transition:.18s}
+.tolive:hover{background:oklch(0.82 0.15 82/.16)}
+.tolivetext{flex:1;display:flex;flex-direction:column;gap:4px}
+.tolivetext b{font-family:var(--display);font-size:22px;font-weight:400;color:var(--fg)}
+.tolivetext em{font-style:normal;font-size:13px;color:var(--muted)}
+.tolivearrow{font-size:22px;color:var(--gold);flex:0 0 auto}
