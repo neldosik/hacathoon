@@ -278,17 +278,24 @@ const QR = (function () {
     return { feld: bestes, n: n, version: v, stufe: stufe, maske: besteMaske, bytes: bytes.length };
   }
 
+  /* Die Formatangabe steht zweimal im Code, und zwar mit dem höchsten Bit
+     zuerst. Ich hatte sie andersherum gelegt — die eigene Prüfung las
+     dieselbe Vertauschung wieder heraus und schwieg, ein fremder Leser
+     nicht. Deshalb hier die Plätze ausgeschrieben statt gerechnet. */
+  const FORMAT1 = [[8,0],[8,1],[8,2],[8,3],[8,4],[8,5],[8,7],[8,8],
+                   [7,8],[5,8],[4,8],[3,8],[2,8],[1,8],[0,8]];
+  const format2 = (n) => [[n-1,8],[n-2,8],[n-3,8],[n-4,8],[n-5,8],[n-6,8],[n-7,8],
+                          [8,n-8],[8,n-7],[8,n-6],[8,n-5],[8,n-4],[8,n-3],[8,n-2],[8,n-1]];
+
   function setzeFormat(f, n, stufe, maske) {
     const bits = formatBits(stufe, maske);
+    const zwei = format2(n);
     for (let i = 0; i < 15; i++) {
-      const b = (bits >> i) & 1;
-      if (i < 6) { f[8][i] = b; f[n - 1 - i][8] = b; }
-      else if (i === 6) { f[8][7] = b; f[n - 7][8] = b; }
-      else if (i === 7) { f[8][8] = b; f[8][n - 8] = b; }
-      else if (i === 8) { f[7][8] = b; f[8][n - 7 + (i - 8)] = b; }
-      else { f[14 - i][8] = b; f[8][n - 15 + i] = b; }
+      const b = (bits >> (14 - i)) & 1;      // Bit 14 zuerst
+      f[FORMAT1[i][0]][FORMAT1[i][1]] = b;
+      f[zwei[i][0]][zwei[i][1]] = b;
     }
-    f[n - 8][8] = 1;
+    f[n - 8][8] = 1;                          // das immer dunkle Kästchen
   }
 
   function setzeVersion(f, n, v) {
@@ -364,13 +371,17 @@ const QR = (function () {
        schiefe Winkel und müde Kameras. */
     let mitte = "";
     if (o.marke) {
-      const m = (q.n + rand * 2) / 2, r = q.n * 0.068;
-      const s2 = r * 0.46;
+      /* Ein gefasstes Feld in derselben Sprache wie die Sucherquadrate:
+         weiche Ecken, ein ruhiger Rand, das Zeichen des Hauses darin.
+         Es deckt Kästchen zu, und das darf es — der Code verschränkt seine
+         Wörter über alle Blöcke, ein Feld in der Mitte trifft daher jeden
+         Block ein wenig statt einen ganz. */
+      const b = Math.round(q.n * 0.15), m = (q.n + rand * 2 - b) / 2;
+      const eck = b * 0.3, s2 = b * 0.21, mm = m + b / 2;
       mitte = `
-        <circle cx="${m}" cy="${m}" r="${r}" fill="${hell}"/>
-        <circle cx="${m}" cy="${m}" r="${r - .55}" fill="none"
-          stroke="${o.markeRand || dunkel}" stroke-width=".5" opacity=".35"/>
-        <path d="M${m} ${m - s2}L${m + s2} ${m}L${m} ${m + s2}L${m - s2} ${m}Z"
+        <rect x="${m}" y="${m}" width="${b}" height="${b}" rx="${eck}"
+          fill="${hell}" stroke="${o.markeRand || dunkel}" stroke-width="${b * 0.07}"/>
+        <path d="M${mm} ${mm - s2}L${mm + s2} ${mm}L${mm} ${mm + s2}L${mm - s2} ${mm}Z"
           fill="${o.markeFarbe || dunkel}"/>`;
     }
 

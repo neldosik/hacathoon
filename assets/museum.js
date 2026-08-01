@@ -1123,7 +1123,7 @@ async function zeigeCode(host, w, form) {
        an ihnen findet die Kamera den Code ueberhaupt erst. Gold bleibt dem
        Zeichen und dem Rahmen. */
     feld.innerHTML = QR.svg(inhalt, {
-      rund: true, dunkel: "#3d2a0c", auge: "#2e2008", hell: "#f7f2e7", rand: 2,
+      rund: true, dunkel: "#3d2a0c", auge: "#2e2008", hell: "#f7f2e7", rand: 4,
       marke: true, markeFarbe: "#a8791a", markeRand: "#3d2a0c",
       alt: T.keepQr,
     });
