@@ -1861,11 +1861,14 @@ function Fuehrung(root) {
       const k = Math.min(r.width / img.naturalWidth, r.height / img.naturalHeight);
       return { w: img.naturalWidth * k, h: img.naturalHeight * k };
     };
-    const halten = () => {
-      // Nie ueber den Rand hinaus: sonst schiebt man das Bild aus dem Bild.
+    // Wieviel Bild ueber den Rand hinausragt — soviel darf man schieben.
+    const spielraum = () => {
       const r = buehne(), f = fotoMass();
-      const mx = Math.max(0, (f.w * z - r.width) / 2), my = Math.max(0, (f.h * z - r.height) / 2);
-      ox = Math.min(mx, Math.max(-mx, ox)); oy = Math.min(my, Math.max(-my, oy));
+      return { x: Math.max(0, (f.w * z - r.width) / 2), y: Math.max(0, (f.h * z - r.height) / 2) };
+    };
+    const halten = () => {
+      const m = spielraum();
+      ox = Math.min(m.x, Math.max(-m.x, ox)); oy = Math.min(m.y, Math.max(-m.y, oy));
     };
     const zeige = () => {
       halten();
@@ -1899,7 +1902,7 @@ function Fuehrung(root) {
       if (finger.size === 2 && startAbst) {
         const [a, b] = [...finger.values()];
         setz(startZ * (Math.hypot(a.x - b.x, a.y - b.y) / startAbst), (a.x + b.x) / 2, (a.y + b.y) / 2);
-      } else if (z > 1.001) { ox += dx; oy += dy; zeige(); }
+      } else if (spielraum().x > 1 || spielraum().y > 1) { ox += dx; oy += dy; zeige(); }
       else if (box.blaettern && f.weg > 46 && Math.abs(e.clientX - f.start) > 46) {
         // Bei voller Ansicht wischt man von Foto zu Foto
         box.blaettern(box.stand() + (e.clientX < f.start ? 1 : -1));

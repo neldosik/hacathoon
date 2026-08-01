@@ -944,8 +944,8 @@ html{background-color:oklch(0.10 0.02 55)}
   backdrop-filter:blur(6px);pointer-events:none}
 .lupe{position:absolute;inset:0;z-index:20;display:flex;flex-direction:column;
   background:oklch(0.07 0.01 55);animation:auf .18s ease-out}
-.lupebuehne{flex:1;min-height:0;display:grid;place-items:center;overflow:hidden;touch-action:none}
-.lupe img{width:100%;height:100%;object-fit:contain;
+.lupebuehne{position:relative;flex:1;min-height:0;overflow:hidden;touch-action:none}
+.lupe img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;
   transform-origin:center;cursor:grab;user-select:none;-webkit-user-drag:none}
 .lupe.nah img{cursor:grab}
 .lupefuss{flex:0 0 auto;display:flex;flex-direction:column;gap:3px;padding:12px 18px 18px;
