@@ -1039,8 +1039,24 @@ async function entpacke(text) {
   return JSON.parse(new TextDecoder().decode(await new Response(strom).arrayBuffer()));
 }
 
-const keepsakeUrl = async (w) =>
-  location.origin + location.pathname.replace(/[^/]*$/, "") + "w.html#w=" + await packe(schlank(w));
+/* Die veroeffentlichte Adresse des Projekts. Sie steht hier, weil ein Code
+   sonst genau dann unbrauchbar wird, wenn er gebraucht wird: wer die App
+   von einer Datei oder aus einem lokalen Server heraus zeigt, verteilt
+   sonst Links, die nur auf seinem eigenen Rechner aufgehen. Das Blatt
+   fragt keinen Server, es liest den Rueckblick aus dem Link — deshalb
+   loest die veroeffentlichte Seite jeden Rueckblick auf, egal wo er
+   entstanden ist. Wer das Projekt uebernimmt, traegt hier seine eigene
+   Adresse ein. */
+const HEIMAT = "https://neldosik.github.io/hacathoon/";
+
+const blattBasis = () => {
+  const eigen = location.origin + location.pathname.replace(/[^/]*$/, "");
+  const daheim = location.protocol === "file:" ||
+    /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
+  return daheim ? HEIMAT : eigen;
+};
+
+const keepsakeUrl = async (w) => blattBasis() + "w.html#w=" + await packe(schlank(w));
 
 /* Zwei Fragen, mehr nicht: als was, und womit.
 
