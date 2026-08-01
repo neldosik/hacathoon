@@ -188,7 +188,16 @@ const L = {
     wIntro: "Dein Besuch, gewoben",
     wStatsHead: "Dein Besuch in Zahlen",
     statReflections: "Gedanken hinterlassen", statObjects: "Objekte begleitet", statMinutes: "Minuten hier",
-    wWordsHead: "In deinen Worten",
+    wWordsHead: "In deinen Worten", wThemesHead: "Was sich durchzieht",
+    deeperHead: "Wenn du tiefer gehen willst",
+    blattLeer: "Dieser Link trägt keinen Rückblick. Vielleicht wurde nur ein Teil davon kopiert.",
+    blattKaputtKopf: "Der Link lässt sich nicht lesen",
+    blattKaputt: "Er ist wohl unterwegs abgeschnitten worden. Der ganze Link gehört dazu, bis zum letzten Zeichen.",
+    blattHinweis: "Dieser Rückblick steht im Link selbst. Er liegt auf keinem Server und lässt sich nicht über uns wiederfinden — heb den Link auf oder sichere die Seite als PDF.",
+    blattPdf: "Als PDF sichern",
+    dankTitle: "Danke für deinen Besuch",
+    dankBody: "Du hast diesmal nichts erzählt — also gibt es auch nichts zusammenzufassen. Der Rückblick entsteht aus deinen eigenen Worten, sonst wäre er nicht deiner.",
+    dankBack: "Zurück in den Rundgang", dankNew: "Neuer Besuch",
     wQuestion: "Eine Frage zum Mitnehmen",
     wDeeper: "Komm wieder für",
     restart: "Neuer Besuch", offline: "Der Server hat nicht geantwortet — dies ist ein Beispiel.",
@@ -252,6 +261,14 @@ const L = {
     keepNote: "Nichts davon liegt auf einem Server — der Text geht mit, nicht ein Link darauf.",
     keepRights: RIGHTS,
     keepShare: "Teilen", keepMail: "Per E-Mail schicken", keepCopy: "Text kopieren",
+    keepWay: "Womit nimmst du ihn mit?", keepQr: "QR-Code", keepQrSub: "Mit der Kamera abfotografieren",
+    keepMailSub: "Öffnet dein Mailprogramm",
+    keepForm: "Als was?", keepPlain: "Nur Text", keepPretty: "Die schöne Fassung",
+    keepPlainSub: "Blanker Text, lässt sich überall hineinkopieren",
+    keepPrettySub: "Eine Seite mit Bildern — daraus wird auch das PDF",
+    keepScan: "Halte die Kamera darauf. Der Code trägt deinen Rückblick selbst — er liegt auf keinem Server.",
+    keepScanPlain: "Halte die Kamera darauf. Der Code enthält den Text deines Rückblicks.",
+    keepTooLong: "Der Text ist für einen Code zu lang. Nimm die schöne Fassung oder die E-Mail.",
     keepCopied: "Kopiert.",
     settings: "Einstellungen", setLang: "Sprache", setSource: "Text", setFont: "Schrift",
     likeLabel: "Merken", likeHint: "Andere Besucher haben hier gehalten",
@@ -308,7 +325,16 @@ const L = {
     wIntro: "Your visit, woven",
     wStatsHead: "Your visit in numbers",
     statReflections: "thoughts left behind", statObjects: "objects kept company", statMinutes: "minutes here",
-    wWordsHead: "In your own words",
+    wWordsHead: "In your own words", wThemesHead: "What runs through it",
+    deeperHead: "If you want to go deeper",
+    blattLeer: "This link carries no recap. Perhaps only part of it was copied.",
+    blattKaputtKopf: "This link cannot be read",
+    blattKaputt: "It was probably cut short on the way. The whole link belongs to it, down to the last character.",
+    blattHinweis: "This recap lives in the link itself. It sits on no server and cannot be found again through us — keep the link, or save this page as a PDF.",
+    blattPdf: "Save as PDF",
+    dankTitle: "Thank you for your visit",
+    dankBody: "You did not tell us anything this time — so there is nothing to sum up. The recap grows out of your own words, otherwise it would not be yours.",
+    dankBack: "Back to the tour", dankNew: "New visit",
     wQuestion: "One question to take with you",
     wDeeper: "Come back for",
     restart: "New visit", offline: "The server did not answer — this is an example.",
@@ -368,6 +394,14 @@ const L = {
     neu: "New",
     nachbarnHead: "Next door in the Kunstareal",
     nachbarnFoot: "A few minutes on foot from here. More houses: ",
+    keepWay: "How will you take it?", keepQr: "QR code", keepQrSub: "Photograph it with your camera",
+    keepMailSub: "Opens your mail app",
+    keepForm: "As what?", keepPlain: "Plain text", keepPretty: "The pretty version",
+    keepPlainSub: "Bare text, pastes anywhere",
+    keepPrettySub: "A page with pictures — the PDF comes from this too",
+    keepScan: "Point your camera at it. The code carries your recap itself — it sits on no server.",
+    keepScanPlain: "Point your camera at it. The code contains the text of your recap.",
+    keepTooLong: "The text is too long for a code. Take the pretty version or the e-mail.",
     keep: "Keep", keepTitle: "Keep your visit",
     keepNote: "None of this sits on a server — the text travels with you, not a link to it.",
     keepRights: RIGHTS,
@@ -943,41 +977,142 @@ function wrappedAsText(w) {
   return L.join(String.fromCharCode(10));
 }
 
+/* Der Rückblick als Zeichenkette für die Adresse.
+
+   Nur was die empfangende Seite nicht selbst weiß, wandert mit: Titel,
+   Raumnamen, Fotos und Bildnachweise stehen dort ohnehin, gebraucht wird
+   allein der Text der KI und was der Mensch gesagt hat. Das spart die
+   Hälfte und entscheidet darüber, ob der Code noch scannbar bleibt.
+
+   Die Daten liegen im Fragment der Adresse, hinter dem Doppelkreuz. Ein
+   Fragment schickt der Browser nie an einen Server — der Rückblick reist
+   also im Link mit, ohne irgendwo anzukommen. */
+function schlank(w) {
+  const k = { v: 1, l: LANG, d: new Date().toISOString().slice(0, 10) };
+  if (w.greeting) k.g = w.greeting;
+  if (w.archetype) k.a = w.archetype;
+  if (w.themes) k.t = w.themes;
+  if (w.your_words) k.w = w.your_words;
+  if (w.reflective_question) k.q = w.reflective_question;
+  if (w.go_deeper) k.x = w.go_deeper.object_id
+    ? [w.go_deeper.object_id, w.go_deeper.reason || w.go_deeper.text || ""] : w.go_deeper;
+  if (w.closing) k.c = w.closing;
+  if (w.recommendations) k.r = w.recommendations.map(r => [r.object_id, r.reason || ""]);
+  if (w.missed) k.m = [w.missed.object_id, w.missed.reason || w.missed.text || ""];
+  return k;
+}
+
+function dick(k) {
+  const w = { greeting: k.g, archetype: k.a, stats: k.s, themes: k.t, your_words: k.w,
+    reflective_question: k.q, closing: k.c };
+  if (Array.isArray(k.x)) w.go_deeper = { object_id: k.x[0], title: titleOf(k.x[0], ""), reason: k.x[1] };
+  else if (k.x) w.go_deeper = k.x;
+  if (k.r) w.recommendations = k.r.map(p => ({ object_id: p[0], title: titleOf(p[0], ""), reason: p[1] }));
+  if (k.m) w.missed = { object_id: k.m[0], title: titleOf(k.m[0], ""), reason: k.m[1] };
+  return w;
+}
+
+async function packe(obj) {
+  const roh = new TextEncoder().encode(JSON.stringify(obj));
+  const strom = new Blob([roh]).stream().pipeThrough(new CompressionStream("deflate-raw"));
+  const buf = new Uint8Array(await new Response(strom).arrayBuffer());
+  let bin = ""; buf.forEach(b => bin += String.fromCharCode(b));
+  return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+
+async function entpacke(text) {
+  const b64 = text.replace(/-/g, "+").replace(/_/g, "/");
+  const bin = atob(b64);
+  const roh = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) roh[i] = bin.charCodeAt(i);
+  const strom = new Blob([roh]).stream().pipeThrough(new DecompressionStream("deflate-raw"));
+  return JSON.parse(new TextDecoder().decode(await new Response(strom).arrayBuffer()));
+}
+
+const keepsakeUrl = async (w) =>
+  location.origin + location.pathname.replace(/[^/]*$/, "") + "w.html#w=" + await packe(schlank(w));
+
+/* Zwei Fragen, mehr nicht: als was, und womit.
+
+   Kopieren und das Teilen-Blatt des Geräts sind weg — auf einem Gerät,
+   das im Haus bleibt und von Hand zu Hand geht, führt beides ins Leere.
+   Was bleibt, nimmt der Mensch wirklich mit: ein Code für die eigene
+   Kamera, oder eine Mail an die eigene Adresse. */
 function keepSheet(host, w) {
-  const T = t(), text = wrappedAsText(w);
+  const T = t();
+  let form = "pretty";                       // schöne Fassung ist der Vorschlag
   const sheet = el(`<div class="sheet open"><div class="sheetbody"><div class="grab"></div></div></div>`);
   sheet.onclick = (e) => { if (e.target === sheet) sheet.remove(); };
   const sb = sheet.querySelector(".sheetbody");
+
   sb.append(el(`<div class="vtitle" style="margin:0;font-size:22px">${esc(T.keepTitle)}</div>`));
   sb.append(el(`<div class="sethint" style="margin:0">${esc(T.keepNote)}</div>`));
-  sb.append(el(`<div class="rights">${esc(T.rights)}</div>`));
 
-  const say = (msg) => { const n = sb.querySelector(".keepmsg"); if (n) n.textContent = msg; };
+  const wahl = el(`<div class="keepwahl"></div>`);
+  const bauWahl = () => {
+    wahl.innerHTML = "";
+    [["pretty", T.keepPretty, T.keepPrettySub], ["plain", T.keepPlain, T.keepPlainSub]]
+      .forEach(([k, titel, sub]) => {
+        const b = el(`<button class="keepopt ${form === k ? "on" : ""}">
+          <b>${esc(titel)}</b><i>${esc(sub)}</i></button>`);
+        b.onclick = () => { form = k; bauWahl(); };
+        wahl.append(b);
+      });
+  };
+  bauWahl();
+  sb.append(el(`<div class="keeplabel">${esc(T.keepForm)}</div>`), wahl);
 
-  if (navigator.share) {
-    const b = el(`<button class="btn gold" style="min-height:52px">${esc(T.keepShare)}</button>`);
-    b.onclick = () => navigator.share({ title: "Museum Wrapped", text }).catch(() => {});
-    sb.append(b);
-  }
-  const mail = el(`<button class="btn" style="min-height:50px">${esc(T.keepMail)}</button>`);
-  mail.onclick = () => {
+  sb.append(el(`<div class="keeplabel">${esc(T.keepWay)}</div>`));
+  const wege = el(`<div class="keepwahl"></div>`);
+
+  const qr = el(`<button class="keepopt"><b>${esc(T.keepQr)}</b><i>${esc(T.keepQrSub)}</i></button>`);
+  qr.onclick = () => zeigeCode(host, w, form);
+  const mail = el(`<button class="keepopt"><b>${esc(T.keepMail)}</b><i>${esc(T.keepMailSub)}</i></button>`);
+  mail.onclick = async () => {
+    const koerper = form === "plain" ? wrappedAsText(w)
+      : T.keepScan.split(" — ")[0] + String.fromCharCode(10, 10) + await keepsakeUrl(w);
     location.href = "mailto:?subject=" + encodeURIComponent("Museum Wrapped · SMÄK")
-      + "&body=" + encodeURIComponent(text);
+      + "&body=" + encodeURIComponent(koerper);
   };
-  sb.append(mail);
-
-  const copy = el(`<button class="btn" style="min-height:50px">${esc(T.keepCopy)}</button>`);
-  copy.onclick = () => {
-    const done = () => say(T.keepCopied);
-    if (navigator.clipboard) navigator.clipboard.writeText(text).then(done, done);
-    else done();
-  };
-  sb.append(copy, el(`<div class="keepmsg sethint" style="margin:0;text-align:center;min-height:18px"></div>`));
+  wege.append(qr, mail);
+  sb.append(wege);
+  sb.append(el(`<div class="rights">${esc(T.rights)}</div>`));
 
   const close = el(`<button class="linkish" style="align-self:center">${esc(T.close)}</button>`);
   close.onclick = () => sheet.remove();
   sb.append(close);
   host.append(sheet);
+}
+
+/* Der Code selbst. Dunkel auf hell, immer — ein umgekehrter Code wird von
+   manchen Kameras nicht erkannt, und ein Code, den niemand scannt, ist
+   kein Code. Die Gestaltung sitzt drumherum, nicht darin. */
+async function zeigeCode(host, w, form) {
+  const T = t();
+  const blatt = el(`<div class="sheet open codeblatt"><div class="sheetbody">
+    <div class="grab"></div>
+    <div class="vtitle" style="margin:0;font-size:20px">${esc(T.keepQr)}</div>
+    <div class="codefeld"><div class="codelade"></div></div>
+    <div class="sethint codenote" style="margin:0;text-align:center"></div>
+  </div></div>`);
+  blatt.onclick = (e) => { if (e.target === blatt) blatt.remove(); };
+  const zu = el(`<button class="btn" style="min-height:48px">${esc(T.close)}</button>`);
+  zu.onclick = () => blatt.remove();
+  blatt.querySelector(".sheetbody").append(zu);
+  host.append(blatt);
+
+  const feld = blatt.querySelector(".codefeld"), note = blatt.querySelector(".codenote");
+  try {
+    const inhalt = form === "plain" ? wrappedAsText(w) : await keepsakeUrl(w);
+    feld.innerHTML = QR.svg(inhalt, {
+      rund: true, dunkel: "#241a10", hell: "#f7f2e7", karteEck: 6,
+      alt: T.keepQr, rand: 3,
+    });
+    note.textContent = form === "plain" ? T.keepScanPlain : T.keepScan;
+  } catch (e) {
+    feld.innerHTML = "";
+    note.textContent = T.keepTooLong;
+  }
 }
 
 const WSTYLES = [
@@ -1300,6 +1435,7 @@ function Fuehrung(root) {
   let mode = "idle", live = "", speechCode = null, sheetId = null, shot = 0, startedAt = Date.now();
   let intro = introEnabled, inputPref = "voice";
   let amEnde = false;          // hinter dem letzten Saal wartet der Abschluss
+  let dank = false;            // wer nichts erzaehlt hat, bekommt keinen Rueckblick
   let pending = null, editing = false;
   let elMe, elRange, elLabel, elRaum, elMarken, pinEls = [], inWrapped = false, lastRoom = -1;
   const raumL = () => room().l || 1100;   // Laenge des aktuellen Saals
@@ -1417,6 +1553,7 @@ function Fuehrung(root) {
     // eintreffende Spracherkennung darf ihn nicht wegwischen.
     if (inWrapped) return;
     if (intro) return renderIntro();
+    if (dank) return renderDank();
     if (amEnde) return renderEnde();
     const T = t(), o = obj(selId), d = loc(o), saved = answers[selId], R = room();
     const near = nearest();          // welche Vitrine gerade vor dir steht
@@ -1640,6 +1777,27 @@ function Fuehrung(root) {
     st.append(elRange, elMe, elLabel);
   }
 
+  /* Wer nichts gesagt hat, bekommt keinen erfundenen Rueckblick. */
+  function renderDank() {
+    const T = t();
+    root.innerHTML = ""; pinEls = [];
+    root.append(el(`<div class="topbar"><div class="brand"><i>◆</i> SMÄK</div><div class="topright"></div></div>`));
+    root.append(el(`<div class="hair"></div>`));
+    root.append(el(`<div class="srlive" role="status" aria-live="polite">${esc(T.dankTitle)}</div>`));
+    const v = el(`<div class="ende"><div class="endeinner">
+      <div class="endemarke">${SVG.check}</div>
+      <div class="endehead">${esc(T.dankTitle)}</div>
+      <p class="endetext">${esc(T.dankBody)}</p>
+    </div><div class="endefuss"></div></div>`);
+    const fuss = v.querySelector(".endefuss");
+    const zurueck = el(`<button class="btn gold">${esc(T.dankBack)}</button>`);
+    zurueck.onclick = () => { dank = false; amEnde = false; render(); };
+    const neu = el(`<button class="btn">${esc(T.dankNew)}</button>`);
+    neu.onclick = () => wipeSession(false);
+    fuss.append(zurueck, neu);
+    root.append(v);
+  }
+
   /* Hinter dem letzten Saal: der Rundgang ist zu Ende. Kein Sackgassen-
      Schirm — von hier geht es ins Wrapped oder zurueck in den Saal. */
   function renderEnde() {
@@ -1784,7 +1942,7 @@ function Fuehrung(root) {
     pending = null; editing = false; sheetId = null; speechCode = null;
     me = { x: 50, y: 94 }; heading = -90; wp = 0; seg = 0; walking = false;
     selId = ROUTE_ROOMS[0].spots[0].id;
-    intro = introEnabled; mode = "idle"; inputPref = "voice"; amEnde = false;
+    intro = introEnabled; mode = "idle"; inputPref = "voice"; amEnde = false; dank = false;
     render();
     const live = root.querySelector(".srlive");
     if (live && sagen !== false) live.textContent = t().wipeDone;
@@ -1793,6 +1951,9 @@ function Fuehrung(root) {
   function finishButton() {
     const b = el(`<button class="btn gold">${esc(t().finishShort)}</button>`);
     b.onclick = () => {
+      /* Nichts erzaehlt, nichts zusammenzufassen. Kein Aufruf des Modells,
+         kein erfundener Rueckblick — nur ein Dank und ein Weg zurueck. */
+      if (!Object.keys(answers).length) { dank = true; walking = false; sheetId = null; render(); return; }
       inWrapped = true; walking = false;
       startWrapped(root, answers, startedAt, () => {
         // Ein neuer Besuch ist ein neuer Mensch: die Einwilligung des vorigen

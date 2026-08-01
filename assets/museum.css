@@ -992,3 +992,24 @@ html{background-color:oklch(0.10 0.02 55)}
 .endefuss{flex:0 0 auto;display:flex;flex-direction:column;gap:9px}
 .endefuss .btn{min-height:50px}
 .fbar .chip.zurueck{margin-left:auto}
+
+/* Den Besuch mitnehmen: als was, und womit */
+.keeplabel{font:600 11px/1 var(--body);letter-spacing:.10em;text-transform:uppercase;
+  color:var(--gold);margin:2px 0 -6px}
+.keepwahl{display:flex;flex-direction:column;gap:8px}
+.keepopt{display:flex;flex-direction:column;gap:3px;text-align:left;cursor:pointer;
+  padding:12px 15px;border-radius:15px;border:1px solid var(--line);background:transparent;
+  color:var(--ink);transition:.16s}
+.keepopt b{font:600 14px/1.25 var(--body)}
+.keepopt i{font:400 12px/1.4 var(--body);font-style:normal;color:var(--muted)}
+.keepopt:hover{border-color:oklch(0.82 0.15 82/.45)}
+.keepopt.on{border-color:var(--gold);background:oklch(0.82 0.15 82/.09)}
+.keepopt.on b{color:var(--gold)}
+.codefeld{display:grid;place-items:center;padding:6px;border-radius:20px;
+  background:#f7f2e7;min-height:180px}
+/* So gross wie das Blatt es zulaesst: jedes Kaestchen mehr ist eines,
+   das die Kamera des Gegenuebers noch trennen kann. */
+.codefeld svg{width:100%;height:auto;display:block}
+.codelade{width:26px;height:26px;border-radius:50%;border:2px solid oklch(0.24 0.02 55/.25);
+  border-top-color:oklch(0.24 0.02 55/.8);animation:dreh .8s linear infinite}
+@keyframes dreh{to{transform:rotate(360deg)}}
