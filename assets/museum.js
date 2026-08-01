@@ -1571,7 +1571,6 @@ function Fuehrung(root) {
       write.onclick = () => { mode = "nospeech"; render(); };
       ways.append(speak, write);
       det.append(ways);
-      det.append(el(`<div class="micwarn">${esc(T.micWarn)}</div>`));
       const acts = el(`<div class="actions"></div>`);
       acts.append(finishButton());
       det.append(acts);
@@ -1759,7 +1758,9 @@ function Fuehrung(root) {
          Abstand, nicht die Haelfte. */
       const MARKE_H = 42;
       let y = Math.min(grenze - 12, Math.max(MARKE_H, b.top - st.top - 12));
-      if (y - MARKE_H < chipUnten && x + 24 > chipL && x - 24 < chipR) y = chipUnten + MARKE_H + 4;
+      // Waere sie oben im Weg, haengt sie unter ihre Vitrine — nicht auf sie.
+      if (y - MARKE_H < chipUnten && x + 24 > chipL && x - 24 < chipR)
+        y = b.bottom - st.top + MARKE_H + 2;
       gesetzt.forEach(g => { if (Math.abs(g.x - x) < 46 && Math.abs(g.y - y) < MARKE_H + 4) y = g.y + MARKE_H + 4; });
       y = Math.min(grenze - 12, y);
       gesetzt.push({ x: x, y: y });
