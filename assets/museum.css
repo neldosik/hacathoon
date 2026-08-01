@@ -557,3 +557,87 @@ body.app .screen{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-ar
   .btnbig{min-height:52px;font-size:15px}
   .btnghost{min-height:46px;font-size:14px}
 }
+
+/* ==========================================================================
+   3 · Deine Worte — bestätigen, bevor gespeichert wird
+   ========================================================================== */
+.heard{border-radius:18px;border:1px solid oklch(0.82 0.15 82/.4);background:oklch(0.82 0.15 82/.07);padding:16px}
+.heardlabel{display:flex;align-items:center;gap:7px;font-size:11px;font-weight:600;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--gold)}
+.heardlabel svg{width:14px;height:14px}
+.heardquote{font-family:var(--display);font-style:italic;font-size:20px;line-height:1.4;
+  color:oklch(0.95 0.03 78);margin-top:10px}
+.heardmeta{font-size:12.5px;color:oklch(0.76 0.03 74);margin-top:9px}
+.toldlabel{font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+.toldlist{display:flex;flex-direction:column;gap:8px;max-height:184px;overflow-y:auto}
+.toldlist::-webkit-scrollbar{width:0}
+.toldrow{display:flex;align-items:center;gap:11px;padding:11px 12px;border-radius:14px;
+  background:var(--panel-2);border:1px solid var(--line)}
+.toldquote{font-family:var(--display);font-style:italic;font-size:15.5px;line-height:1.35;
+  color:oklch(0.93 0.03 76);overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.toldtitle{font-size:12px;color:var(--muted);margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.toldredo{width:44px;height:44px;flex:0 0 auto;border-radius:12px;background:transparent;border:1px solid var(--line);
+  color:var(--muted);cursor:pointer;display:grid;place-items:center}
+.toldredo:hover{color:var(--gold);border-color:oklch(0.82 0.15 82/.5)}
+.btnbig svg{width:16px;height:16px}
+.btn svg{width:14px;height:14px;vertical-align:-2px;margin-right:5px}
+
+/* ==========================================================================
+   4-7 · Objektblatt, Ladezustand, Story und Faden — Feinschliff
+   ========================================================================== */
+.sheetbody{background:var(--panel);border-radius:26px 26px 30px 30px;padding:14px 20px 22px;gap:15px}
+.bigshot{height:238px;border-radius:16px}
+.strip button{width:58px;height:58px;border-radius:12px}
+.strip button.on{border-width:2px;border-color:var(--gold)}
+.beschreibung{font-size:14px;line-height:1.65;color:oklch(0.88 0.02 78);max-height:150px;scrollbar-width:none}
+.audio{gap:12px;border-radius:16px;background:var(--panel-2);border:1px solid var(--line);padding:11px 13px}
+.audio .play{width:44px;height:44px}
+.audiotitle{font-size:13px;color:oklch(0.88 0.02 78);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.audiolen{font-size:12px;color:var(--muted);margin-top:2px}
+.wave{flex:0 0 96px;gap:3px}
+.likerow{display:flex;align-items:center;gap:12px}
+.likehint{font-size:12.5px;color:var(--muted)}
+
+.wload{gap:18px}
+.wloadring{width:84px;height:84px;border:2px solid oklch(0.82 0.15 82/.22);border-top-color:var(--gold)}
+.wloadtext{font-family:var(--display);font-weight:300;font-size:26px;line-height:1.25;min-height:66px}
+.wloadsub{font-size:13.5px;line-height:1.6;color:oklch(0.80 0.03 76)}
+.wdots{display:flex;gap:8px}
+.wdots i{width:7px;height:7px;border-radius:50%;background:oklch(0.70 0.04 70/.3);transition:.3s}
+.wdots i.on{background:var(--gold)}
+.wprivacy{position:absolute;left:26px;right:26px;bottom:22px;font-size:12px;line-height:1.55;
+  color:oklch(0.72 0.04 70/.8);text-align:center}
+
+.wbars{gap:5px}
+.wbars i{height:3px}
+.wstat{padding:16px 0;border-bottom:1px solid var(--line)}
+.wstat b{font-family:var(--display);font-weight:400;font-size:52px;min-width:74px;color:var(--gold);line-height:1}
+.wstat .wsub{font-size:15px;color:oklch(0.82 0.03 78)}
+.taphint{display:flex;align-items:center;gap:6px;margin-left:auto;font-size:12px;color:oklch(0.72 0.04 70/.85)}
+.taphint svg{width:12px;height:12px}
+
+.faden{padding-bottom:88px}
+.fhead .h{font-family:var(--display);font-weight:300;font-size:28px;line-height:1.15;margin-top:9px}
+.fhead .a{font-family:var(--display);font-size:21px;color:var(--gold);margin-top:8px}
+.thread::before{width:2px}
+.node::before{width:10px;height:10px;left:-27px;box-shadow:0 0 0 5px oklch(0.82 0.15 82/.14)}
+.node .nt .kthumb{width:50px;height:50px;border-radius:11px}
+.node .nm{font-size:10.5px;font-weight:600;color:var(--gold);letter-spacing:.14em}
+.node .nq{font-size:18px}
+.node .ne{font-size:13px;line-height:1.65}
+.fpanel{border-radius:18px;background:var(--panel);border:1px solid var(--line);padding:15px 16px}
+.missed{border-radius:18px;padding:15px 16px}
+.fbottom{position:absolute;left:0;right:0;bottom:0;z-index:6;display:flex;gap:10px;padding:12px 20px;
+  padding-bottom:calc(12px + env(safe-area-inset-bottom));
+  background:oklch(0.13 0.024 55);border-top:1px solid oklch(0.35 0.05 65/35%)}
+
+@media (max-height:820px){
+  .bigshot{height:190px}
+  .beschreibung{max-height:112px;font-size:13.5px}
+  .wloadring{width:66px;height:66px}
+  .wloadtext{font-size:22px;min-height:56px}
+  .wstat{padding:12px 0}
+  .wstat b{font-size:42px;min-width:64px}
+  .fhead .h{font-size:24px}
+  .node .nq{font-size:16.5px}
+}

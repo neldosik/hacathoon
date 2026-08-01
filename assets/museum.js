@@ -87,6 +87,12 @@ const L = {
       unknown: "Die Spracherkennung hat abgebrochen.",
     },
     tryAgain: "Nochmal versuchen",
+    tellNow: "Jetzt erz\u00e4hlen", tapHint: "Tippen bl\u00e4ttert", threadHead: "Dein Faden",
+    loadSub: "Deine Gedanken sind unterwegs. Das dauert einen Moment.",
+    heard: "So habe ich dich verstanden", keepIt: "So lassen",
+    speakAgain: "Neu sprechen", editText: "Text ändern",
+    notSaved: "noch nicht gespeichert", seconds: (n) => n + " Sekunden",
+    alreadyTold: "Schon erzählt · jederzeit änderbar",
     introTitle: "Erzähl mir, was du siehst — am Ende bekommst du deinen Besuch zurück.",
     introStep1: "Du gehst durch die Säle",
     introStep1Sub: "Der Guide sagt dir, wenn ein Objekt vor dir steht.",
@@ -172,6 +178,12 @@ const L = {
       unknown: "Speech recognition stopped.",
     },
     tryAgain: "Try again",
+    tellNow: "Tell it now", tapHint: "Tap to move on", threadHead: "Your thread",
+    loadSub: "Your thoughts are on their way. This takes a moment.",
+    heard: "This is what I understood", keepIt: "Keep it",
+    speakAgain: "Speak again", editText: "Edit the text",
+    notSaved: "not saved yet", seconds: (n) => n + " seconds",
+    alreadyTold: "Already told · change any time",
     introTitle: "Tell me what you see — at the end you get your visit back.",
     introStep1: "You walk through the rooms",
     introStep1Sub: "The guide tells you when an object is in front of you.",
@@ -380,6 +392,7 @@ function makeRecorder({ onInterim, onFinal, onState }) {
       rec.interimResults = !IS_IOS;   // auf iOS kommen Zwischenergebnisse nicht zuverlaessig
       rec.continuous = false;
       let finalText = "", started = false, failed = null;
+      const t0 = Date.now();
 
       rec.onstart = () => { started = true; };
       rec.onresult = (e) => {
@@ -393,7 +406,8 @@ function makeRecorder({ onInterim, onFinal, onState }) {
       rec.onerror = (e) => { failed = (e && e.error) || "unknown"; };
       rec.onend = () => {
         activeRec = null;
-        if (finalText.trim()) { onState("idle"); onFinal(objId, finalText.trim()); return; }
+        if (finalText.trim()) { onState("idle"); onFinal(objId, finalText.trim(),
+          Math.max(1, Math.round((Date.now() - t0) / 1000))); return; }
         if (failed) { onState("failed", failed); return; }
         onState("failed", started ? "no-speech" : "nostart");
       };
@@ -527,6 +541,8 @@ function renderStory(layer, w, onRestart) {
       }
       const p = peerBtn(layer, w, onRestart, "faden"); if (p) foot.append(p);
       const r = restartBtn(onRestart, layer); if (r) foot.append(r);
+    } else if (onRestart) {
+      foot.append(el(`<div class="taphint">${esc(T.tapHint)} ${SVG.right}</div>`));
     }
     layer.append(foot);
     const back = el(`<button class="wtap l"></button>`), fwd = el(`<button class="wtap r"></button>`);
@@ -596,7 +612,9 @@ function renderKarte(layer, w, onRestart) {
 function renderFaden(layer, w, onRestart) {
   const T = t(), words = Array.isArray(w.your_words) ? w.your_words : [];
   const f = el(`<div class="faden"></div>`);
-  f.append(el(`<div class="fhead"><div class="h">${esc(w.greeting)}</div>
+  f.append(el(`<div class="fhead">
+    <div class="eyebrow">${esc(T.threadHead)}</div>
+    <div class="h">${esc(w.greeting)}</div>
     ${w.archetype && w.archetype.name ? `<div class="a">${esc(w.archetype.name)}</div>` : ""}</div>`));
   const th = el(`<div class="thread"></div>`);
   words.forEach(m => {
@@ -609,12 +627,12 @@ function renderFaden(layer, w, onRestart) {
   });
   f.append(th);
   const end = el(`<div class="fend"></div>`);
-  end.append(el(`<div><div class="blabel">${esc(T.wQuestion)}</div>
+  end.append(el(`<div class="fpanel"><div class="blabel">${esc(T.wQuestion)}</div>
     <div class="fq" style="margin-top:7px">${esc(w.reflective_question)}</div></div>`));
 
   const recs = Array.isArray(w.recommendations) && w.recommendations.length
     ? w.recommendations : (w.go_deeper ? [w.go_deeper] : []);
-  if (recs.length) end.append(el(`<div>
+  if (recs.length) end.append(el(`<div class="fpanel">
     <div class="blabel">${esc(T.recsHead)}</div>
     <div class="reclist" style="margin-top:9px">${recs.map(r => `
       <div class="rec">
@@ -630,17 +648,20 @@ function renderFaden(layer, w, onRestart) {
       <div class="recwhy">${esc(w.missed.reason)}</div></div>
     </div></div>`));
   end.append(el(`<div class="bfoot">${esc(w.closing)}</div>`));
-  const acts = el(`<div style="display:flex;gap:14px;flex-wrap:wrap;align-items:center"></div>`);
-  if (onRestart) {
-    const keep = el(`<button class="btn gold" style="flex:0 0 auto;padding:0 18px;min-height:46px">${esc(T.keep)}</button>`);
-    keep.onclick = () => keepSheet(layer, w);
-    acts.append(keep);
-  }
-  const p = peerBtn(layer, w, onRestart, "story"); if (p) acts.append(p);
-  const r = restartBtn(onRestart, layer); if (r) acts.append(r);
-  if (acts.children.length) end.append(acts);
   f.append(end);
   layer.append(f);
+
+  if (onRestart) {
+    const bar = el(`<div class="fbottom"></div>`);
+    const keep = el(`<button class="btn gold" style="min-height:48px">${esc(T.keep)}</button>`);
+    keep.onclick = () => keepSheet(layer, w);
+    const p = peerBtn(layer, w, onRestart, "story");
+    bar.append(keep);
+    if (p) { p.className = "btn"; p.style.minHeight = "48px"; bar.append(p); }
+    layer.append(bar);
+    const r = restartBtn(onRestart, layer);
+    if (r) end.append(r);
+  }
 }
 
 /* Der Besuch zum Mitnehmen. Es gibt keinen Server, der ihn aufhebt — also
@@ -724,14 +745,18 @@ function showLoading(layer, autoMs, then) {
   const T = t();
   layer.innerHTML = "";
   let li = 0;
-  const load = el(`<div class="wload"><div class="wloadring"></div>
+  const load = el(`<div class="wload">
+    <div class="wloadring"></div>
     <div class="wloadtext">${esc(T.loading[0])}</div>
-    <div class="wnote">${esc(liveMode ? T.loadNote : T.demoNote)}</div></div>`);
+    <div class="wloadsub">${esc(T.loadSub)}</div>
+    <div class="wdots"><i class="on"></i><i></i><i></i></div>
+    <div class="wprivacy">${esc(liveMode ? T.loadNote : T.demoNote)}</div></div>`);
   layer.append(load);
   const cycle = setInterval(() => {
     li = (li + 1) % T.loading.length;
     const n = load.querySelector(".wloadtext");
     if (n) { n.style.animation = "none"; n.textContent = T.loading[li]; void n.offsetHeight; n.style.animation = "fadein .5s ease"; }
+    load.querySelectorAll(".wdots i").forEach((d, k) => d.classList.toggle("on", k <= li));
   }, 3400);
   let done = false;
   const stop = () => { if (!done) { done = true; clearInterval(cycle); } };
@@ -1013,11 +1038,12 @@ function Fuehrung(root) {
   let answers = {}, selId = ROUTE_ROOMS[0].spots[0].id, arrived = false;
   let mode = "idle", live = "", speechCode = null, sheetId = null, shot = 0, startedAt = Date.now();
   let intro = introEnabled, inputPref = "voice";
+  let pending = null, editing = false;
   let elMe, elRange, elLabel, elRail, pinEls = [], inWrapped = false, lastRoom = -1;
 
   const rec = makeRecorder({
     onInterim: s => { live = s; render(); },
-    onFinal: (id, s) => { answers[id] = s; live = ""; render(); },
+    onFinal: (id, s, sec) => { pending = { objId: id, text: s, seconds: sec }; editing = false; live = ""; render(); },
     onState: (s, code) => { mode = s; speechCode = code || null; render(); },
   });
 
@@ -1079,6 +1105,9 @@ function Fuehrung(root) {
   }
 
   function render() {
+    // Nach dem Abschluss gehoert der Schirm dem Wrapped. Eine spaet
+    // eintreffende Spracherkennung darf ihn nicht wegwischen.
+    if (inWrapped) return;
     if (intro) return renderIntro();
     const T = t(), o = obj(selId), d = loc(o), saved = answers[selId], R = room();
     const near = nearest();
@@ -1216,6 +1245,7 @@ function Fuehrung(root) {
     }
     root.append(body);
     root.append(objektblatt());
+    root.append(deineWorte());
     paint();
   }
 
@@ -1278,6 +1308,71 @@ function Fuehrung(root) {
     return b;
   }
 
+  /* 3 · Deine Worte: erst zeigen, was verstanden wurde, dann speichern */
+  function deineWorte() {
+    const T = t();
+    const sheet = el(`<div class="sheet ${pending ? "open" : ""}"><div class="sheetbody"><div class="grab"></div></div></div>`);
+    sheet.onclick = (e) => { if (e.target === sheet) { pending = null; editing = false; render(); } };
+    if (!pending) return sheet;
+
+    const o = obj(pending.objId), d = loc(o), sb = sheet.querySelector(".sheetbody");
+    sb.append(el(`<div class="sheethero">
+      <div class="kthumb" style="width:52px;height:52px"><img src="${IMG}${o.img}" alt="" /></div>
+      <div><div class="eyebrow">${esc(d.room)} · ${esc(d.epoche)}</div>
+      <div class="vtitle" style="margin:4px 0 0;font-size:17px">${esc(d.title)}</div></div></div>`));
+
+    if (editing) {
+      const ta = el(`<textarea class="typed" rows="3">${esc(pending.text)}</textarea>`);
+      sb.append(ta);
+      setTimeout(() => { ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length); }, 30);
+      const save = el(`<button class="btnbig" style="min-height:54px;border-radius:15px;font-size:15.5px">${SVG.check} ${esc(T.keepIt)}</button>`);
+      save.onclick = () => {
+        const v = ta.value.trim();
+        if (v) answers[pending.objId] = v;
+        pending = null; editing = false; render();
+      };
+      sb.append(save);
+    } else {
+      sb.append(el(`<div class="heard">
+        <div class="heardlabel">${SVG.mic} ${esc(T.heard)}</div>
+        <div class="heardquote">„${esc(pending.text)}“</div>
+        <div class="heardmeta">${esc(T.seconds(pending.seconds))} · ${esc(T.notSaved)}</div></div>`));
+
+      const keep = el(`<button class="btnbig" style="min-height:54px;border-radius:15px;font-size:15.5px">${SVG.check} ${esc(T.keepIt)}</button>`);
+      keep.onclick = () => { answers[pending.objId] = pending.text; pending = null; render(); };
+      sb.append(keep);
+
+      const two = el(`<div class="actions"></div>`);
+      const again = el(`<button class="btn" style="min-height:48px">${SVG.redo} ${esc(T.speakAgain)}</button>`);
+      again.onclick = () => { const id = pending.objId; pending = null; render(); rec.toggle(id); };
+      const edit = el(`<button class="btn" style="min-height:48px">${esc(T.editText)}</button>`);
+      edit.onclick = () => { editing = true; render(); };
+      two.append(again, edit);
+      sb.append(two);
+    }
+
+    /* Alles, was schon erzählt ist — jederzeit neu besprechbar */
+    const told = Object.keys(answers);
+    if (told.length) {
+      sb.append(el(`<div class="toldlabel">${esc(T.alreadyTold)}</div>`));
+      const list = el(`<div class="toldlist"></div>`);
+      told.forEach(id => {
+        const oo = obj(id); if (!oo) return;
+        const rowEl = el(`<div class="toldrow">
+          <div class="kthumb" style="width:44px;height:44px"><img src="${IMG}${oo.img}" alt="" /></div>
+          <div style="flex:1;min-width:0">
+            <div class="toldquote">„${esc(answers[id])}“</div>
+            <div class="toldtitle">${esc(loc(oo).title)}</div></div></div>`);
+        const redo = el(`<button class="toldredo" aria-label="${esc(T.speakAgain)}">${SVG.redo}</button>`);
+        redo.onclick = () => { pending = null; selId = id; render(); rec.toggle(id); };
+        rowEl.append(redo);
+        list.append(rowEl);
+      });
+      sb.append(list);
+    }
+    return sheet;
+  }
+
   /* Objektblatt: Beschreibung, weitere Aufnahmen, Audioguide (Platzhalter) */
   function objektblatt() {
     const T = t();
@@ -1299,24 +1394,33 @@ function Fuehrung(root) {
       });
       sb.append(strip);
     }
+    const spot = (room().spots.find(x => x.id === sheetId) || {}).nr;
     sb.append(el(`<div>
-      <div class="eyebrow">${esc(d.room)} · ${esc(d.epoche)} · ${esc(T.shots(gal.length || 1))}</div>
-      <div class="vtitle" style="margin:5px 0 0;font-size:18px">${esc(d.title)}</div></div>`));
+      <div class="eyebrow">${esc(d.room)} · ${esc(d.epoche)}${spot ? " · " + esc(T.vitrine(spot)) : ""}</div>
+      <div class="vtitle" style="margin:5px 0 0;font-size:22px">${esc(d.title)}</div></div>`));
     sb.append(el(`<div class="beschreibung">${esc(d.fact)}</div>`));
 
-    const likeRow = el(`<div class="setrow" style="border:none;padding:2px 0"><span>${esc(t().likeHint)}</span></div>`);
-    likeRow.append(likeBtn(sheetId, render));
+    const bars = Array.from({ length: 12 }, (_, i) =>
+      `<i style="height:${22 + Math.round(66 * Math.abs(Math.sin(i * 1.9)))}%"></i>`).join("");
+    sb.append(el(`<div class="audio">
+      <div class="play">${SVG.play}</div>
+      <div style="flex:1;min-width:0">
+        <div class="audiotitle">${esc(T.audioStub)}</div>
+        <div class="audiolen">2:14</div>
+      </div>
+      <div class="wave">${bars}</div></div>`));
+
+    const likeRow = el(`<div class="likerow"></div>`);
+    likeRow.append(likeBtn(sheetId, render), el(`<span class="likehint">${esc(T.likeHint)}</span>`));
     sb.append(likeRow);
 
-    const bars = Array.from({ length: 34 }, (_, i) =>
-      `<i style="height:${20 + Math.round(70 * Math.abs(Math.sin(i * 1.7)))}%"></i>`).join("");
-    sb.append(el(`<div>
-      <div class="audio"><div class="play">${SVG.play}</div><div class="wave">${bars}</div><div class="len">2:14</div></div>
-      <div class="stub" style="margin-top:7px">${esc(T.audioStub)}</div></div>`));
-
-    const close = el(`<button class="linkish" style="align-self:center">${esc(T.close)}</button>`);
+    const foot = el(`<div class="actions"></div>`);
+    const now = el(`<button class="btn gold" style="min-height:50px">${esc(T.tellNow)}</button>`);
+    now.onclick = () => { selId = sheetId; sheetId = null; mode = "idle"; render(); rec.toggle(selId); };
+    const close = el(`<button class="btn" style="min-height:50px">${esc(T.close)}</button>`);
     close.onclick = () => { sheetId = null; render(); };
-    sb.append(close);
+    foot.append(now, close);
+    sb.append(foot);
     return sheet;
   }
 
