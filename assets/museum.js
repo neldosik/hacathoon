@@ -1398,9 +1398,16 @@ function Fuehrung(root) {
     b.onclick = () => {
       inWrapped = true; walking = false;
       startWrapped(root, answers, startedAt, () => {
+        // Ein neuer Besuch ist ein neuer Mensch: die Einwilligung des vorigen
+        // gilt nicht weiter, das Geraet wandert schliesslich von Hand zu Hand.
         Object.keys(answers).forEach(k => delete answers[k]);
+        try { sessionStorage.removeItem("mw-consent"); } catch (e) {}
         inWrapped = false; roomIdx = 0; lastRoom = -1; startedAt = Date.now();
-        enterRoom(0, 1);
+        pending = null; editing = false; sheetId = null; speechCode = null;
+        me = { x: 50, y: 94 }; heading = -90; wp = 0; seg = 0; walking = false;
+        selId = ROUTE_ROOMS[0].spots[0].id;
+        intro = introEnabled; mode = "idle"; inputPref = "voice";
+        render();
       });
     };
     return b;
