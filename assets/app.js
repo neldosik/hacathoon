@@ -54,6 +54,8 @@
     }));
     sb.append(el(`<div class="sethint">${esc(T.srcNote)}</div>`));
 
+    sb.append(el(legalRow()));
+
     const close = el(`<button class="btn" style="min-height:52px;margin-top:4px">${esc(T.close)}</button>`);
     close.onclick = () => sheet.remove();
     sb.append(close);

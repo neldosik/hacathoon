@@ -34,7 +34,15 @@ const CREDITS = {
   "OBJ-21": "SMÄK, Foto: Roy Hessing (2024)",
   "OBJ-22": "SMÄK, Foto: Marianne Franke (2013)",
 };
+const legalRow = () => `<div class="legal">` + LEGAL_LINKS.map(l =>
+  `<a href="${l.url}" target="_blank" rel="noopener noreferrer">${esc(l[LANG] || l.de)}</a>`
+).join("") + `</div>`;
 const creditOf = (id) => CREDITS[id] ? "© " + CREDITS[id] + " / CC BY-NC-ND 4.0" : "";
+const LEGAL_LINKS = [
+  { de: "Datenschutz", en: "Privacy", url: "https://smaek.de/datenschutzerklaerung/" },
+  { de: "Impressum", en: "Legal notice", url: "https://smaek.de/impressum/" },
+  { de: "Barrierefreiheit", en: "Accessibility", url: "https://smaek.de/erklaerung-zur-barrierefreiheit/" },
+];
 const RIGHTS = "Objekttexte und Abbildungen: © Staatliches Museum Ägyptischer Kunst, München "
   + "(Sammlung Online, CC BY-NC-ND 4.0) — verwendet mit freundlicher Genehmigung.";
 
@@ -138,6 +146,7 @@ const L = {
       "Was gespeichert wird: nur der Text deiner Reflexion, das Objekt und die Uhrzeit.",
       "Wie lange: nur für die Dauer deines Besuchs. Danach wird die Sitzung gelöscht.",
       "Keine Anmeldung, keine Namen — deine Sitzung ist anonym.",
+      "Gemerkte Objekte bleiben nur auf deinem Gerät und nur für diese Sitzung.",
       "Die Spracherkennung erfolgt über deinen Browser. Dabei wird die Aufnahme zur Umwandlung in Text an den Browser-Anbieter (z. B. Google) übertragen.",
       "Der Rückblick wird von einer KI (OpenAI) aus deinen Worten erzeugt.",
       "Du kannst jederzeit tippen statt sprechen.",
@@ -247,6 +256,7 @@ const L = {
       "What is stored: only the text of your reflection, the object and the time.",
       "For how long: only for the duration of your visit. The session is deleted afterwards.",
       "No sign-in, no names — your session is anonymous.",
+      "Objects you keep stay on your device and only for this session.",
       "Speech recognition runs through your browser. The recording is sent to the browser vendor (e.g. Google) to be turned into text.",
       "The recap is written by an AI (OpenAI) from your words.",
       "You can type instead of speaking at any time.",
@@ -734,6 +744,7 @@ function renderFaden(layer, w, onRestart) {
     </div></div>`));
   end.append(el(`<div class="bfoot">${esc(w.closing)}</div>`));
   end.append(el(`<div class="rights">${esc(T.rights)}</div>`));
+  end.append(el(legalRow()));
   f.append(end);
   layer.append(f);
 
@@ -1369,6 +1380,7 @@ function Fuehrung(root) {
           <p class="voluntary">${esc(T.consentVoluntary)}</p>
         </div>
         <div class="rights">${esc(T.rights)}</div>
+        ${legalRow()}
       </div></div>
       <div class="introfoot"></div></div>`);
 

@@ -715,3 +715,9 @@ html{background-color:oklch(0.10 0.02 55)}
 .wfoot{padding-bottom:calc(20px + env(safe-area-inset-bottom));align-items:center}
 .taphint{font-size:12.5px;color:oklch(0.82 0.03 78)}
 .wtap{bottom:76px}
+
+/* Pflichtangaben des Museums — erreichbar, nicht versteckt */
+.legal{display:flex;flex-wrap:wrap;gap:14px;margin-top:10px}
+.legal a{font-size:12.5px;color:oklch(0.84 0.03 78);text-decoration:underline;
+  text-underline-offset:3px;min-height:44px;display:inline-flex;align-items:center}
+.legal a:hover{color:var(--gold)}

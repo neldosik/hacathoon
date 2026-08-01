@@ -87,3 +87,22 @@ Barrierefreiheit (BayBGG Art. 14 / BITV 2.0 ~ WCAG 2.1 AA).
   Zustaende nie nur ueber Farbe, und `prefers-reduced-motion` schaltet
   Pulsieren und Einblendungen ab.
 - **Sitzung loeschen** ist im Aufnahme-Schirm jederzeit erreichbar.
+- **Pflichtangaben** des Museums sind aus dem Einwilligungsschirm, aus den
+  Einstellungen und aus dem Fuss des Fadens erreichbar: Datenschutz,
+  Impressum und Erklaerung zur Barrierefreiheit.
+- **Gemerkte Objekte** liegen im `sessionStorage`, enden mit dem Tab und
+  werden bei einem neuen Besuch geloescht.
+
+### Offene Punkte ausserhalb des Codes
+
+- **Ausfuehrungsprotokoll in n8n.** n8n Cloud speichert standardmaessig jede
+  Ausfuehrung samt Anfragekoerper — also die Reflexionen der Besucher. Das
+  muss vor einem echten Einsatz abgeschaltet werden: Workflow oeffnen →
+  Settings → *Save successful production executions* auf **Do not save**,
+  ebenso fuer fehlgeschlagene und manuelle Laeufe.
+- **Geltungsbereich der verlinkten Erklaerungen.** Datenschutzerklaerung und
+  Erklaerung zur Barrierefreiheit des Museums decken www.smaek.de ab, nicht
+  dieses Plug-in auf einer fremden Adresse. Fuer den Betrieb muss das Museum
+  beide Texte auf das Plug-in erweitern.
+- **Auftragsverarbeitung.** Das Museum ist Verantwortlicher, OpenAI und n8n
+  sind Auftragsverarbeiter — dafuer braucht es Vertraege nach Art. 28 DSGVO.
