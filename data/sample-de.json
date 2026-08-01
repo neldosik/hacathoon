@@ -83,7 +83,7 @@
   "theme": "Death & Afterlife",
   "reason": "Weil dich beschäftigt hat, was nach dem Leben kommt."
  },
- "closing": "Das war dein Besuch, in deinen Worten. Deine Sprachaufnahme wurde in Text umgewandelt und danach gelöscht – gespeichert bleibt nur, was du hier siehst.",
+ "closing": "Das war dein Besuch, in deinen Worten. Gespeichert wurde nur der Text – die Sitzung endet mit deinem Besuch.",
  "recommendations": [
   {
    "object_id": "OBJ-13",

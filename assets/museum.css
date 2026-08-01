@@ -641,3 +641,64 @@ body.app .screen{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-ar
   .fhead .h{font-size:24px}
   .node .nq{font-size:16.5px}
 }
+
+/* ==========================================================================
+   Rechtliches: Einwilligung, KI-Hinweis, Bildnachweise, Barrierefreiheit
+   ========================================================================== */
+
+/* 1 · Einwilligung */
+.consent{border-radius:16px;background:var(--panel);border:1px solid var(--line);padding:15px}
+.consenthead{display:flex;align-items:center;gap:9px;font-family:var(--display);font-size:20px;
+  margin-bottom:9px}
+.consenthead span{color:var(--you);display:grid;place-items:center}
+.consent p{font-size:13px;line-height:1.6;color:oklch(0.86 0.02 78)}
+.consent ul{margin:10px 0 0;padding-left:18px;display:flex;flex-direction:column;gap:6px}
+.consent li{font-size:13px;line-height:1.55;color:oklch(0.84 0.02 78)}
+.consent li::marker{color:var(--gold)}
+.consent .voluntary{margin-top:11px;color:oklch(0.80 0.03 76)}
+.rights{font-size:11.5px;line-height:1.55;color:oklch(0.76 0.03 74)}
+
+/* 2 · KI-Hinweis, immer über dem erzeugten Inhalt */
+.aibanner{position:relative;z-index:7;flex:0 0 auto;display:flex;align-items:center;gap:8px;
+  margin:10px 16px 0;padding:9px 12px;border-radius:12px;
+  background:oklch(0.82 0.15 82/.12);border:1px solid oklch(0.82 0.15 82/.45);
+  color:oklch(0.92 0.08 84);font-size:12px;line-height:1.4}
+.aibanner svg{flex:0 0 auto;color:var(--gold)}
+.wtap{top:96px}
+
+/* 3 · Textweg */
+.chars{font-size:12px;color:oklch(0.78 0.03 75);text-align:right;margin-top:-4px}
+.micwarn{font-size:12px;line-height:1.5;color:oklch(0.80 0.03 76)}
+.wipe{margin-left:auto;background:none;border:1px solid var(--line);border-radius:999px;
+  color:oklch(0.80 0.03 76);font:500 11.5px/1 var(--body);padding:0 13px;min-height:36px;cursor:pointer}
+.wipe:hover{color:oklch(0.86 0.10 30);border-color:oklch(0.80 0.16 25/.55)}
+
+/* 6 · Bildnachweis */
+.credit{font-size:10.5px;line-height:1.45;color:oklch(0.74 0.03 74);margin-top:5px}
+
+/* 4 · Kontrast: die drei Stellen, die an der Durchsichtigkeit gescheitert sind */
+.door.bot span{color:oklch(0.80 0.05 70)}
+.stub{color:oklch(0.78 0.03 75)}
+
+/* 4 · Sichtbarer Fokus überall, Tastaturbedienung */
+:focus-visible{outline:2px solid oklch(0.86 0.13 84);outline-offset:2px;border-radius:6px}
+.wtap:focus-visible{outline-offset:-6px}
+
+/* nur für Screenreader */
+.srlive{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;
+  clip:rect(0 0 0 0);white-space:nowrap;border:0}
+
+/* 4 · Bewegung nur, wenn der Besucher sie will */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;
+    transition-duration:.001ms!important;scroll-behavior:auto!important}
+  .me::before,.mic.rec::before,.mic.rec::after{display:none}
+}
+
+/* 6.3 · ND: die Museumsfotos bleiben unangetastet — kein Beschnitt, kein Schleier */
+.rpin .shot img{opacity:1}
+.rpin.near .shot img{opacity:1}
+
+/* Sprechen und Tippen sind einander gleich — Gold bleibt dem Abschluss */
+.btn.way{border-color:oklch(0.82 0.15 82/.45);color:oklch(0.92 0.03 80);background:oklch(0.82 0.15 82/.07)}
+.btn.way:hover{background:oklch(0.82 0.15 82/.13)}

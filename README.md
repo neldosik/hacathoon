@@ -56,3 +56,32 @@ vom Modell geraten, und nie ein Objekt, vor dem er schon stand.
 Statischen Server im Repo-Ordner starten, etwa `python -m http.server 5599`,
 dann http://localhost:5599/app.html öffnen. Chrome empfohlen — Safari und
 Firefox können die Spracherkennung nicht, dort greift das Textfeld.
+
+## Rechtliches
+
+Der Auftraggeber ist eine oeffentliche Stelle des Freistaats Bayern, darum
+gelten DSGVO/BayDSG, der EU AI Act (Art. 50) und die digitale
+Barrierefreiheit (BayBGG Art. 14 / BITV 2.0 ~ WCAG 2.1 AA).
+
+- **Einwilligung vor dem Mikrofon.** Der erste Schirm erklaert, was gespeichert
+  wird, wie lange, dass die Spracherkennung ueber den Browser-Anbieter laeuft
+  und dass eine KI den Rueckblick schreibt. Nichts ist vorgewaehlt; das
+  Mikrofon wird erst nach einem Druck auf einen der beiden Knoepfe angefasst.
+  Die Wahl liegt in  unter .
+- **KI-Hinweis** steht ueber dem erzeugten Inhalt und bleibt in jedem Kader
+  sichtbar, nicht im Fuss.
+- **Sprechen und Tippen sind gleichwertig** — zwei gleiche Knoepfe
+  nebeneinander. Beide Wege erzeugen dieselbe Reaktion mit ;
+  die Nutzlast des Webhooks ist unveraendert.
+- **Keine Zusage ueber geloeschtes Audio.** Bei Web Speech geht die Aufnahme an
+  den Browser-Anbieter; eine solche Zusage waere unzutreffend. Der Wortlaut
+  steht auf dem Einwilligungsschirm.
+- **Bildrechte.** Alle Objektfotos stehen unter CC BY-NC-ND 4.0, aber von
+  verschiedenen Fotografen — darum traegt jedes grosse Bild seinen eigenen
+  Nachweis, dazu eine Sammelzeile im Fuss. ND heisst: kein Beschnitt, keine
+  Filter, keine Farbschleier ueber den Fotos ( ueberall).
+- **Barrierefreiheit.** Kein Text unter 11 px, Tippziele ab 44 px, sichtbarer
+  Fokus,  fuer den Aufnahmestatus, sprechende Alternativtexte,
+  Zustaende nie nur ueber Farbe, und  schaltet
+  Pulsieren und Einblendungen ab.
+- **Sitzung loeschen** ist im Aufnahme-Schirm jederzeit erreichbar.

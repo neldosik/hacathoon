@@ -7,6 +7,38 @@ const IMG = "assets/objects/";
 const WEBHOOK_URL = "https://y1jia.app.n8n.cloud/webhook/museum-wrapped";
 let LANG = "de";
 
+/* CC BY-NC-ND 4.0 verlangt die Nennung des einzelnen Fotografen, eine
+   Sammelzeile genuegt nicht. ND heisst ausserdem: keine Beschnitte, keine
+   Filter, keine Farbschleier ueber den Museumsfotos. */
+const CREDITS = {
+  "OBJ-01": "SMÄK, Foto: Marianne Franke (2013)",
+  "OBJ-02": "SMÄK, 3D-Scan: Federico Taverni, Massimiliano Nuzzolo, Sun Temples Project (2024)",
+  "OBJ-03": "SMÄK, Foto: Marianne Franke (2020)",
+  "OBJ-04": "SMÄK, Foto: Marianne Franke (2019)",
+  "OBJ-05": "SMÄK, Foto: Marianne Franke (2021)",
+  "OBJ-06": "SMÄK, Foto: Marianne Franke (2013)",
+  "OBJ-07": "SMÄK, Foto: Marianne Franke (2020)",
+  "OBJ-08": "SMÄK, Foto: Marianne Franke (2021)",
+  "OBJ-09": "SMÄK, Foto: Marianne Franke (2021)",
+  "OBJ-10": "SMÄK, Foto: Roy Hessing (2022)",
+  "OBJ-11": "SMÄK, Foto: Marianne Franke (2019)",
+  "OBJ-12": "SMÄK, Foto: Marianne Franke (2012)",
+  "OBJ-13": "SMÄK, Foto: Marianne Franke (2013)",
+  "OBJ-14": "SMÄK, Foto: Marianne Franke (2010)",
+  "OBJ-15": "SMÄK, Foto: Marianne Franke (2012)",
+  "OBJ-16": "SMÄK, Foto: Marianne Franke (2019)",
+  "OBJ-17": "SMÄK, Foto: Marianne Franke (2013)",
+  "OBJ-18": "SMÄK, Foto: Roy Hessing (2022)",
+  "OBJ-19": "SMÄK, Foto: Marianne Franke (2011)",
+  "OBJ-20": "SMÄK, Foto: Claus Rammel (2022)",
+  "OBJ-21": "SMÄK, Foto: Roy Hessing (2024)",
+  "OBJ-22": "SMÄK, Foto: Marianne Franke (2013)",
+};
+const creditOf = (id) => CREDITS[id] ? "© " + CREDITS[id] + " / CC BY-NC-ND 4.0" : "";
+const RIGHTS = "Objekttexte und Abbildungen: © Staatliches Museum Ägyptischer Kunst, München "
+  + "(Sammlung Online, CC BY-NC-ND 4.0) — verwendet mit freundlicher Genehmigung.";
+
+
 /* Die Anzeigeschrift lässt sich am Gerät wechseln — welche trägt, sieht man
    erst auf dem Telefon. Geladen wird erst beim Umschalten. */
 const FONTS = [
@@ -100,11 +132,29 @@ const L = {
     introStep2Sub: "Es gibt keine richtige Antwort. Flüstern genügt — ein Satz reicht.",
     introStep3: "Am Ende: dein Faden",
     introStep3Sub: "Deine Worte, was sie über deinen Tag sagen, und drei Objekte für das nächste Mal.",
-    introPrivacy: "Die Aufnahme wird in Text umgewandelt und danach gelöscht. Gespeichert bleibt nur, was du selbst siehst.",
+    consentTitle: "Bevor wir beginnen",
+    consentIntro: "Dieses Plug-in hält deine eigenen Gedanken zu einzelnen Objekten fest und erstellt daraus am Ende einen persönlichen Rückblick.",
+    consentBullets: [
+      "Was gespeichert wird: nur der Text deiner Reflexion, das Objekt und die Uhrzeit.",
+      "Wie lange: nur für die Dauer deines Besuchs. Danach wird die Sitzung gelöscht.",
+      "Keine Anmeldung, keine Namen — deine Sitzung ist anonym.",
+      "Die Spracherkennung erfolgt über deinen Browser. Dabei wird die Aufnahme zur Umwandlung in Text an den Browser-Anbieter (z. B. Google) übertragen.",
+      "Der Rückblick wird von einer KI (OpenAI) aus deinen Worten erzeugt.",
+      "Du kannst jederzeit tippen statt sprechen.",
+    ],
+    consentVoluntary: "Die Teilnahme ist freiwillig. Der Medienguide funktioniert auch ohne dieses Plug-in.",
+    consentYes: "Einverstanden — los geht's",
+    consentNo: "Ohne Aufnahme fortfahren",
+    aiBanner: "Von KI erstellt — aus deinen eigenen Worten und geprüften Museumstexten.",
+    micWarn: "Sprich leise — das Mikrofon kann auch andere Besucher aufnehmen.",
+    speak: "Sprechen", type: "Tippen", charsLeft: (n) => n + " Zeichen frei",
+    wipe: "Sitzung löschen", wipeDone: "Sitzung gelöscht.",
+    rights: RIGHTS,
     introVoice: "Ich erzähle mit der Stimme", introType: "Lieber schreiben",
     introSwitch: "Du kannst jederzeit wechseln.",
     keep: "Behalten", keepTitle: "Deinen Besuch behalten",
     keepNote: "Nichts davon liegt auf einem Server — der Text geht mit, nicht ein Link darauf.",
+    keepRights: RIGHTS,
     keepShare: "Teilen", keepMail: "Per E-Mail schicken", keepCopy: "Text kopieren",
     keepCopied: "Kopiert.",
     settings: "Einstellungen", setLang: "Sprache", setSource: "Text", setFont: "Schrift",
@@ -191,11 +241,29 @@ const L = {
     introStep2Sub: "There is no right answer. A whisper is enough — one sentence will do.",
     introStep3: "At the end: your thread",
     introStep3Sub: "Your words, what they say about your day, and three objects for next time.",
-    introPrivacy: "The recording is turned into text and then deleted. Only what you see yourself is kept.",
+    consentTitle: "Before we begin",
+    consentIntro: "This plug-in keeps your own thoughts on individual objects and turns them into a personal recap at the end.",
+    consentBullets: [
+      "What is stored: only the text of your reflection, the object and the time.",
+      "For how long: only for the duration of your visit. The session is deleted afterwards.",
+      "No sign-in, no names — your session is anonymous.",
+      "Speech recognition runs through your browser. The recording is sent to the browser vendor (e.g. Google) to be turned into text.",
+      "The recap is written by an AI (OpenAI) from your words.",
+      "You can type instead of speaking at any time.",
+    ],
+    consentVoluntary: "Taking part is voluntary. The media guide works without this plug-in.",
+    consentYes: "I agree — let's start",
+    consentNo: "Continue without recording",
+    aiBanner: "Made by AI — from your own words and checked museum texts.",
+    micWarn: "Speak quietly — the microphone can pick up other visitors too.",
+    speak: "Speak", type: "Type", charsLeft: (n) => n + " characters left",
+    wipe: "Delete session", wipeDone: "Session deleted.",
+    rights: RIGHTS,
     introVoice: "I'll speak", introType: "I'd rather write",
     introSwitch: "You can switch at any time.",
     keep: "Keep", keepTitle: "Keep your visit",
     keepNote: "None of this sits on a server — the text travels with you, not a link to it.",
+    keepRights: RIGHTS,
     keepShare: "Share", keepMail: "Send by e-mail", keepCopy: "Copy the text",
     keepCopied: "Copied.",
     settings: "Settings", setLang: "Language", setSource: "Text", setFont: "Typeface",
@@ -300,6 +368,7 @@ const ROOM_EN = {
   "Pharao":"Pharaoh", "Religion":"Religion", "Nach den Pharaonen":"After the Pharaohs",
   "Schrift und Text":"Writing and Text", "Nubien und Sudan":"Nubia and Sudan",
 };
+
 const titleOf = (id, fallback) => (TITLES[id] && TITLES[id][LANG]) || fallback || id;
 const roomOf = (raw) => {
   const g = String(raw || "").replace(/^Raum\s*"/, "").replace(/"$/, "").trim();
@@ -331,6 +400,7 @@ const likesOf = (id) => {
   for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) % 997;
   return 40 + (h % 260);
 };
+const MAXCHARS = 300;   // wie in der Rechtsvorgabe; der Zaehler zeigt den Rest
 const myLikes = {};
 const likeBtn = (id, onChange) => {
   const mine = !!myLikes[id];
@@ -367,6 +437,7 @@ const SVG = {
   play:'<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg>',
   heart:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 20s-7-4.4-7-9.3A4.1 4.1 0 0 1 12 7.8a4.1 4.1 0 0 1 7 2.9C19 15.6 12 20 12 20z"/></svg>',
   heartOn:'<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 20s-7-4.4-7-9.3A4.1 4.1 0 0 1 12 7.8a4.1 4.1 0 0 1 7 2.9C19 15.6 12 20 12 20z"/></svg>',
+  spark:'<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.9 5.6L19.5 9l-5.6 1.4L12 16l-1.9-5.6L4.5 9l5.6-1.4z"/></svg>',
   heading:'<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3l7 17-7-4-7 4z"/></svg>',
   shield:'<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5.5c0 4.3-2.9 7.7-7 8.5-4.1-.8-7-4.2-7-8.5V6z"/><path d="M9 12l2.2 2.2L15.5 10"/></svg>',
   redo:'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>',
@@ -445,8 +516,8 @@ const FALLBACK = () => ({
   reflective_question: LANG === "de" ? "Was nimmst du mit?" : "What do you take with you?",
   go_deeper: null,
   closing: LANG === "de"
-    ? "Das war dein Besuch, in deinen Worten. Deine Sprachaufnahme wurde in Text umgewandelt und danach gelöscht."
-    : "That was your visit, in your own words. Your voice recording was turned into text and then deleted.",
+    ? "Das war dein Besuch, in deinen Worten. Gespeichert wurde nur der Text — die Sitzung endet mit deinem Besuch."
+    : "That was your visit, in your own words. Only the text was kept — the session ends with your visit.",
 });
 
 /* Beispieltexte: echte Antworten des Servers, einmal geholt und mitgeliefert.
@@ -502,7 +573,8 @@ function renderStory(layer, w, onRestart) {
   words.forEach(m => {
     const o = obj(m.object_id);
     frames.push(() => `
-      ${o ? `<div class="wshot"><img src="${IMG}${o.img}" alt="" /></div>` : ""}
+      ${o ? `<div class="wshot"><img src="${IMG}${o.img}" alt="${esc(loc(o).title)}" /></div>
+      <div class="credit">${esc(creditOf(m.object_id))}</div>` : ""}
       <div class="eyebrow">${esc(T.wWordsHead)}</div>
       <div class="wquote">„${esc(m.quote)}“</div>
       ${m.echo ? `<div class="wecho">${esc(m.echo)}</div>` : ""}
@@ -530,6 +602,7 @@ function renderStory(layer, w, onRestart) {
   let i = 0;
   (function paint() {
     layer.innerHTML = "";
+    layer.append(el(`<div class="aibanner">${SVG.spark} ${esc(T.aiBanner)}</div>`));
     layer.append(el(`<div class="wbars">${frames.map((_, k) => `<i class="${k <= i ? "on" : ""}"></i>`).join("")}</div>`));
     layer.append(el(`<div class="wframe">${frames[i]()}</div>`));
     const foot = el(`<div class="wfoot"></div>`);
@@ -648,6 +721,7 @@ function renderFaden(layer, w, onRestart) {
       <div class="recwhy">${esc(w.missed.reason)}</div></div>
     </div></div>`));
   end.append(el(`<div class="bfoot">${esc(w.closing)}</div>`));
+  end.append(el(`<div class="rights">${esc(T.rights)}</div>`));
   f.append(end);
   layer.append(f);
 
@@ -689,6 +763,7 @@ function wrappedAsText(w) {
   }
   if (w.missed) L.push(T.missedHead.toUpperCase(), "· " + titleOf(w.missed.object_id, w.missed.title), "");
   if (w.closing) L.push(w.closing);
+  L.push("", RIGHTS);
   return L.join(String.fromCharCode(10));
 }
 
@@ -699,6 +774,7 @@ function keepSheet(host, w) {
   const sb = sheet.querySelector(".sheetbody");
   sb.append(el(`<div class="vtitle" style="margin:0;font-size:22px">${esc(T.keepTitle)}</div>`));
   sb.append(el(`<div class="sethint" style="margin:0">${esc(T.keepNote)}</div>`));
+  sb.append(el(`<div class="rights">${esc(T.rights)}</div>`));
 
   const say = (msg) => { const n = sb.querySelector(".keepmsg"); if (n) n.textContent = msg; };
 
@@ -734,6 +810,9 @@ const WSTYLES = [
 ];
 function showWrapped(layer, w, onRestart, style) {
   layer.innerHTML = "";
+  // AI Act Art. 50: der Hinweis steht ueber dem erzeugten Inhalt, nicht im Fuss,
+  // und bleibt in jedem Kader sichtbar.
+  layer.append(el(`<div class="aibanner">${SVG.spark} ${esc(t().aiBanner)}</div>`));
   (WSTYLES.find(s => s.key === (style || wrappedStyle)) || WSTYLES[0]).fn(layer, w, onRestart);
   // Im Beispielmodus muss sichtbar bleiben, dass das nicht der eigene Besuch ist.
   // Als Attribut, damit die Marke das Neuzeichnen der Kader ueberlebt.
@@ -1118,6 +1197,8 @@ function Fuehrung(root) {
       <div class="topright"><div class="count"><b>${Object.keys(answers).length}</b> / ${OBJECTS.length} ${esc(T.erzaehlt)}</div></div>
     </div>`));
     root.append(el(`<div class="hair"></div>`));
+    root.append(el(`<div class="srlive" role="status" aria-live="polite">${esc(
+      mode === "rec" ? T.listening : (saved ? T.told : ""))}</div>`));
 
     const body = el(`<div class="fuehrung">
       <div class="rail"></div>
@@ -1130,7 +1211,7 @@ function Fuehrung(root) {
     const nearObj = near.spot ? obj(near.spot.id) : o;
     const schritte = arrived ? T.here : T.steps(Math.max(1, Math.round(near.d / 0.7)));
     elRail = el(`<div class="railbox">
-      <span class="railthumb"><img src="${IMG}${nearObj.img}" alt="" /></span>
+      <span class="railthumb"><img src="${IMG}${nearObj.img}" alt="${esc(loc(nearObj).title)}" /></span>
       <div style="min-width:0">
         <div class="raillabel">${esc(schritte)}</div>
         <div class="railtitle">${esc(loc(nearObj).title)}</div>
@@ -1172,7 +1253,8 @@ function Fuehrung(root) {
         <span class="cap">${esc(T.vitrine(sp.nr))}</span></button>`);
       p.onclick = (e) => { e.stopPropagation(); selId = sp.id; mode = "idle"; live = ""; render(); };
       st.append(p); pinEls.push(p);
-      if (has) st.append(el(`<div class="rtick" style="${sp.side === "left" ? "left:78px" : "right:78px"};top:calc(${sp.y}% + 14px)">${SVG.check}</div>`));
+      if (has) st.append(el(`<div class="rtick" title="${esc(T.told)}"
+        style="${sp.side === "left" ? "left:78px" : "right:78px"};top:calc(${sp.y}% + 14px)">${SVG.check}</div>`));
     });
 
     elRange = el(`<div class="range"></div>`); st.append(elRange);
@@ -1188,7 +1270,15 @@ function Fuehrung(root) {
     const bar = body.querySelector(".fbar");
     const go = el(`<button class="chip ${walking ? "on" : ""}">${esc(walking ? T.walkRunning : T.walk)}</button>`);
     go.onclick = () => { walking = !walking; render(); };
-    bar.append(go, el(`<span class="stub">${esc(T.sketch)}</span>`));
+    const wipe = el(`<button class="wipe">${esc(T.wipe)}</button>`);
+    wipe.onclick = () => {
+      Object.keys(answers).forEach(k => delete answers[k]);
+      pending = null; editing = false;
+      try { sessionStorage.removeItem("mw-consent"); } catch (e) {}
+      startedAt = Date.now(); render();
+      const live = root.querySelector(".srlive"); if (live) live.textContent = T.wipeDone;
+    };
+    bar.append(go, el(`<span class="stub">${esc(T.sketch)}</span>`), wipe);
 
     /* Aufnahmefeld */
     const det = body.querySelector(".detail");
@@ -1198,7 +1288,8 @@ function Fuehrung(root) {
     tap.onclick = () => { sheetId = selId; shot = 0; render(); };
     row.append(tap, el(`<div style="flex:1;min-width:0">
       <div class="eyebrow">${esc(d.room)} · ${esc(d.epoche)}</div>
-      <div class="vtitle" style="margin:4px 0 0;font-size:18px">${esc(d.title)}</div></div>`));
+      <div class="vtitle" style="margin:4px 0 0;font-size:18px">${esc(d.title)}</div>
+      <div class="credit">${esc(creditOf(selId))}</div></div>`));
     row.append(likeBtn(selId, render));
     det.append(row);
 
@@ -1210,8 +1301,10 @@ function Fuehrung(root) {
         const p = speechProblem(speechCode);
         det.append(el(`<div class="speecherr">${esc(p.text)}<span>${esc(p.code)}</span></div>`));
       }
-      const ta = el(`<textarea class="typed" rows="2" placeholder="${esc(T.placeholder)}"></textarea>`);
-      det.append(ta);
+      const ta = el(`<textarea class="typed" rows="2" maxlength="${MAXCHARS}" placeholder="${esc(T.placeholder)}"></textarea>`);
+      const counter = el(`<div class="chars" aria-live="polite">${esc(T.charsLeft(MAXCHARS))}</div>`);
+      ta.oninput = () => { counter.textContent = T.charsLeft(MAXCHARS - ta.value.length); };
+      det.append(ta, counter);
       setTimeout(() => ta.focus(), 30);
       const acts = el(`<div class="actions"></div>`);
       if (mode === "failed" && ["no-speech", "nostart", "network", "unknown"].indexOf(speechCode) > -1) {
@@ -1225,22 +1318,26 @@ function Fuehrung(root) {
       det.append(acts);
     } else if (mode === "rec") {
       const box = el(`<div class="recbox"></div>`);
-      const mic = el(`<button class="mic rec" style="width:52px;height:52px;flex:0 0 auto">${SVG.stop}</button>`);
+      const mic = el(`<button class="mic rec" aria-label="${esc(T.listenStop)}" aria-pressed="true"
+        style="width:52px;height:52px;flex:0 0 auto">${SVG.stop}</button>`);
       mic.onclick = () => rec.toggle(selId);
       box.append(mic, el(`<div style="flex:1;min-width:0">
         <div class="live">${esc(live || "…")}</div>
         <div class="hint">${esc(T.listenStop)}</div></div>`));
       det.append(box);
     } else {
-      const box = el(`<div style="display:flex;align-items:center;gap:12px"></div>`);
-      const mic = el(`<button class="mic ${saved ? "done" : ""}" style="width:52px;height:52px;flex:0 0 auto">${SVG.mic}</button>`);
-      mic.onclick = () => rec.toggle(selId);
-      box.append(mic, el(`<div class="hint" style="text-align:left;flex:1">${esc(arrived ? T.sayHere : T.sayAny)}</div>`));
-      det.append(box);
+      // Sprechen und Tippen stehen gleichberechtigt nebeneinander — Tippen ist
+      // kein Notausgang, sondern fuer viele Besucher der einzige Weg.
+      const ways = el(`<div class="actions"></div>`);
+      const speak = el(`<button class="btn way" aria-pressed="false">${SVG.mic} ${esc(T.speak)}</button>`);
+      speak.onclick = () => rec.toggle(selId);
+      const write = el(`<button class="btn way">${esc(T.type)}</button>`);
+      write.onclick = () => { mode = "nospeech"; render(); };
+      ways.append(speak, write);
+      det.append(ways);
+      det.append(el(`<div class="micwarn">${esc(T.micWarn)}</div>`));
       const acts = el(`<div class="actions"></div>`);
-      const alt = el(`<button class="btn">${esc(T.typeInstead)}</button>`);
-      alt.onclick = () => { mode = "nospeech"; render(); };
-      acts.append(alt, finishButton());
+      acts.append(finishButton());
       det.append(acts);
     }
     root.append(body);
@@ -1264,7 +1361,13 @@ function Fuehrung(root) {
           <div class="introhead">${esc(T.introTitle)}</div>
         </div>
         <div class="steps"></div>
-        <div class="privacy"><span>${SVG.shield}</span><div>${esc(T.introPrivacy)}</div></div>
+        <div class="consent">
+          <div class="consenthead"><span>${SVG.shield}</span>${esc(T.consentTitle)}</div>
+          <p>${esc(T.consentIntro)}</p>
+          <ul>${T.consentBullets.map(b => `<li>${esc(b)}</li>`).join("")}</ul>
+          <p class="voluntary">${esc(T.consentVoluntary)}</p>
+        </div>
+        <div class="rights">${esc(T.rights)}</div>
       </div>
       <div class="introfoot"></div></div>`);
 
@@ -1284,10 +1387,18 @@ function Fuehrung(root) {
       </div></div>`)));
 
     const foot = v.querySelector(".introfoot");
-    const voice = el(`<button class="btnbig">${SVG.mic} ${esc(T.introVoice)}</button>`);
-    voice.onclick = () => { inputPref = "voice"; intro = false; mode = "idle"; render(); };
-    const type = el(`<button class="btnghost">${esc(T.introType)}</button>`);
-    type.onclick = () => { inputPref = "text"; intro = false; mode = "nospeech"; render(); };
+    // Nichts ist vorgewaehlt: erst ein Druck auf einen der beiden Knoepfe
+    // entscheidet, und erst danach wird das Mikrofon ueberhaupt angefasst.
+    const voice = el(`<button class="btnbig">${SVG.mic} ${esc(T.consentYes)}</button>`);
+    voice.onclick = () => {
+      try { sessionStorage.setItem("mw-consent", "voice"); } catch (e) {}
+      inputPref = "voice"; intro = false; mode = "idle"; render();
+    };
+    const type = el(`<button class="btnghost">${esc(T.consentNo)}</button>`);
+    type.onclick = () => {
+      try { sessionStorage.setItem("mw-consent", "text"); } catch (e) {}
+      inputPref = "text"; intro = false; mode = "nospeech"; render();
+    };
     foot.append(voice, type, el(`<div class="footnote">${esc(T.introSwitch)}</div>`));
 
     // Ohne Spracherkennung im Browser führt nur der Schreibweg weiter
@@ -1385,6 +1496,7 @@ function Fuehrung(root) {
     const sb = sheet.querySelector(".sheetbody");
 
     sb.append(el(`<div class="bigshot"><img src="${IMG}${big}" alt="${esc(d.title)}" /></div>`));
+    sb.append(el(`<div class="credit">${esc(creditOf(sheetId))}</div>`));
     if (gal.length > 1) {
       const strip = el(`<div class="strip"></div>`);
       gal.forEach((g, i) => {
