@@ -163,6 +163,11 @@ const L = {
     erzaehlt: "erzählt", room: "Raum",
     walk: "Rundgang", pause: "Pause", sketch: "Position simuliert",
     zoomOpen: "Foto vergroessern", zoomHint: "Ziehen zum Bewegen · Doppeltippen zum Zoomen",
+    endDoor: "Ende des Rundgangs", endTitle: "Das war der Rundgang",
+    endBody: "Du hast alle vier Säle gesehen. Was du erzählt hast, wartet auf dich.",
+    endNothing: "Du hast alle vier Säle gesehen. Erzählt hast du noch nichts — du kannst zurückgehen oder den Besuch so beenden.",
+    endCount: (a, b) => a + " von " + b + " Objekten erzählt",
+    endBack: "Zurück in den letzten Saal", backRoom: "Voriger Saal",
     photoPrev: "Voriges Foto", photoNext: "Nächstes Foto",
     next: "Nächstes", here: "Du stehst davor",
     listening: "Ich höre zu", listenStop: "Ich höre zu — noch einmal tippen zum Beenden",
@@ -279,6 +284,11 @@ const L = {
     erzaehlt: "shared", room: "Room",
     walk: "Walk", pause: "Pause", sketch: "Simulated position",
     zoomOpen: "Enlarge photo", zoomHint: "Drag to move · double-tap to zoom",
+    endDoor: "End of the tour", endTitle: "That was the tour",
+    endBody: "You have seen all four rooms. What you told is waiting for you.",
+    endNothing: "You have seen all four rooms. You have not told anything yet — you can go back, or finish the visit as it is.",
+    endCount: (a, b) => a + " of " + b + " objects told",
+    endBack: "Back to the last room", backRoom: "Previous room",
     photoPrev: "Previous photo", photoNext: "Next photo",
     next: "Next", here: "You're right here",
     listening: "Listening", listenStop: "Listening — tap again to stop",
@@ -1289,6 +1299,7 @@ function Fuehrung(root) {
   let answers = {}, selId = ROUTE_ROOMS[0].spots[0].id, arrived = false;
   let mode = "idle", live = "", speechCode = null, sheetId = null, shot = 0, startedAt = Date.now();
   let intro = introEnabled, inputPref = "voice";
+  let amEnde = false;          // hinter dem letzten Saal wartet der Abschluss
   let pending = null, editing = false;
   let elMe, elRange, elLabel, elRaum, elMarken, pinEls = [], inWrapped = false, lastRoom = -1;
   const raumL = () => room().l || 1100;   // Laenge des aktuellen Saals
@@ -1340,6 +1351,10 @@ function Fuehrung(root) {
   }
 
   function enterRoom(i, dir) {
+    // Nach dem letzten Saal beginnt nicht wieder der erste: der Rundgang endet.
+    if (dir > 0 && i >= ROUTE_ROOMS.length) {
+      amEnde = true; walking = false; sheetId = null; render(); return;
+    }
     roomIdx = (i + ROUTE_ROOMS.length) % ROUTE_ROOMS.length;
     me = { x: 50, y: dir < 0 ? 6 : 94 };
     wp = 0; seg = 0; heading = dir < 0 ? 90 : -90;
@@ -1402,6 +1417,7 @@ function Fuehrung(root) {
     // eintreffende Spracherkennung darf ihn nicht wegwischen.
     if (inWrapped) return;
     if (intro) return renderIntro();
+    if (amEnde) return renderEnde();
     const T = t(), o = obj(selId), d = loc(o), saved = answers[selId], R = room();
     const near = nearest();          // welche Vitrine gerade vor dir steht
     root.innerHTML = ""; pinEls = [];
@@ -1438,8 +1454,10 @@ function Fuehrung(root) {
     /* Durch den Proeben geht man weiter — auch mit dem Finger, nicht nur im Rundgang */
     const nextRoom = ROUTE_ROOMS[(roomIdx + 1) % ROUTE_ROOMS.length][LANG];
     const prevName = roomIdx === 0 ? T.toEntrance : ROUTE_ROOMS[roomIdx - 1][LANG];
-    const doorTop = el(`<button class="door top" aria-label="${esc(T.goTo)} ${esc(nextRoom)}">
-      <i></i><span>→ ${esc(nextRoom)}</span></button>`);
+    // Auch im flachen Plan fuehrt die letzte Tuer ans Ende, nicht im Kreis
+    const zielOben = roomIdx === ROUTE_ROOMS.length - 1 ? T.endDoor : nextRoom;
+    const doorTop = el(`<button class="door top" aria-label="${esc(T.goTo)} ${esc(zielOben)}">
+      <i></i><span>→ ${esc(zielOben)}</span></button>`);
     doorTop.onclick = (e) => { e.stopPropagation(); walking = false; enterRoom(roomIdx + 1, 1); };
     st.append(doorTop);
 
@@ -1490,6 +1508,11 @@ function Fuehrung(root) {
     const go = el(`<button class="chip ${walking ? "on" : ""}">${esc(walking ? T.walkRunning : T.walk)}</button>`);
     go.onclick = () => { walking = !walking; render(); };
     bar.append(go);
+    if (raum3d && roomIdx !== 0) {
+      const zurueck = el(`<button class="chip zurueck">← ${esc(ROUTE_ROOMS[roomIdx - 1][LANG])}</button>`);
+      zurueck.onclick = () => { walking = false; enterRoom(roomIdx - 1, -1); };
+      bar.append(zurueck);
+    }
 
     /* Aufnahmefeld */
     const det = body.querySelector(".detail");
@@ -1596,14 +1619,12 @@ function Fuehrung(root) {
 
     /* Alles Lesbare liegt ueber dem Saal und behaelt seine Groesse. Im Raum
        selbst zieht die Perspektive es auf wenige Pixel zusammen. */
-    const weiter = el(`<button class="tuerchip o">→ ${esc(nextRoom)}</button>`);
+    const letzter = roomIdx === ROUTE_ROOMS.length - 1;
+    const weiter = el(`<button class="tuerchip o">→ ${esc(letzter ? T.endDoor : nextRoom)}</button>`);
     weiter.onclick = (e) => { e.stopPropagation(); walking = false; enterRoom(roomIdx + 1, 1); };
     st.append(weiter);
-    if (roomIdx !== 0) {
-      const zurueck = el(`<button class="tuerchip u">← ${esc(prevName)}</button>`);
-      zurueck.onclick = (e) => { e.stopPropagation(); walking = false; enterRoom(roomIdx - 1, -1); };
-      st.append(zurueck);
-    }
+    /* Die Tuer zurueck stand am unteren Rand des Saals und lag damit unter dem
+       Aufnahmefeld — unsichtbar. Sie sitzt jetzt in der Leiste. */
     // Der empfohlene Weg des Hauses, leise auf den Boden gelegt
     const pts = route().map(q => `${(q.x / 100 * B).toFixed(1)},${(q.y / 100 * L).toFixed(1)}`).join(" ");
     elRaum.append(el(`<svg class="weg" viewBox="0 0 ${B} ${L}" preserveAspectRatio="none"
@@ -1618,6 +1639,33 @@ function Fuehrung(root) {
     elMe = el(`<div class="me3"><i>${SVG.heading}</i></div>`);
     elLabel = el(`<div class="melabel3">${esc(T.youAreHere)}</div>`);
     st.append(elRange, elMe, elLabel);
+  }
+
+  /* Hinter dem letzten Saal: der Rundgang ist zu Ende. Kein Sackgassen-
+     Schirm — von hier geht es ins Wrapped oder zurueck in den Saal. */
+  function renderEnde() {
+    const T = t(), zahl = Object.keys(answers).length;
+    root.innerHTML = ""; pinEls = [];
+    root.append(el(`<div class="topbar">
+      <div class="brand"><i>◆</i> SMÄK</div>
+      <div class="topright"><div class="count"><b>${zahl}</b> / ${OBJECTS.length} ${esc(T.erzaehlt)}</div></div>
+    </div>`));
+    root.append(el(`<div class="hair"></div>`));
+    root.append(el(`<div class="srlive" role="status" aria-live="polite">${esc(T.endTitle)}</div>`));
+
+    const v = el(`<div class="ende"><div class="endeinner">
+      <div class="endemarke">${SVG.check}</div>
+      <div class="endehead">${esc(T.endTitle)}</div>
+      <p class="endetext">${esc(zahl ? T.endBody : T.endNothing)}</p>
+      ${zahl ? `<div class="endezahl">${esc(T.endCount(zahl, OBJECTS.length))}</div>` : ""}
+    </div><div class="endefuss"></div></div>`);
+
+    const fuss = v.querySelector(".endefuss");
+    fuss.append(finishButton());
+    const zurueck = el(`<button class="btn">${esc(T.endBack)}</button>`);
+    zurueck.onclick = () => { amEnde = false; enterRoom(ROUTE_ROOMS.length - 1, -1); };
+    fuss.append(zurueck);
+    root.append(v);
   }
 
   /* 1 · Willkommen: worum es geht, bevor der erste Saal kommt */
@@ -1695,15 +1743,26 @@ function Fuehrung(root) {
     const chipL = chip ? chip.getBoundingClientRect().left - st.left - 6 : 0;
     const chipR = chip ? chip.getBoundingClientRect().right - st.left + 6 : 0;
     elMarken.innerHTML = "";
+    const gesetzt = [];
     pinEls.forEach(v => {
       const k = v.querySelector(".kasten");
       if (!k) return;
       const b = k.getBoundingClientRect();
+      // Ist die Vitrine ueberhaupt zu sehen? Nur dann braucht sie eine Marke.
+      if (b.bottom < st.top + 4 || b.top > st.top + grenze - 4) return;
       const x = b.left + b.width / 2 - st.left;
-      const y = b.top - st.top - 12;
-      // Unten das Aufnahmefeld, oben der Wegweiser — nur echte Ueberdeckung zaehlt
-      if (y > grenze - 14 || y < 20) return;
-      if (y - 38 < chipUnten && x + 24 > chipL && x - 24 < chipR) return;
+      /* Die Marke wird nicht weggelassen, wenn sie schlecht liegt, sondern
+         verschoben. Sonst verschwinden Objekte, die man deutlich sieht — in
+         den kurzen Saelen war das jedes einzelne. */
+      /* "top" sitzt am unteren Rand der Marke: sie wird um ihre volle Hoehe
+         nach oben gezogen. Wer darunter vorbei will, braucht also MARKE_H
+         Abstand, nicht die Haelfte. */
+      const MARKE_H = 42;
+      let y = Math.min(grenze - 12, Math.max(MARKE_H, b.top - st.top - 12));
+      if (y - MARKE_H < chipUnten && x + 24 > chipL && x - 24 < chipR) y = chipUnten + MARKE_H + 4;
+      gesetzt.forEach(g => { if (Math.abs(g.x - x) < 46 && Math.abs(g.y - y) < MARKE_H + 4) y = g.y + MARKE_H + 4; });
+      y = Math.min(grenze - 12, y);
+      gesetzt.push({ x: x, y: y });
       const id = v.dataset.id, has = !!answers[id], nah = v.classList.contains("near");
       const m = el(`<button class="mark ${has ? "has" : ""} ${nah ? "nah" : ""}"
         style="left:${x}px;top:${y}px" aria-label="${esc(loc(obj(id)).title)}">
@@ -1724,7 +1783,7 @@ function Fuehrung(root) {
     pending = null; editing = false; sheetId = null; speechCode = null;
     me = { x: 50, y: 94 }; heading = -90; wp = 0; seg = 0; walking = false;
     selId = ROUTE_ROOMS[0].spots[0].id;
-    intro = introEnabled; mode = "idle"; inputPref = "voice";
+    intro = introEnabled; mode = "idle"; inputPref = "voice"; amEnde = false;
     render();
     const live = root.querySelector(".srlive");
     if (live && sagen !== false) live.textContent = t().wipeDone;

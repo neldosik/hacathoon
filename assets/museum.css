@@ -977,3 +977,18 @@ html{background-color:oklch(0.10 0.02 55)}
    Kinder statt zu scrollen — Foto, Streifen und Beschreibung wurden
    abgeschnitten. */
 .sheetbody > *{flex:0 0 auto}
+
+/* Der Abschluss des Rundgangs */
+.ende{position:absolute;inset:0;top:56px;display:flex;flex-direction:column;padding:0 20px 20px}
+.endeinner{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;
+  justify-content:center;align-items:center;text-align:center;gap:14px;padding:20px 0}
+.endeinner::-webkit-scrollbar{width:0}
+.endemarke{width:54px;height:54px;border-radius:50%;display:grid;place-items:center;
+  color:oklch(0.16 0.03 55);background:var(--gold);flex:0 0 auto}
+.endehead{font:400 30px/1.15 var(--display);color:var(--ink);max-width:15ch}
+.endetext{font:400 14px/1.6 var(--body);color:var(--muted);max-width:34ch;margin:0}
+.endezahl{font:600 11px/1 var(--body);letter-spacing:.10em;text-transform:uppercase;
+  color:var(--gold);border:1px solid oklch(0.82 0.15 82/.35);border-radius:999px;padding:7px 13px}
+.endefuss{flex:0 0 auto;display:flex;flex-direction:column;gap:9px}
+.endefuss .btn{min-height:50px}
+.fbar .chip.zurueck{margin-left:auto}
